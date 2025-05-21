@@ -16,7 +16,7 @@
 ---
 
 ### 안되면!
-inteliJ -> settings -> plugin -> smart tomcat 설치하셈요!# omock
+inteliJ -> settings -> plugin -> smart tomcat 설치하셈요!  
 
 
 
