@@ -205,4 +205,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     initializeBoard();
+
 });
