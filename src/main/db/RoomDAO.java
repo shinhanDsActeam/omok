@@ -45,7 +45,7 @@ public class RoomDAO {
                 Room room = new Room();
                 room.setId(rs.getInt("id"));
                 room.setName(rs.getString("name"));
-                room.setStatus("eorl"); // 기본값 사용
+                room.setStatus("대기중"); // 기본값 사용
                 rooms.add(room);
             }
         } catch (Exception e) {
