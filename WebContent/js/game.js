@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const introText = document.querySelector('.intro-text');
     const startBtn = document.querySelector('.start-btn');
     const boardContainer = document.querySelector('.board-container');
+    const roomId = new URLSearchParams(window.location.search).get('roomId');
+    const nickname = '임시 닉네임';
+    const contextPath = location.pathname.split('/')[1] ? '/' + location.pathname.split('/')[1] : '';
 
     let gameBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(null));
     let currentPlayer = 'black';
@@ -20,8 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ✅ WebSocket 연결
     const socket = new WebSocket("ws://" + location.host + location.pathname.replace(/\/[^\/]*$/, '') + "/ws/omok");
+    const chatSocket = new WebSocket(`ws://${location.host}${contextPath}/ws/chat/${roomId}`);
+
 
     socket.onopen = () => console.log("WebSocket 연결됨");
+    chatSocket.onopen =() => console.log('chatSocket 연결완')
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
@@ -45,6 +51,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentPlayer = stone === 'black' ? 'white' : 'black';
                 updateGameInfo();
             }
+        }
+    };
+
+    //채팅 메시지 수신처리
+    chatSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const chatLog = document.getElementById('chat-log');
+        const msg = document.createElement('div');
+        msg.innerHTML = `<b>${data.sender}:</b> ${data.message}`;
+        chatLog.appendChild(msg);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    document.getElementById('chat-send').onclick = function() {
+        const input = document.getElementById('chat-input');
+        if (input.value.trim()) {
+            chatSocket.send(JSON.stringify({
+                sender: nickname,
+                message: input.value
+            }));
+            input.value = '';
         }
     };
 
