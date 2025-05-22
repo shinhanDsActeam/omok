@@ -74,6 +74,19 @@ document.addEventListener('DOMContentLoaded', function () {
             input.value = '';
         }
     };
+    // 엔터 키로도 채팅 전송 가능하게 추가
+    document.getElementById('chat-input').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            const input = event.target;
+            if (input.value.trim()) {
+                chatSocket.send(JSON.stringify({
+                    sender: nickname,
+                    message: input.value
+                }));
+                input.value = '';
+            }
+        }
+    });
 
     // 인트로 애니메이션
     setTimeout(() => introTitle.style.animation = 'title-appear 1.2s forwards', 500);
