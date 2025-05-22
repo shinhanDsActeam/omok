@@ -1,5 +1,6 @@
 package main.controller.room;
 
+import main.db.RoomDAO;
 import main.model.Room;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class RoomController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");  // 한글 깨짐 방지
         String path = request.getServletPath();
 
         if ("/createRoom".equals(path)) {
@@ -61,13 +63,32 @@ public class RoomController extends HttpServlet {
                 userId = "player" + System.currentTimeMillis();
                 session.setAttribute("userId", userId);
             }
+//            int roomId = roomIdGenerator.getAndIncrement();
+//            Room newRoom = new Room(roomId, roomName, userId);
+//            roomSet.add(newRoom);
+//            // 게임 방으로 리다이렉트
+//            response.sendRedirect("game?roomId=" + roomId);
 
-            int roomId = roomIdGenerator.getAndIncrement();
+            int roomId = roomIdGenerator.getAndIncrement(); // 현재 값을 가져오고 1 증가 -> 고유한 방번호 생성
             Room newRoom = new Room(roomId, roomName, userId);
-            roomSet.add(newRoom);
+            newRoom.setName(roomName);
+            newRoom.setCreator(userId);
 
-            // 게임 방으로 리다이렉트
-            response.sendRedirect("game?roomId=" + roomId);
+            RoomDAO dao = new RoomDAO();
+            boolean success = dao.insertRoom(newRoom); //DB에 저장
+
+            if (success) {
+                //세션에 방 정보 저장
+                session.setAttribute("roomId", newRoom.getId());
+                session.setAttribute("roomCreator", newRoom.getCreator());
+                session.setAttribute("roomPlayers", newRoom.getPlayers());
+                session.setAttribute("roomStatus", newRoom.getStatus());
+
+                //response.sendRedirect("game?roomId=" + roomId);
+                response.sendRedirect("lobby"); //로비로 리다이렉트 → DB에서 목록 조회
+            } else {
+                response.getWriter().write("방 생성 실패");
+            }
         } else if ("/joinRoom".equals(path)) {
             // 방 참여
             String roomIdStr = request.getParameter("roomId");
@@ -114,8 +135,9 @@ public class RoomController extends HttpServlet {
         return null;
     }
 
-    // 방 목록 조회
+    //방 목록 조회
     private List<Room> getRooms() {
-        return new ArrayList<>(roomSet);
+        RoomDAO dao = new RoomDAO();
+        return dao.getAllRooms();  //DB에서 가져오기
     }
 }
