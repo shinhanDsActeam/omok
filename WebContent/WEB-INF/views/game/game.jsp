@@ -19,18 +19,47 @@
     <div class="tree"></div>
 </div>
 
-<div class="container">
-    <h1 id="game-title">5~ 빈틈없이</h1>
-    <div class="board-container">
-        <div id="board"></div>
+<!-- ✅ 게임 전체 UI -->
+<div class="game-wrapper">
+
+    <!-- ✅ 좌측: 흑돌 유저 정보 -->
+    <div class="player-info black-player">
+        <h3>흑돌 (방장)</h3>
+        <p id="host-nickname">흑돌왕</p>
+        <!-- ⏱ 시간제한 표시 -->
+        <div class="time-limit">30초</div>
     </div>
-    <div id="game-info">
-        <div id="status-message">게임을 시작합니다!</div>
-        <div id="turn-indicator" class="black">흑돌 차례입니다</div>
+
+    <!-- ✅ 중앙: 오목판 -->
+    <div class="container">
+        <h1 id="game-title">5~ 빈틈없이</h1>
+        <div class="board-container">
+            <div id="board"></div>
+        </div>
+        <div id="game-info">
+            <div id="status-message">게임을 시작합니다!</div>
+            <div id="turn-indicator" class="black">흑돌 차례입니다</div>
+        </div>
+        <button id="restart-btn">게임 재시작</button>
     </div>
-    <button id="restart-btn">게임 재시작</button>
+
+    <!-- ✅ 우측 통합 박스: 백돌 + 채팅 -->
+    <div class="right-panel">
+        <div class="player-info white-player">
+            <h3>백돌 (참가자)</h3>
+            <p id="guest-nickname">백돌천사</p>
+            <div class="time-limit">30초</div>
+        </div>
+
+        <div class="chat-box">
+            <div class="chat-log" id="chat-log"></div>
+            <input type="text" id="chat-input" placeholder="메시지 입력..." />
+            <button id="chat-send">전송</button>
+        </div>
+    </div>
 </div>
 
+<!-- ✅ 승리 메시지/인트로 그대로 유지 -->
 <div class="win-overlay">
     <div class="win-content">
         <div class="win-message"></div>
@@ -44,7 +73,7 @@
     <div class="intro-text">무림 최고수의 지혜와 기법으로 오행의 비전을 완성하라!</div>
     <button class="start-btn">게임 시작</button>
 </div>
+
 <script src="<%= request.getContextPath() %>/js/game.js"></script>
-<%--<script src="script.js"></script>--%>
 </body>
 </html>
