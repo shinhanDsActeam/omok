@@ -19,6 +19,10 @@ public class Room {
         this.players.add(creator);  // 생성자를 첫 번째 플레이어로 추가
     }
 
+    public Room() {
+
+    }
+
     public int getId() {
         return id;
     }
