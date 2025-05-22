@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const createRoomModal = document.getElementById('createRoomModal');
     const closeModalBtn = document.querySelector('.close');
 
+
+
+
     // 방 만들기 버튼 클릭 시 모달 표시
     createRoomBtn.addEventListener('click', function() {
         createRoomModal.style.display = 'block';
