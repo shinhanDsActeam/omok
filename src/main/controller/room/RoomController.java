@@ -4,6 +4,9 @@ import main.db.RoomDAO;
 import main.model.Room;
 
 import java.io.IOException;
+import java.io.Serial;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpSession;
 
 @WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList"})
 public class RoomController extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // 방 목록을 저장하는 Set (메모리상에 보관)

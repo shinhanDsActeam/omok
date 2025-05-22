@@ -43,6 +43,10 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/git/Omok/webtest/src/main/webapp/WEB-INF/lib/javax.websocket-api-1.1.jar!/" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

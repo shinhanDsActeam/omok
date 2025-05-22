@@ -1,0 +1,675 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('https://cdnjs.cloudflare.com/ajax/libs/pexels-photo-api/2.0.0/img-1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'Nanum Myeongjo', serif;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: -1;
+}
+
+.mountain-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.mountain {
+    position: absolute;
+    bottom: -10%;
+    width: 100%;
+    height: 70%;
+    background: radial-gradient(ellipse at center, rgba(139, 69, 19, 0.6) 0%, rgba(139, 69, 19, 0) 70%);
+    transform: perspective(1000px) rotateX(60deg) scale(2);
+    z-index: -2;
+}
+
+.mountain:nth-child(1) {
+    left: -20%;
+    height: 80%;
+    background: radial-gradient(ellipse at center, rgba(139, 69, 19, 0.8) 0%, rgba(139, 69, 19, 0) 70%);
+}
+
+.mountain:nth-child(2) {
+    left: 30%;
+    height: 60%;
+    background: radial-gradient(ellipse at center, rgba(139, 69, 19, 0.7) 0%, rgba(139, 69, 19, 0) 70%);
+}
+
+.mountain:nth-child(3) {
+    left: 60%;
+    height: 70%;
+    background: radial-gradient(ellipse at center, rgba(139, 69, 19, 0.9) 0%, rgba(139, 69, 19, 0) 70%);
+}
+
+.trees {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 30%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.tree {
+    position: absolute;
+    bottom: 0;
+    width: 100px;
+    height: 200px;
+    background: radial-gradient(ellipse at center, rgba(34, 139, 34, 0.6) 0%, rgba(34, 139, 34, 0) 70%);
+    filter: blur(2px);
+}
+
+.tree:nth-child(1) {
+    left: 10%;
+    height: 180px;
+}
+
+.tree:nth-child(2) {
+    left: 20%;
+    height: 150px;
+}
+
+.tree:nth-child(3) {
+    left: 80%;
+    height: 200px;
+}
+
+.tree:nth-child(4) {
+    left: 90%;
+    height: 170px;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    perspective: 1000px;
+    z-index: 1;
+}
+
+#game-title {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(255, 215, 0, 0.5);
+    color: #8B4513;
+    letter-spacing: 3px;
+    position: relative;
+    transform: translateZ(50px);
+    opacity: 0;
+    animation: title-appear 1.5s forwards 0.5s;
+}
+
+@keyframes title-appear {
+    0% {
+        opacity: 0;
+        transform: translateZ(50px) scale(0.8);
+    }
+    70% {
+        opacity: 1;
+        transform: translateZ(80px) scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: translateZ(50px) scale(1);
+    }
+}
+
+#game-title::after {
+    content: "";
+    display: block;
+    width: 80%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #8B4513, #DCB35C, #8B4513, transparent);
+    margin: 10px auto;
+    box-shadow: 0 0 8px rgba(220, 179, 92, 0.8);
+}
+
+.board-container {
+    aspect-ratio: 1 / 1; /* ✅ 정사각형 유지 */
+    width: 90vmin;        /* ✅ 화면 기준 비율 (최대 가로/세로 90%) */
+    max-width: 650px;     /* ✅ 너무 클 경우 제한 */
+    margin: 0 auto;
+    position: relative;
+}
+
+.board-container:hover {
+    transform: rotateX(5deg);
+}
+
+#board {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(15, 1fr); /* ✅ 비율 기반 */
+    grid-template-rows: repeat(15, 1fr);
+    background-color: #DCB35C;
+    border: 8px solid #8B4513;
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(139, 69, 19, 0.6);
+    position: relative;
+    max-width: 100%;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+#board::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border: 2px solid #E6C78B;
+    box-shadow: inset 0 0 10px rgba(139, 69, 19, 0.8);
+    pointer-events: none;
+    z-index: 2;
+}
+
+#board.show {
+    opacity: 1;
+    transform: translateZ(0);
+}
+
+/* 추가한 부분 */
+.game-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 40px;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.player-info {
+  width: 300px;
+  min-height: 200px;
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px #ccc;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.time-limit {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #8B4513;
+}
+
+.chat-box {
+  width: 300px;
+  height: 500px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: flex-start;
+}
+
+.chat-log {
+  height: 200px;
+  overflow-y: auto;
+  background: #f9f9f9;
+  border: 1px solid #aaa;
+  padding: 10px;
+  flex-grow: 1;
+}
+
+#chat-input {
+  width: 100%;
+  padding: 5px;
+}
+
+#chat-send {
+  padding: 6px;
+  font-weight: bold;
+  background-color: #8B4513;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#chat-send:hover {
+  background-color: #A0522D;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+/* 여기까지 */
+
+.cell {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+}
+
+.cell:hover::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    pointer-events: cursor;
+    z-index: 3;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.cell::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 50%;
+    left: 0;
+    z-index: 1;
+}
+
+.cell::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.5);
+    left: 50%;
+    top: 0;
+    z-index: 1;
+}
+
+.cell::before,
+.cell::after {
+    content: none; /* ✅ 기존 선 제거 */
+}
+
+.stone {
+    width: 70%;
+    height: 70%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 2;
+    animation: place-stone 0.5s forwards;
+    pointer-events: none;
+}
+
+@keyframes place-stone {
+    0% { transform: scale(0) translate(-50%, -50%); }
+    60% { transform: scale(1.3) translate(-50%, -50%); }
+    100% { transform: scale(1) translate(-50%, -50%); }
+}
+
+.black {
+    background: radial-gradient(circle at 30% 30%, #666, #000);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5),
+    inset 0 -2px 5px rgba(255, 255, 255, 0.2),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.3);
+}
+
+.white {
+    background: radial-gradient(circle at 30% 30%, #fff, #ddd);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.1),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.8);
+}
+
+#game-info {
+    margin-top: 30px;
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(139, 69, 19, 0.5);
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(30px);
+    opacity: 0;
+    animation: info-appear 1s forwards 2.5s;
+}
+
+@keyframes info-appear {
+    0% { opacity: 0; transform: translateZ(30px) translateY(20px); }
+    100% { opacity: 1; transform: translateZ(30px) translateY(0); }
+}
+
+#game-info::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+#status-message {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 22px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#turn-indicator {
+    font-size: 18px;
+    position: relative;
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+#turn-indicator::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    top: 50%;
+    left: -10px;
+    transform: translateY(-50%);
+    opacity: 0.8;
+    transition: background-color 0.3s ease;
+}
+
+#turn-indicator.black::before {
+    background-color: #000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+#turn-indicator.white::before {
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.energy-effect {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+}
+
+#restart-btn {
+    margin-top: 25px;
+    padding: 12px 25px;
+    font-size: 18px;
+    background: linear-gradient(to bottom, #8B4513, #6b350f);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3),
+    0 0 5px rgba(139, 69, 19, 0.5);
+    transform: translateZ(20px);
+    opacity: 0;
+    animation: btn-appear 1s forwards 3s;
+}
+
+@keyframes btn-appear {
+    0% { opacity: 0; transform: translateZ(20px) translateY(20px); }
+    100% { opacity: 1; transform: translateZ(20px) translateY(0); }
+}
+
+#restart-btn:hover {
+    background: linear-gradient(to bottom, #a05717, #8B4513);
+    transform: translateZ(25px) translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
+    0 0 10px rgba(139, 69, 19, 0.6);
+}
+
+#restart-btn:active {
+    transform: translateZ(15px) translateY(1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotateZ(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-8px) rotateZ(-1deg); }
+    20%, 40%, 60%, 80% { transform: translateX(8px) rotateZ(1deg); }
+}
+
+@keyframes flash {
+    0%, 100% { background-color: rgba(255, 255, 255, 0); }
+    50% { background-color: rgba(255, 255, 255, 0.5); }
+}
+
+.win-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    perspective: 1000px;
+}
+
+.win-content {
+    transform-style: preserve-3d;
+    transform: translateZ(0) scale(0.8);
+    transition: transform 1s ease;
+}
+
+.win-overlay.active .win-content {
+    transform: translateZ(50px) scale(1);
+}
+
+.win-message {
+    font-size: 56px;
+    color: white;
+    text-shadow: 0 0 10px gold, 0 0 20px gold, 0 0 30px gold;
+    animation: glow 1.5s infinite alternate;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px gold, 0 0 20px gold, 0 0 30px gold; }
+    to { text-shadow: 0 0 15px gold, 0 0 25px gold, 0 0 35px gold, 0 0 45px gold; }
+}
+
+.martial-message {
+    font-size: 26px;
+    color: #DCB35C;
+    margin: 20px 0 30px;
+    font-style: italic;
+    max-width: 80%;
+    text-align: center;
+    line-height: 1.6;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+#close-win {
+    padding: 12px 30px;
+    font-size: 20px;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(220, 179, 92, 0.6);
+}
+
+#close-win:hover {
+    background: linear-gradient(to bottom, #e6c37a, #DCB35C);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(220, 179, 92, 0.8);
+}
+
+#close-win:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* 시작 애니메이션 효과 */
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 200;
+    opacity: 1;
+    transition: opacity 1s ease;
+}
+
+.intro-title {
+    font-size: 72px;
+    color: white;
+    text-shadow: 0 0 20px #DCB35C, 0 0 40px #DCB35C;
+    animation: title-glow 2s infinite alternate;
+    margin-bottom: 40px;
+    font-weight: bold;
+    transform: scale(0);
+    opacity: 0;
+}
+
+@keyframes title-glow {
+    from { text-shadow: 0 0 20px #DCB35C, 0 0 40px #DCB35C; }
+    to { text-shadow: 0 0 30px #DCB35C, 0 0 50px #DCB35C, 0 0 70px #DCB35C; }
+}
+
+.intro-text {
+    font-size: 32px;
+    color: #DCB35C;
+    max-width: 80%;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.start-btn {
+    padding: 15px 40px;
+    font-size: 24px;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(220, 179, 92, 0.8);
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.start-btn:hover {
+    background: linear-gradient(to bottom, #e6c37a, #DCB35C);
+    transform: translateY(27px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(220, 179, 92, 1);
+}
+
+/* 바둑판 낙하 효과 */
+@keyframes board-drop {
+    0% { transform: translateY(-500px) rotateX(60deg) rotateZ(15deg); opacity: 0; }
+    50% { transform: translateY(50px) rotateX(20deg) rotateZ(-5deg); opacity: 1; }
+    75% { transform: translateY(-20px) rotateX(15deg) rotateZ(2deg); }
+    100% { transform: translateY(0) rotateX(10deg) rotateZ(0); }
+}
+
+/* 먼지 효과 */
+.dust {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(222, 184, 135, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@keyframes dust-spread {
+    0% { transform: translate(0, 0) scale(0.1); opacity: 0.8; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 0; }
+}
