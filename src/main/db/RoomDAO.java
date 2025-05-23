@@ -11,13 +11,14 @@ import static main.util.DBUtil.getConnection;
 public class RoomDAO {
 
     public boolean insertRoom(Room room) {
-        String sql = "INSERT INTO rooms (name) VALUES (?)";
+        String sql = "INSERT INTO rooms (name, status) VALUES (?, ?)";
 
         try (
                 Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, room.getName());
+            pstmt.setString(2, room.getStatus());
             pstmt.executeUpdate();
 
             // DB에서 생성된 AUTO_INCREMENT ID 가져오기
@@ -32,10 +33,11 @@ public class RoomDAO {
         }
         return false; //실패
     }
+
     //목록 조회
     public List<Room> getAllRooms() {
         List<Room> rooms = new ArrayList<>();
-        String sql = "SELECT id, name FROM rooms";
+        String sql = "SELECT id, name, status FROM rooms";
 
         try (
                 Connection conn = getConnection();
@@ -46,7 +48,7 @@ public class RoomDAO {
                 Room room = new Room();
                 room.setId(rs.getInt("id"));
                 room.setName(rs.getString("name"));
-                room.setStatus("대기중"); // 기본값 사용
+                room.setStatus(rs.getString("status")); // DB에서 상태 가져오기
                 rooms.add(room);
             }
         } catch (Exception e) {
@@ -54,6 +56,34 @@ public class RoomDAO {
         }
 
         return rooms;
+    }
+
+    /**
+     * 방 상태 업데이트
+     * @param roomId 방 ID
+     * @param status 새로운 상태
+     * @return 성공 여부
+     */
+    public boolean updateRoomStatus(int roomId, String status) {
+        String sql = "UPDATE rooms SET status = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, status);
+            pstmt.setInt(2, roomId);
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("방 상태 업데이트 실패: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
     }
 
     /**

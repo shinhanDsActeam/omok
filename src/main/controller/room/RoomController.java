@@ -32,7 +32,7 @@ public class RoomController extends HttpServlet {
         // 서버 시작 시 DB에서 마지막 방 ID를 가져와서 초기화
         try {
             RoomDAO dao = new RoomDAO();
-            int lastRoomId = dao.getLastRoomId(); // 이 메소드를 RoomDAO에 추가해야 함
+            int lastRoomId = dao.getLastRoomId();
             if (lastRoomId > 0) {
                 roomIdGenerator.set(lastRoomId + 1);
             }
@@ -77,9 +77,21 @@ public class RoomController extends HttpServlet {
             }
 
             int roomId = roomIdGenerator.getAndIncrement();
-            // 또는 시간 기반 고유 ID 생성 (더 안전)
-            // int roomId = (int)(System.currentTimeMillis() % 100000);
             Room newRoom = new Room(roomId, roomName, userId);
+            newRoom.setStatus("대기중"); // 초기 상태 설정
+
+            // 방장도 플레이어 목록에 추가
+            if (newRoom.getPlayers() == null) {
+                newRoom.setPlayers(new ArrayList<>());
+            }
+            // addPlayer 대신 직접 리스트에 추가
+            newRoom.getPlayers().add(userId);
+
+            // 디버깅용 로그
+            System.out.println("=== 방 생성 ===");
+            System.out.println("방 ID: " + roomId + ", 방장: " + userId);
+            System.out.println("방 생성 후 인원수: " + newRoom.getPlayers().size());
+            System.out.println("플레이어 목록: " + newRoom.getPlayers());
 
             RoomDAO dao = new RoomDAO();
             boolean success = dao.insertRoom(newRoom);
@@ -92,7 +104,7 @@ public class RoomController extends HttpServlet {
                 session.setAttribute("roomPlayers", newRoom.getPlayers());
                 session.setAttribute("roomStatus", newRoom.getStatus());
 
-                // ✅ 방을 만든 사람은 바로 게임 화면으로 (host=true)
+                // 방을 만든 사람은 바로 게임 화면으로 (host=true)
                 response.sendRedirect("game?roomId=" + roomId + "&host=true");
             } else {
                 response.getWriter().write("방 생성 실패");
@@ -113,15 +125,49 @@ public class RoomController extends HttpServlet {
                             session.setAttribute("userId", userId);
                         }
 
-                        room.addPlayer(userId);
-
-                        // ✅ 참여자가 2명이 되었을 때만 게임중으로 변경
-                        if (room.getPlayers().size() >= 2) {
-                            room.setStatus("게임중");
+                        // 플레이어 리스트 null 체크 및 초기화
+                        if (room.getPlayers() == null) {
+                            room.setPlayers(new ArrayList<>());
                         }
 
-                        // ✅ 참여자는 게임 화면으로 (host=false)
+                        // 중복 참여 방지 & 직접 리스트에 추가
+                        List<String> playerList = room.getPlayers();
+                        if (!playerList.contains(userId)) {
+                            playerList.add(userId); // addPlayer 대신 직접 추가
+                        }
+
+                        // 디버깅용 로그
+                        System.out.println("=== 방 참여 ===");
+                        System.out.println("방 ID: " + roomId + ", 참여자: " + userId);
+                        System.out.println("참여 후 인원수: " + room.getPlayers().size());
+                        System.out.println("플레이어 목록: " + room.getPlayers());
+                        System.out.println("현재 방 상태: " + room.getStatus());
+
+                        // 참여자가 2명이 되었을 때 게임중으로 변경
+                        if (room.getPlayers().size() >= 2) {
+                            room.setStatus("게임중");
+
+                            // DB에도 상태 업데이트
+                            RoomDAO dao = new RoomDAO();
+                            boolean statusUpdated = dao.updateRoomStatus(roomId, "게임중");
+
+                            System.out.println("=== 상태 변경 ===");
+                            System.out.println("방 " + roomId + " 상태를 '게임중'으로 변경");
+                            System.out.println("DB 업데이트 결과: " + statusUpdated);
+                        } else {
+                            System.out.println("아직 인원이 부족합니다. 현재: " + room.getPlayers().size() + "명");
+                        }
+
+                        session.setAttribute("roomId", roomId);
+                        session.setAttribute("roomPlayers", room.getPlayers());
+                        session.setAttribute("roomStatus", room.getStatus());
+
+                        // 참여자는 게임 화면으로 (host=false)
                         response.sendRedirect("game?roomId=" + roomId + "&host=false");
+                        return;
+                    } else if (room != null && "게임중".equals(room.getStatus())) {
+                        // 이미 게임 중인 방에는 입장 불가
+                        response.getWriter().write("이미 게임이 진행 중인 방입니다.");
                         return;
                     }
                 } catch (NumberFormatException e) {
@@ -156,18 +202,40 @@ public class RoomController extends HttpServlet {
                 // 메모리에 있는 방: 실제 상태 사용
                 displayRooms.add(memoryRoom);
             } else {
-                // 메모리에 없는 방: DB 정보 + 기본 상태
-                dbRoom.setStatus("대기중");
+                // 메모리에 없는 방: DB 정보를 그대로 사용
                 if (dbRoom.getPlayers() == null) {
                     dbRoom.setPlayers(new ArrayList<>());
                 }
                 displayRooms.add(dbRoom);
 
-                // 향후 참여를 위해 메모리에도 추가
+                // 향후 참여를 위해 메모리에도 추가 (DB 상태 유지)
                 roomSet.add(dbRoom);
             }
         }
 
         return displayRooms;
+    }
+
+    /**
+     * 게임 종료 시 방 상태를 다시 '대기중'으로 변경하는 메서드
+     * (GameController에서 호출 가능)
+     */
+    public static void resetRoomStatus(int roomId) {
+        Room room = null;
+        for (Room r : roomSet) {
+            if (r.getId() == roomId) {
+                room = r;
+                break;
+            }
+        }
+
+        if (room != null) {
+            room.setStatus("대기중");
+            room.getPlayers().clear(); // 플레이어 목록 초기화
+
+            // DB에도 상태 업데이트
+            RoomDAO dao = new RoomDAO();
+            dao.updateRoomStatus(roomId, "대기중");
+        }
     }
 }
