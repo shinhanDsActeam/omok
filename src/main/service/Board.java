@@ -45,6 +45,16 @@ public class Board {
         lastCol = col;
     }
 
+    public String getStone(int row, int col) {
+        String val = map[row][col];
+        return switch (val) {
+            case "." -> null;
+            case "O" -> "black";
+            case "X" -> "white";
+            default -> null;
+        };
+    }
+
     public boolean checkWin(int row, int col, String stone) {
         return count(row, col, stone, 1, 0) + count(row, col, stone, -1, 0) + 1 >= 5 ||
                 count(row, col, stone, 0, 1) + count(row, col, stone, 0, -1) + 1 >= 5 ||
