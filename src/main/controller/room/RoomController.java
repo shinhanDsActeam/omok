@@ -28,6 +28,19 @@ public class RoomController extends HttpServlet {
     private static final Set<Room> roomSet = ConcurrentHashMap.newKeySet();
     private static final AtomicInteger roomIdGenerator = new AtomicInteger(1);
 
+    static {
+        // 서버 시작 시 DB에서 마지막 방 ID를 가져와서 초기화
+        try {
+            RoomDAO dao = new RoomDAO();
+            int lastRoomId = dao.getLastRoomId(); // 이 메소드를 RoomDAO에 추가해야 함
+            if (lastRoomId > 0) {
+                roomIdGenerator.set(lastRoomId + 1);
+            }
+        } catch (Exception e) {
+            System.err.println("방 ID 초기화 실패: " + e.getMessage());
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
@@ -64,6 +77,8 @@ public class RoomController extends HttpServlet {
             }
 
             int roomId = roomIdGenerator.getAndIncrement();
+            // 또는 시간 기반 고유 ID 생성 (더 안전)
+            // int roomId = (int)(System.currentTimeMillis() % 100000);
             Room newRoom = new Room(roomId, roomName, userId);
 
             RoomDAO dao = new RoomDAO();
@@ -77,7 +92,8 @@ public class RoomController extends HttpServlet {
                 session.setAttribute("roomPlayers", newRoom.getPlayers());
                 session.setAttribute("roomStatus", newRoom.getStatus());
 
-                response.sendRedirect("lobby");
+                // ✅ 방을 만든 사람은 바로 게임 화면으로 (host=true)
+                response.sendRedirect("game?roomid=" + roomId + "&host=true");
             } else {
                 response.getWriter().write("방 생성 실패");
             }
@@ -98,9 +114,14 @@ public class RoomController extends HttpServlet {
                         }
 
                         room.addPlayer(userId);
-                        room.setStatus("게임중");
 
-                        response.sendRedirect("game?roomId=" + roomId);
+                        // ✅ 참여자가 2명이 되었을 때만 게임중으로 변경
+                        if (room.getPlayers().size() >= 2) {
+                            room.setStatus("게임중");
+                        }
+
+                        // ✅ 참여자는 게임 화면으로 (host=false)
+                        response.sendRedirect("game?roomid=" + roomId + "&host=false");
                         return;
                     }
                 } catch (NumberFormatException e) {

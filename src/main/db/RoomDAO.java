@@ -1,11 +1,12 @@
 package main.db;
 
 import main.model.Room;
-import main.util.DBUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static main.util.DBUtil.getConnection;
 
 public class RoomDAO {
 
@@ -13,7 +14,7 @@ public class RoomDAO {
         String sql = "INSERT INTO rooms (name) VALUES (?)";
 
         try (
-                Connection conn = DBUtil.getConnection();
+                Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, room.getName());
@@ -37,7 +38,7 @@ public class RoomDAO {
         String sql = "SELECT id, name FROM rooms";
 
         try (
-                Connection conn = DBUtil.getConnection();
+                Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 ResultSet rs = pstmt.executeQuery()) {
 
@@ -53,5 +54,30 @@ public class RoomDAO {
         }
 
         return rooms;
+    }
+
+    /**
+     * DB에서 가장 큰 room_id 값을 조회
+     * @return 마지막 방 ID, 방이 없으면 0 반환
+     */
+    public int getLastRoomId() {
+        String sql = "SELECT MAX(id) FROM rooms";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1); // MAX(id) 값 반환
+            }
+
+        } catch (SQLException e) {
+            System.err.println("마지막 방 ID 조회 실패: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0; // 실패하거나 방이 없으면 0 반환
     }
 }
