@@ -85,7 +85,7 @@
 
 <!-- 사용자 및 방 정보 전달 -->
 <script>
-  const userId = '<%= session.getAttribute("userId") %>';
+  const username = '<%= session.getAttribute("username") %>';
   const roomId = '<%= request.getParameter("roomId") %>';
   const isHost = <%= "true".equals(request.getParameter("host")) %>;
 </script>

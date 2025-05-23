@@ -1,0 +1,114 @@
+package main.controller.user;
+import main.db.UserRepository;
+import main.model.User;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Serial;
+
+@WebServlet(urlPatterns = {"/login", "/join", "/check-username", "/check-nickname"})
+public class UserController extends HttpServlet {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path = request.getServletPath();
+
+        if ("/join".equals(path)) {
+            // 회원가입 페이지 표시
+            request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
+        } else if ("/login".equals(path)) {
+            // 로그인 페이지 표시
+            request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
+        } else if ("/mypage".equals(path)) {
+            // 마이페이지 표시
+            request.getRequestDispatcher("/WEB-INF/views/user/mypage.jsp").forward(request, response);
+        }  else if ("/check-username".equals(path)) {
+            // 아이디 중복 체크
+            String username = request.getParameter("username");
+            UserRepository repo = new UserRepository();
+            boolean duplicate = repo.findUserById(username) != null;
+
+            response.setContentType("application/json");
+            response.getWriter().write("{\"duplicate\":" + duplicate + "}");
+        } else if ("/check-nickname".equals(path)) {
+            // 닉네임 중복 체크
+            String nickname = request.getParameter("nickname");
+            UserRepository repo = new UserRepository();
+            boolean duplicate = repo.checkDuplicateNickname(nickname);
+
+            response.setContentType("application/json");
+            response.getWriter().write("{\"duplicate\":" + duplicate + "}");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path = request.getServletPath();
+
+        if ("/join".equals(path)) {
+            String username = request.getParameter("username");
+            String pw = request.getParameter("pw");
+            String nickname = request.getParameter("nickname");
+
+            // 유효성 검사 (간단 예시)
+            if (username == null || pw == null || nickname == null ||
+                    username.isBlank() || pw.isBlank() || nickname.isBlank()) {
+                request.setAttribute("error", "모든 항목을 입력해주세요.");
+                request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
+                return;
+            }
+
+            UserRepository repo = new UserRepository();
+
+            // 닉네임 중복 체크
+            if (repo.checkDuplicateNickname(nickname)) {
+                request.setAttribute("error", "중복된 닉네임입니다.");
+                request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
+                return;
+            }
+
+            User user = new User(username, pw, nickname);
+            boolean success = repo.insertJoin(user);
+
+            if (success) {
+                request.setAttribute("message", "회원가입 성공! 로그인 해주세요.");
+                response.sendRedirect(request.getContextPath() + "/login"); // 회원가입 성공 시 로그인 페이지로 이동
+            } else {
+                request.setAttribute("error", "회원가입 실패. 다시 시도해주세요.");
+                request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
+            }
+
+            System.out.println("username=" + username + ", pw=" + pw + ", nickname=" + nickname);
+        } else if("/login".equals(path)) {
+            String username = request.getParameter("username");
+            String pw = request.getParameter("pw");
+
+            UserRepository repo = new UserRepository();
+            User user = repo.findUserById(username);
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+
+            if (user != null && user.getPassword().equals(pw)) {
+                // 로그인 성공
+                request.getSession().setAttribute("loginUser", user);
+                out.print("{\"success\": true}");
+            } else {
+                // 로그인 실패
+                out.print("{\"success\": false}");
+            }
+
+            out.flush();
+        }
+
+
+    }
+}
