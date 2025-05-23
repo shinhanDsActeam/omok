@@ -1,5 +1,7 @@
 package main.controller.websocket;
 
+import main.controller.game.GameController;
+import main.service.Board;
 import org.json.JSONObject;
 
 import javax.websocket.*;
@@ -55,7 +57,32 @@ public class OmokWebSocket {
                         broadcast(roomId, new JSONObject().put("type", "startGame").toString());
                         return;
                     case "rematchRequest":
+                        GameController.resetRoom(roomId);
                         broadcast(roomId, new JSONObject().put("type", "rematchRequest").toString());
+                        return;
+                    case "syncRequest":
+                        Board board = GameController.getBoard(roomId);
+                        if (board == null) return;
+
+                        List<JSONObject> stones = new ArrayList<>();
+                        for (int row = 0; row < 15; row++) {
+                            for (int col = 0; col < 15; col++) {
+                                String stone = board.getStone(row, col); // null, "black", "white"
+                                if (stone != null) {
+                                    JSONObject obj = new JSONObject();
+                                    obj.put("row", row);
+                                    obj.put("col", col);
+                                    obj.put("stone", stone);
+                                    stones.add(obj);
+                                }
+                            }
+                        }
+
+                        JSONObject response = new JSONObject();
+                        response.put("type", "syncBoard");
+                        response.put("stones", stones);
+
+                        session.getBasicRemote().sendText(response.toString());
                         return;
                 }
             }
