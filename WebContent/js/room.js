@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const createRoomModal = document.getElementById('createRoomModal');
     const closeModalBtn = document.querySelector('.close');
 
-
-
+    window.onload = function() {
+        refreshRoomList();
+        setInterval(refreshRoomList, 3000);  // 3초마다 리스트 갱신
+    };
 
     // 방 만들기 버튼 클릭 시 모달 표시
     createRoomBtn.addEventListener('click', function() {
