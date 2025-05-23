@@ -1,13 +1,24 @@
 package main.util;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Properties;
 
 public class DBUtil {
     public static Connection getConnection() throws Exception {
-        String url = "jdbc:mysql://127.0.0.1:3306/omock";
-        String user = "root"; // 사용자명
-        String password = ""; // 비밀번호
+        Properties props = new Properties();
+        try (InputStream input = DBUtil.class.getClassLoader().getResourceAsStream("db-config.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Cannot find db-config.properties in classpath.");
+            }
+            props.load(input);
+        }
+
+        String url = props.getProperty("db.url");
+        String user = props.getProperty("db.user");
+        String password = props.getProperty("db.password");
+
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(url, user, password);
     }
