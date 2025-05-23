@@ -20,7 +20,8 @@ public class Room {
     }
 
     public Room() {
-
+        this.players = new ArrayList<>();  // 중요: null 방지
+        this.status = "대기중";  // 기본 상태도 설정
     }
 
     public int getId() {
@@ -59,13 +60,23 @@ public class Room {
         return players;
     }
 
+    public void setPlayers(List<String> players) {
+        this.players = players != null ? players : new ArrayList<>();
+    }
+
     public void addPlayer(String playerId) {
+        if (this.players == null) {
+            this.players = new ArrayList<>();
+        }
         if (!players.contains(playerId)) {
             players.add(playerId);
         }
     }
 
     public boolean isFull() {
+        if (this.players == null) {
+            return false;
+        }
         // 1대1 게임이므로 2명이 차면 가득 참
         return players.size() >= 2;
     }
