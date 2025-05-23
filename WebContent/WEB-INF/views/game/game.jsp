@@ -41,10 +41,7 @@
         </div>
         <button id="restart-btn">게임 재시작</button>
         <button id="start-btn" style="display:none;">게임 시작하기</button>
-        <div id="game-end-buttons" style="display:none;">
-            <button onclick="requestRematch()">재대결</button>
-            <button onclick="location.href='<%= request.getContextPath() %>/lobby'">방 떠나기</button>
-        </div>
+
     </div>
 
     <!-- ✅ 우측 통합 박스: 백돌 + 채팅 -->
@@ -68,6 +65,11 @@
     <div class="win-content">
         <div class="win-message"></div>
         <div class="martial-message"></div>
+
+        <div id="game-end-buttons" style="display:none;">
+            <button class="end-btn" onclick="requestRematch()">재대결</button>
+            <button class="end-btn" onclick="location.href='<%= request.getContextPath() %>/lobby'">방 떠나기</button>
+        </div>
     </div>
 </div>
 

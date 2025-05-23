@@ -19,9 +19,13 @@ public class GameController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Map<String, Board> boards = new ConcurrentHashMap<>();
-    private final Map<String, Player[]> players = new ConcurrentHashMap<>();
-    private final Map<String, Player> currentPlayers = new ConcurrentHashMap<>();
+    private static final Map<String, Board> boards = new ConcurrentHashMap<>();
+    private static final Map<String, Player[]> players = new ConcurrentHashMap<>();
+    private static final Map<String, Player> currentPlayers = new ConcurrentHashMap<>();
+
+    public static Board getBoard(String roomId) {
+        return boards.get(roomId);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -69,8 +73,9 @@ public class GameController extends HttpServlet {
                 return;
             }
 
-            board.placeStone(row, col, currentPlayer.stone);
-            boolean isWin = board.checkWin(row, col, currentPlayer.stone);
+            String stone = currentPlayer.stone.equals("black") ? "O" : "X";
+            board.placeStone(row, col, stone);
+            boolean isWin = board.checkWin(row, col, stone);
             String msg = currentPlayer.name + (isWin ? " 승리!" : "의 차례입니다");
 
             out.printf(
@@ -96,6 +101,15 @@ public class GameController extends HttpServlet {
                 new Player("플레이어2", "white")
         });
         currentPlayers.putIfAbsent(roomId, players.get(roomId)[0]);
+    }
+
+    public static void resetRoom(String roomId) {
+        boards.put(roomId, new Board(15));
+        players.put(roomId, new Player[]{
+                new Player("플레이어1", "black"),
+                new Player("플레이어2", "white")
+        });
+        currentPlayers.put(roomId, players.get(roomId)[0]);
     }
 
     private String jsonError(String message) {
