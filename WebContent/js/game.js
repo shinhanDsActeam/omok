@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const socket = new WebSocket("ws://" + location.host + location.pathname.replace(/\/[^\/]*$/, '') + "/ws/omok/" + roomId);
     const chatSocket = new WebSocket(`ws://${location.host}${contextPath}/ws/chat/${roomId}`);
 
-    socket.onopen = () => console.log("✅ WebSocket 연결됨");
+    socket.onopen = () => {
+        console.log("✅ WebSocket 연결됨");
+        socket.send(JSON.stringify({ type: "syncRequest", roomId }));
+    }
     chatSocket.onopen =() => console.log('chatSocket 연결완')
 
     socket.onmessage = (event) => {
@@ -51,6 +54,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (data.type === "rematchRequest") {
             location.reload();
+            return;
+        }
+
+        if (data.type === "syncBoard") {
+            gameBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(null));
+            initializeBoard();
+
+            data.stones.forEach(({ row, col, stone }) => {
+                const cell = board.querySelector(`[data-row='${row}'][data-col='${col}']`);
+                placeStone(cell, stone);
+                gameBoard[row][col] = stone;
+            });
+            updateGameInfo();
             return;
         }
 
@@ -104,6 +120,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.requestRematch = function () {
+        gameBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(null));
+        currentPlayer = 'black';
+        gameEnded = false;
+
+        initializeBoard(); // ✅ 오목판 초기화
+        if (statusMessageGame) statusMessageGame.textContent = '재대결 start!';
+        winOverlay.style.opacity = '0';
+        winOverlay.style.pointerEvents = 'none';
+
         socket.send(JSON.stringify({ type: "rematchRequest", roomId }));
     }
 
