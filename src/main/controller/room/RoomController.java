@@ -93,7 +93,7 @@ public class RoomController extends HttpServlet {
                 session.setAttribute("roomStatus", newRoom.getStatus());
 
                 // ✅ 방을 만든 사람은 바로 게임 화면으로 (host=true)
-                response.sendRedirect("game?roomid=" + roomId + "&host=true");
+                response.sendRedirect("game?roomId=" + roomId + "&host=true");
             } else {
                 response.getWriter().write("방 생성 실패");
             }
@@ -121,7 +121,7 @@ public class RoomController extends HttpServlet {
                         }
 
                         // ✅ 참여자는 게임 화면으로 (host=false)
-                        response.sendRedirect("game?roomid=" + roomId + "&host=false");
+                        response.sendRedirect("game?roomId=" + roomId + "&host=false");
                         return;
                     }
                 } catch (NumberFormatException e) {
