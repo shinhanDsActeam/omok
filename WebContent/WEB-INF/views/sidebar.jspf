@@ -1,0 +1,8 @@
+<div class="sidebar">
+    <h2 class="sidebar-title">HOME</h2>
+    <ul class="sidebar-menu">
+        <li><a href="/omok/lobby">로비</a></li>
+        <li><a href="/omok/mypage">마이페이지</a></li>
+        <li><a href="/omok/mypage">랭킹 보기</a></li>
+    </ul>
+</div>
