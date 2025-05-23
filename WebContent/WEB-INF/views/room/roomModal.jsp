@@ -1,3 +1,5 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+
 <div id="createRoomModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
