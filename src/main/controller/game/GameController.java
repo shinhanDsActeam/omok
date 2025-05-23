@@ -11,35 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet(urlPatterns = {"/game"})
 public class GameController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
-    private Board board;
-    private Player player1;
-    private Player player2;
-    private Player currentPlayer;
 
-    @Override
-    public void init() throws ServletException {
-        initializeGame();
-    }
-
-    private void initializeGame() {
-        board = new Board(15);
-        player1 = new Player("플레이어1", "black");
-        player2 = new Player("플레이어2", "white");
-        currentPlayer = player1;
-    }
+    private final Map<String, Board> boards = new ConcurrentHashMap<>();
+    private final Map<String, Player[]> players = new ConcurrentHashMap<>();
+    private final Map<String, Player> currentPlayers = new ConcurrentHashMap<>();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //roomId 파라미터를 받아서 필요하다면 request에 저장
         String roomId = request.getParameter("roomId");
         request.setAttribute("roomId", roomId);
-
-        // 게임 JSP로 포워딩
         request.getRequestDispatcher("WEB-INF/views/game/game.jsp").forward(request, response);
     }
 
@@ -50,12 +37,24 @@ public class GameController extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
+            String roomId = request.getParameter("roomId");
+            if (roomId == null || roomId.trim().isEmpty()) {
+                out.print(jsonError("roomId가 필요합니다."));
+                return;
+            }
+
             String action = request.getParameter("action");
             if ("restart".equals(action)) {
-                initializeGame();
+                initializeRoom(roomId);
                 out.print("{\"success\":true, \"message\":\"게임이 초기화되었습니다.\"}");
                 return;
             }
+
+            initializeRoom(roomId); // 없으면 초기화함
+
+            Board board = boards.get(roomId);
+            Player[] roomPlayers = players.get(roomId);
+            Player currentPlayer = currentPlayers.get(roomId);
 
             int row = Integer.parseInt(request.getParameter("row"));
             int col = Integer.parseInt(request.getParameter("col"));
@@ -82,12 +81,21 @@ public class GameController extends HttpServlet {
             );
 
             if (!isWin) {
-                currentPlayer = (currentPlayer == player1) ? player2 : player1;
+                currentPlayers.put(roomId, currentPlayer == roomPlayers[0] ? roomPlayers[1] : roomPlayers[0]);
             }
 
         } catch (Exception e) {
             out.print(jsonError("서버 오류: " + e.getMessage()));
         }
+    }
+
+    private void initializeRoom(String roomId) {
+        boards.putIfAbsent(roomId, new Board(15));
+        players.putIfAbsent(roomId, new Player[]{
+                new Player("플레이어1", "black"),
+                new Player("플레이어2", "white")
+        });
+        currentPlayers.putIfAbsent(roomId, players.get(roomId)[0]);
     }
 
     private String jsonError(String message) {

@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const boardSize = 15;
     const board = document.getElementById('board');
-    const statusMessage = document.getElementById('status-message');
+    const statusMessageGame = document.querySelector('#game-info #status-message');
+    const statusMessageIntro = document.querySelector('.intro-overlay #status-message');
     const turnIndicator = document.getElementById('turn-indicator');
     const restartBtn = document.getElementById('restart-btn');
     const winOverlay = document.querySelector('.win-overlay');
@@ -9,26 +10,51 @@ document.addEventListener('DOMContentLoaded', function () {
     const martialMessage = document.querySelector('.martial-message');
     const closeWinBtn = document.getElementById('close-win');
     const introOverlay = document.querySelector('.intro-overlay');
-    const introTitle = document.querySelector('.intro-title');
-    const introText = document.querySelector('.intro-text');
-    const startBtn = document.querySelector('.start-btn');
+    const introStartBtn = document.getElementById('intro-start-btn');
+    const boardStartBtn = document.getElementById('start-btn');
     const boardContainer = document.querySelector('.board-container');
+    const roomId = new URLSearchParams(window.location.search).get('roomId');
+    const nickname = '임시 닉네임';
+    const contextPath = location.pathname.split('/')[1] ? '/' + location.pathname.split('/')[1] : '';
 
     let gameBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(null));
     let currentPlayer = 'black';
     let gameEnded = false;
 
-    // ✅ WebSocket 연결
-    const socket = new WebSocket("ws://" + location.host + location.pathname.replace(/\/[^\/]*$/, '') + "/ws/omok");
+    const socket = new WebSocket("ws://" + location.host + location.pathname.replace(/\/[^\/]*$/, '') + "/ws/omok/" + roomId);
+    const chatSocket = new WebSocket(`ws://${location.host}${contextPath}/ws/chat/${roomId}`);
 
-    socket.onopen = () => console.log("WebSocket 연결됨");
+    socket.onopen = () => console.log("✅ WebSocket 연결됨");
+    chatSocket.onopen =() => console.log('chatSocket 연결완')
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log("📨 메시지:", data);
 
-        const row = data.row;
-        const col = data.col;
-        const stone = data.stone;
+        if (data.type === "userJoined") {
+            if (isHost) {
+                if (!data.ready) {
+                    if (statusMessageIntro) statusMessageIntro.textContent = '⏳ 참가자 기다리는 중...';
+                    if (introStartBtn) introStartBtn.style.display = 'none';
+                } else {
+                    if (statusMessageIntro) statusMessageIntro.textContent = '🎯 게임 시작 가능!';
+                    if (introStartBtn) introStartBtn.style.display = 'inline-block';
+                }
+            }
+            return;
+        }
+
+        if (data.type === "startGame") {
+            startGameAnimation();
+            return;
+        }
+
+        if (data.type === "rematchRequest") {
+            location.reload();
+            return;
+        }
+
+        const { row, col, stone } = data;
 
         if (gameBoard[row][col] === null && !gameEnded) {
             const cell = board.querySelector(`[data-row='${row}'][data-col='${col}']`);
@@ -41,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 martialMessage.textContent = '천하무적 승리의 순간!';
                 winOverlay.style.opacity = '1';
                 winOverlay.style.pointerEvents = 'auto';
+                document.getElementById("game-end-buttons").style.display = 'flex';
             } else {
                 currentPlayer = stone === 'black' ? 'white' : 'black';
                 updateGameInfo();
@@ -48,20 +75,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // 인트로 애니메이션
-    setTimeout(() => introTitle.style.animation = 'title-appear 1.2s forwards', 500);
-    setTimeout(() => {
-        introText.style.transition = 'all 1s ease';
-        introText.style.opacity = '1';
-        introText.style.transform = 'translateY(0)';
-    }, 1700);
-    setTimeout(() => {
-        startBtn.style.transition = 'all 1s ease';
-        startBtn.style.opacity = '1';
-        startBtn.style.transform = 'translateY(0)';
-    }, 2500);
+    if (introStartBtn) {
+        introStartBtn.addEventListener('click', () => {
+            if (isHost) {
+                socket.send(JSON.stringify({ type: "startGame", roomId }));
+            }
+        });
+    }
 
-    startBtn.addEventListener('click', () => {
+    if (boardStartBtn) {
+        boardStartBtn.addEventListener('click', () => {
+            if (isHost) {
+                socket.send(JSON.stringify({ type: "startGame", roomId }));
+            }
+        });
+    }
+
+    function startGameAnimation() {
         introOverlay.style.opacity = '0';
         setTimeout(() => {
             introOverlay.style.display = 'none';
@@ -71,10 +101,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 createDustEffect();
             }, 100);
         }, 1000);
+    }
+
+    window.requestRematch = function () {
+        socket.send(JSON.stringify({ type: "rematchRequest", roomId }));
+    }
+
+    //채팅 메시지 수신처리
+    chatSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const chatLog = document.getElementById('chat-log');
+        const msg = document.createElement('div');
+        msg.innerHTML = `<b>${data.sender}:</b> ${data.message}`;
+        chatLog.appendChild(msg);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    document.getElementById('chat-send').onclick = function() {
+        const input = document.getElementById('chat-input');
+        if (input.value.trim()) {
+            chatSocket.send(JSON.stringify({
+                sender: nickname,
+                message: input.value
+            }));
+            input.value = '';
+        }
+    };
+
+    // 엔터 키로도 채팅 전송 가능하게 추가
+    document.getElementById('chat-input').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            const input = event.target;
+            if (input.value.trim()) {
+                chatSocket.send(JSON.stringify({
+                    sender: nickname,
+                    message: input.value
+                }));
+                input.value = '';
+            }
+        }
     });
 
     function createDustEffect() {
-        const container = document.querySelector('.board-container');
+        const container = boardContainer;
         for (let i = 0; i < 30; i++) {
             const dust = document.createElement('div');
             dust.classList.add('dust');
@@ -110,33 +179,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const row = parseInt(cell.dataset.row);
         const col = parseInt(cell.dataset.col);
 
-        // 돌 유효성 및 승리 판정은 서버가 수행
-        fetch('/omok/game', {
+        fetch(`/omok/game?roomId=${roomId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `row=${row}&col=${col}`
         })
-            .then(res => {
-                if (!res.ok) throw new Error('서버 응답 오류');
-                return res.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    socket.send(JSON.stringify({
-                        row: row,
-                        col: col,
-                        stone: data.stone,
-                        gameOver: data.gameOver,
-                        message: data.message
-                    }));
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('서버 오류 발생');
-            });
+        .then(res => res.ok ? res.json() : Promise.reject('서버 오류'))
+        .then(data => {
+            if (data.success) {
+                socket.send(JSON.stringify({
+                    row, col,
+                    stone: data.stone,
+                    gameOver: data.gameOver,
+                    message: data.message
+                }));
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('서버 오류 발생');
+        });
     }
 
     function placeStone(cell, player) {
@@ -157,10 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
             { opacity: 0, transform: 'scale(1)' },
             { opacity: 0.7, transform: 'scale(2)' },
             { opacity: 0, transform: 'scale(3)' }
-        ], {
-            duration: 600,
-            easing: 'ease-out'
-        });
+        ], { duration: 600, easing: 'ease-out' });
 
         const flash = document.createElement('div');
         flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;animation:flash 0.2s';
@@ -185,16 +246,18 @@ document.addEventListener('DOMContentLoaded', function () {
         currentPlayer = 'black';
         gameEnded = false;
         initializeBoard();
-        statusMessage.textContent = '게임을 재시작합니다!';
+        if (statusMessageGame) statusMessageGame.textContent = '게임을 재시작합니다!';
         winOverlay.style.opacity = '0';
         winOverlay.style.pointerEvents = 'none';
     }
 
-    restartBtn.addEventListener('click', restartGame);
-    closeWinBtn.addEventListener('click', () => {
-        winOverlay.style.opacity = '0';
-        winOverlay.style.pointerEvents = 'none';
-    });
+    if (restartBtn) restartBtn.addEventListener('click', restartGame);
+    if (closeWinBtn) {
+        closeWinBtn.addEventListener('click', () => {
+            winOverlay.style.opacity = '0';
+            winOverlay.style.pointerEvents = 'none';
+        });
+    }
 
     window.addEventListener("beforeunload", () => {
         fetch("/omok/game", {
@@ -202,6 +265,10 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: "action=restart"
         });
+
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.close();
+        }
     });
 
     initializeBoard();
