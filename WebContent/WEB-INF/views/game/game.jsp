@@ -26,7 +26,6 @@
     <div class="player-info black-player">
         <h3>흑돌 (방장)</h3>
         <p id="host-nickname">흑돌왕</p>
-        <!-- ⏱ 시간제한 표시 -->
         <div class="time-limit">30초</div>
     </div>
 
@@ -41,6 +40,11 @@
             <div id="turn-indicator" class="black">흑돌 차례입니다</div>
         </div>
         <button id="restart-btn">게임 재시작</button>
+        <button id="start-btn" style="display:none;">게임 시작하기</button>
+        <div id="game-end-buttons" style="display:none;">
+            <button onclick="requestRematch()">재대결</button>
+            <button onclick="location.href='<%= request.getContextPath() %>/lobby'">방 떠나기</button>
+        </div>
     </div>
 
     <!-- ✅ 우측 통합 박스: 백돌 + 채팅 -->
@@ -59,20 +63,30 @@
     </div>
 </div>
 
-<!-- ✅ 승리 메시지/인트로 그대로 유지 -->
+<!-- ✅ 승리 메시지만 표시 (확인 버튼 제거) -->
 <div class="win-overlay">
     <div class="win-content">
         <div class="win-message"></div>
         <div class="martial-message"></div>
-        <button id="close-win">확인</button>
     </div>
 </div>
 
+<!-- 🔧 인트로 화면 (호스트만 상태 메시지/버튼 표시) -->
 <div class="intro-overlay">
     <div class="intro-title">5 ~ 빈틈없이</div>
     <div class="intro-text">무림 최고수의 지혜와 기법으로 오행의 비전을 완성하라!</div>
-    <button class="start-btn">게임 시작</button>
+    <% if ("true".equals(request.getParameter("host"))) { %>
+        <div id="status-message">⏳ 참가자 기다리는 중...</div>
+        <button id="intro-start-btn" style="display:none;">게임 시작</button>
+    <% } %>
 </div>
+
+<!-- 사용자 및 방 정보 전달 -->
+<script>
+  const userId = '<%= session.getAttribute("userId") %>';
+  const roomId = '<%= request.getParameter("roomId") %>';
+  const isHost = <%= "true".equals(request.getParameter("host")) %>;
+</script>
 
 <script src="<%= request.getContextPath() %>/js/game.js"></script>
 </body>

@@ -411,10 +411,25 @@ body::before {
 }
 
 #status-message {
-    font-weight: bold;
-    margin-bottom: 10px;
-    font-size: 22px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 20px;
+    color: #DCB35C;
+    margin-bottom: 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: statusAppear 1s forwards 2s;
+    text-align: center;
+}
+
+@keyframes statusAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 #turn-indicator {
@@ -608,6 +623,7 @@ body::before {
     font-weight: bold;
     transform: scale(0);
     opacity: 0;
+    animation: introAppear 1s forwards 0.5s;
 }
 
 @keyframes title-glow {
@@ -624,9 +640,21 @@ body::before {
     margin-bottom: 40px;
     opacity: 0;
     transform: translateY(20px);
+    animation: introAppear 1s forwards 1.5s;
 }
 
-.start-btn {
+/* 참가자 대기 문구 */
+#wait-message {
+    font-size: 20px;
+    color: #DCB35C;
+    margin-bottom: 20px;
+    display: none;
+    font-family: 'Nanum Myeongjo', serif;
+    animation: introAppear 1s forwards 2.2s;
+}
+
+/* 게임 시작 버튼 (방장에게만 보임) */
+#intro-start-btn {
     padding: 15px 40px;
     font-size: 24px;
     background: linear-gradient(to bottom, #DCB35C, #b89346);
@@ -637,17 +665,21 @@ body::before {
     font-family: 'Nanum Myeongjo', serif;
     font-weight: bold;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(220, 179, 92, 0.8);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
     opacity: 0;
     transform: translateY(30px);
+    animation: introAppear 1s forwards 2.5s;
+    display: none;
 }
 
-.start-btn:hover {
-    background: linear-gradient(to bottom, #e6c37a, #DCB35C);
-    transform: translateY(27px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
-    0 0 30px rgba(220, 179, 92, 1);
+@keyframes introAppear {
+    0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 더 이상 사용하지 않는 start-btn 숨김 처리 */
+#start-btn {
+    display: none !important;
 }
 
 /* 바둑판 낙하 효과 */
