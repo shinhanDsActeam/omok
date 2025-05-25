@@ -1,6 +1,7 @@
 package main.controller.room;
 
 import main.db.RoomDAO;
+import main.model.Paging;
 import main.model.Room;
 
 import java.io.IOException;
@@ -44,15 +45,61 @@ public class RoomController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
+        RoomDAO dao = new RoomDAO();
+
+        String pageParam = request.getParameter("page");
+        int currentPage = 1;
+        if (pageParam != null) {
+            try {
+                currentPage = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                currentPage = 1;
+            }
+        }
+
+        int postPage = 10; // 한 페이지당 방 수
+        int pageNum = 10;  // 페이지 네비게이션 범위
+        int total = dao.getRoomcountAll(); //전체 방 수
+        int totalPages = ((total - 1) / postPage) + 1; //전체 페이지 개수
+
+        int startPage = ((currentPage - 1) / pageNum) * pageNum + 1;
+        //현재 페이지의 마지막 번호
+        int endPage = startPage + pageNum - 1;
+        if (endPage > totalPages) {
+            endPage = totalPages;
+        }
+
+        //이전&다음
+        boolean prev = startPage > 1;
+        boolean next = endPage < totalPages;
+
+        int offset = (currentPage - 1) * postPage;
+
+        Paging paging = new Paging();
+        paging.setCurrentpage(currentPage);
+        paging.setPageNum(pageNum);
+        paging.setStart(prev);
+        paging.setEnd(next);
+        paging.setStartPage(startPage);
+        paging.setEndPage(endPage);
+        paging.setTotalPages(totalPages);
+
+        //디버깅용 로그
+        System.out.println("==페이징처리==");
+        System.out.println("현재 페이지: "+currentPage+", 시작 페이지: "+startPage+", 마지막 페이지: "+endPage+", 총 페이징 수: "+totalPages);
+
+        //해당 페이징에 필요한 방만 가져오기
+        List<Room> dbRooms = dao.getRoomsByPage(offset, postPage);
+        List<Room> displayRooms = getDisplayRooms(dbRooms);
+
+        // 페이지 표시
+        request.setAttribute("roomList", displayRooms);
+        request.setAttribute("paging", paging);
 
         if ("/lobby".equals(path)) {
-            // 로비 페이지 표시
-            request.setAttribute("roomList", getRooms());
             request.getRequestDispatcher("/WEB-INF/views/room/room.jsp").forward(request, response);
         } else if ("/getRoomList".equals(path)) {
-            // AJAX 요청으로 방 목록 조회
-            request.setAttribute("roomList", getRooms());
-            request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
         }
     }
 
@@ -213,6 +260,27 @@ public class RoomController extends HttpServlet {
             }
         }
 
+        return displayRooms;
+    }
+
+    /**
+     * 화면에 보여지는 목룍만 추출해주는 메서드
+     * (페이징 처리한 목록의 roomid를 가져옴)
+    * */
+    private List<Room> getDisplayRooms(List<Room> dbRooms) {
+        List<Room> displayRooms = new ArrayList<>();
+        for (Room dbRoom : dbRooms) {
+            Room memoryRoom = findRoomById(dbRoom.getId()); 
+            if (memoryRoom != null) {
+                displayRooms.add(memoryRoom);
+            } else {
+                if (dbRoom.getPlayers() == null) {
+                    dbRoom.setPlayers(new ArrayList<>());
+                }
+                displayRooms.add(dbRoom);
+                roomSet.add(dbRoom);
+            }
+        }
         return displayRooms;
     }
 
