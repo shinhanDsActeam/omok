@@ -110,4 +110,56 @@ public class RoomDAO {
 
         return 0; // 실패하거나 방이 없으면 0 반환
     }
+
+    //방의 총 개수
+    public int getRoomcountAll(){
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM rooms";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                return total = rs.getInt(1); //COUNT(*) 값 반환
+            }
+        } catch (SQLException e) {
+            System.err.println("방 총 개수 조회 실패: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return 0;  // 실패하거나 방이 없으면 0 반환
+    }
+
+    //페이징 처리
+    public List<Room> getRoomsByPage(int offset, int limit) {
+        List<Room> rooms = new ArrayList<>();
+        String sql = "SELECT * FROM rooms ORDER BY id ASC LIMIT ?, ?";
+
+        try (
+                Connection conn = getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setInt(1, offset);
+            pstmt.setInt(2, limit);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Room room = new Room();
+                    room.setId(rs.getInt("id"));
+                    room.setName(rs.getString("name"));
+                    room.setStatus(rs.getString("status"));
+                    rooms.add(room);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("페이징처리 실패: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return rooms;
+    }
+
+
 }

@@ -45,3 +45,43 @@
     </c:choose>
     </tbody>
 </table>
+
+<!-- 페이징 -->
+<c:if test="${paging.totalPages > 1}">
+    <div class="pagination">
+        <!-- 이전 페이지 링크 -->
+        <c:if test="${paging.currentpage > 1}">
+            <a href="lobby?page=${paging.currentpage - 1}" class="page-link">« 이전</a>
+        </c:if>
+        <c:forEach var="i" begin="${paging.startPage}" end="${paging.endPage}">
+            <a href="lobby?page=${i}" class="page-link ${i == paging.currentpage ? 'active' : ''}">
+                ${i}
+            </a>
+        </c:forEach>
+        <!-- 다음 페이지 링크 -->
+        <c:if test="${paging.currentpage < paging.totalPages}">
+            <a href="lobby?page=${paging.currentpage + 1}" class="page-link">다음 »</a>
+        </c:if>
+    </div>
+</c:if>
+<style>
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .pagination a {
+        margin: 0 5px;
+        padding: 5px 10px;
+        background-color: #eee;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        color: #333;
+    }
+    .pagination .current {
+        margin: 0 5px;
+        padding: 5px 10px;
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #333;
+    }
+</style>
