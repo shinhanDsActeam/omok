@@ -2,7 +2,7 @@ package main.db;
 
 import main.dto.HistoryDTO;
 import main.dto.RankingDTO;
-import main.util.DBUtil;
+import main.java.util.DBUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

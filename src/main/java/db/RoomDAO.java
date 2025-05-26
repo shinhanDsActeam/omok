@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static main.util.DBUtil.getConnection;
+import static main.java.util.DBUtil.getConnection;
 
 public class RoomDAO {
 
