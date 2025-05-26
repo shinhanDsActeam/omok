@@ -1,4 +1,4 @@
-package main.controller.room;
+package src.main.controller.room;
 
 import main.db.RoomDAO;
 import main.model.Paging;
@@ -99,7 +99,7 @@ public class RoomController extends HttpServlet {
         if ("/lobby".equals(path)) {
             request.getRequestDispatcher("/WEB-INF/views/room/room.jsp").forward(request, response);
         } else if ("/getRoomList".equals(path)) {
-            request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
         }
     }
 
@@ -266,11 +266,11 @@ public class RoomController extends HttpServlet {
     /**
      * 화면에 보여지는 목룍만 추출해주는 메서드
      * (페이징 처리한 목록의 roomid를 가져옴)
-     * */
+    * */
     private List<Room> getDisplayRooms(List<Room> dbRooms) {
         List<Room> displayRooms = new ArrayList<>();
         for (Room dbRoom : dbRooms) {
-            Room memoryRoom = findRoomById(dbRoom.getId());
+            Room memoryRoom = findRoomById(dbRoom.getId()); 
             if (memoryRoom != null) {
                 displayRooms.add(memoryRoom);
             } else {
