@@ -15,6 +15,7 @@ import java.io.Serial;
 public class MemberAuthController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
+    MemberDAO repo = MemberDAO.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,7 +33,6 @@ public class MemberAuthController extends HttpServlet {
         }  else if ("/check-username".equals(path)) {
             // 아이디 중복 체크
             String username = request.getParameter("username");
-            MemberDAO repo = new MemberDAO();
             boolean duplicate = repo.findUserByUsername(username) != null;
 
             response.setContentType("application/json");
@@ -40,7 +40,6 @@ public class MemberAuthController extends HttpServlet {
         } else if ("/check-nickname".equals(path)) {
             // 닉네임 중복 체크
             String nickname = request.getParameter("nickname");
-            MemberDAO repo = new MemberDAO();
             boolean duplicate = repo.checkDuplicateNickname(nickname);
 
             response.setContentType("application/json");
@@ -65,8 +64,6 @@ public class MemberAuthController extends HttpServlet {
                 return;
             }
 
-            MemberDAO repo = new MemberDAO();
-
             // 닉네임 중복 체크
             if (repo.checkDuplicateNickname(nickname)) {
                 request.setAttribute("error", "중복된 닉네임입니다.");
@@ -90,7 +87,6 @@ public class MemberAuthController extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
-            MemberDAO repo = new MemberDAO();
             Member member = repo.findUserByUsername(username);
 
             response.setContentType("application/json");

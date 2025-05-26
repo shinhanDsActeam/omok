@@ -8,6 +8,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class MemberDAO {
+    private static MemberDAO instance = new MemberDAO();
+
+    private MemberDAO() {
+    }
+
+    public static MemberDAO getInstance() {
+        return instance;
+    }
+
     public boolean insertJoin(Member member) {
         String checkSql = "SELECT COUNT(*) FROM member WHERE username = ?";
         String insertSql = "INSERT INTO member (username, password, nickname) VALUES (?, ?, ?)";
