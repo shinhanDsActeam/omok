@@ -9,7 +9,6 @@
     <script>
         const contextPath = '<%= request.getContextPath() %>';
     </script>
-    <script src="<%= request.getContextPath() %>/js/login.js"></script>
 </head>
 <body>
 <h1>로그인</h1>
@@ -24,4 +23,6 @@
         <input type="button" id="loginBtn" value="로그인">
     </div>
 </form>
+<script src="<%= request.getContextPath() %>/js/login.js"></script>
 </body>
+</html>

@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/join.css">
-
 </head>
 <body>
 <h1>회원가입</h1>

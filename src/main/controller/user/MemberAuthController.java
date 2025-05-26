@@ -1,6 +1,6 @@
 package main.controller.user;
-import main.db.UserRepository;
-import main.model.User;
+import main.db.MemberDAO;
+import main.model.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.Serial;
 
 @WebServlet(urlPatterns = {"/login", "/join", "/check-username", "/check-nickname"})
-public class UserController extends HttpServlet {
+public class MemberAuthController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -32,15 +32,15 @@ public class UserController extends HttpServlet {
         }  else if ("/check-username".equals(path)) {
             // 아이디 중복 체크
             String username = request.getParameter("username");
-            UserRepository repo = new UserRepository();
-            boolean duplicate = repo.findUserById(username) != null;
+            MemberDAO repo = new MemberDAO();
+            boolean duplicate = repo.findUserByUsername(username) != null;
 
             response.setContentType("application/json");
             response.getWriter().write("{\"duplicate\":" + duplicate + "}");
         } else if ("/check-nickname".equals(path)) {
             // 닉네임 중복 체크
             String nickname = request.getParameter("nickname");
-            UserRepository repo = new UserRepository();
+            MemberDAO repo = new MemberDAO();
             boolean duplicate = repo.checkDuplicateNickname(nickname);
 
             response.setContentType("application/json");
@@ -54,18 +54,18 @@ public class UserController extends HttpServlet {
 
         if ("/join".equals(path)) {
             String username = request.getParameter("username");
-            String pw = request.getParameter("pw");
+            String password = request.getParameter("password");
             String nickname = request.getParameter("nickname");
 
             // 유효성 검사 (간단 예시)
-            if (username == null || pw == null || nickname == null ||
-                    username.isBlank() || pw.isBlank() || nickname.isBlank()) {
+            if (username == null || password == null || nickname == null ||
+                    username.isBlank() || password.isBlank() || nickname.isBlank()) {
                 request.setAttribute("error", "모든 항목을 입력해주세요.");
                 request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
                 return;
             }
 
-            UserRepository repo = new UserRepository();
+            MemberDAO repo = new MemberDAO();
 
             // 닉네임 중복 체크
             if (repo.checkDuplicateNickname(nickname)) {
@@ -74,7 +74,7 @@ public class UserController extends HttpServlet {
                 return;
             }
 
-            User user = new User(username, pw, nickname);
+            Member user = new Member(username, password, nickname);
             boolean success = repo.insertJoin(user);
 
             if (success) {
@@ -85,21 +85,21 @@ public class UserController extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
             }
 
-            System.out.println("username=" + username + ", pw=" + pw + ", nickname=" + nickname);
+            System.out.println("username=" + username + ", password=" + password + ", nickname=" + nickname);
         } else if("/login".equals(path)) {
             String username = request.getParameter("username");
-            String pw = request.getParameter("pw");
+            String password = request.getParameter("password");
 
-            UserRepository repo = new UserRepository();
-            User user = repo.findUserById(username);
+            MemberDAO repo = new MemberDAO();
+            Member member = repo.findUserByUsername(username);
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
 
-            if (user != null && user.getPassword().equals(pw)) {
+            if (member != null && member.getPassword().equals(password)) {
                 // 로그인 성공
-                request.getSession().setAttribute("loginUser", user);
+                request.getSession().setAttribute("loginUser", member);
                 out.print("{\"success\": true}");
             } else {
                 // 로그인 실패

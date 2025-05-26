@@ -18,6 +18,9 @@
     <c:if test="${not empty param.extraCss}">
         <link rel="stylesheet" href="${pageContext.request.contextPath}${param.extraCss}" />
     </c:if>
+    <c:if test="${not empty param.extraJs}">
+        <script src="${pageContext.request.contextPath}${param.extraJs}"></script>
+    </c:if>
 </head>
 <body>
 <div class="wrapper">
@@ -29,5 +32,9 @@
         </div>
     </div>
 </div>
+
+<c:if test="${not empty param.extraModal}">
+    <jsp:include page="${param.extraModal}" />
+</c:if>
 </body>
 </html>

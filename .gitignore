@@ -7,6 +7,9 @@ out/
 *.iml
 *.ipr
 *.iws
+omok.eml
+.classpath
+.project
 
 # resource
 src/main/resources/db-config.properties
