@@ -12,21 +12,18 @@ import java.util.List;
 
 public class HistoryDAO {
     private static HistoryDAO instance = new HistoryDAO();
-
-    private HistoryDAO() {
-    }
-
+    private HistoryDAO() {}
     public static HistoryDAO getInstance() {
         return instance;
     }
 
     // 전체 전적 수 조회
-    public int countByUser(int userId) {
+    public int countByMemberId(int memberId) {
         String sql = "SELECT COUNT(*) FROM history WHERE member_id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, userId);
+            pstmt.setInt(1, memberId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) return rs.getInt(1);
             }
@@ -40,7 +37,7 @@ public class HistoryDAO {
     }
 
     // 특정 유저의 전적 페이징 조회
-    public List<HistoryDTO> findByUser(int memberId, int offset, int pageSize) {
+    public List<HistoryDTO> findByMemberIdWithPaging(int memberId, int offset, int pageSize) {
         List<HistoryDTO> list = new ArrayList<>();
         String sql = "SELECT h.result, h.match_date, m.nickname AS opponent " +
                 "FROM history h " +

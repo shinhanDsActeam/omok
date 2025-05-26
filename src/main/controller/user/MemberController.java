@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Serial;
 import java.util.List;
 
@@ -37,11 +36,11 @@ public class MemberController extends HttpServlet {
 
             int memberId = member.getId();
 
-            int totalCount = historyDAO.countByUser(member.getId()); // 전체 개수
+            int totalCount = historyDAO.countByMemberId(member.getId()); // 전체 개수
             int totalPages = (int)Math.ceil((double)totalCount / pageSize);
             int offset = (currentPage - 1) * pageSize;
 
-            List<HistoryDTO> historyList = historyDAO.findByUser(memberId, offset, pageSize);
+            List<HistoryDTO> historyList = historyDAO.findByMemberIdWithPaging(memberId, offset, pageSize);
 
             request.setAttribute("historyList", historyList);
             request.setAttribute("currentPage", currentPage);
