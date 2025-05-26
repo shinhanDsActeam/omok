@@ -40,7 +40,7 @@ public class HistoryDAO {
     }
 
     // 특정 유저의 전적 페이징 조회
-    public List<HistoryDTO> findByUser(int userId, int offset, int pageSize) {
+    public List<HistoryDTO> findByUser(int memberId, int offset, int pageSize) {
         List<HistoryDTO> list = new ArrayList<>();
         String sql = "SELECT h.result, h.match_date, m.nickname AS opponent " +
                 "FROM history h " +
@@ -51,7 +51,7 @@ public class HistoryDAO {
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, userId);
+            pstmt.setInt(1, memberId);
             pstmt.setInt(2, pageSize);
             pstmt.setInt(3, offset);
 
