@@ -12,14 +12,10 @@
 </head>
 <body>
 <h1>로그인</h1>
-<form id="loginForm" action="/login" method="post">
+<form id="loginForm" action="/login" method="post" class="container">
     <div>
-        <input type="text" id="username" name="username" placeholder="아이디">
-    </div>
-    <div>
-        <input type="password" id="password" name="password" placeholder="비밀번호">
-    </div>
-    <div>
+        <input type="text" id="username" name="username" placeholder="아이디"><br>
+        <input type="password" id="pw" name="pw" placeholder="비밀번호"><br>
         <input type="button" id="loginBtn" value="로그인">
     </div>
 </form>
