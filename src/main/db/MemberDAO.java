@@ -1,15 +1,14 @@
 package main.db;
 
-import main.model.User;
+import main.model.Member;
 import main.util.DBUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
-public class UserRepository {
-    public boolean insertJoin(User user) {
+public class MemberDAO {
+    public boolean insertJoin(Member member) {
         String checkSql = "SELECT COUNT(*) FROM member WHERE username = ?";
         String insertSql = "INSERT INTO member (username, password, nickname) VALUES (?, ?, ?)";
 
@@ -17,7 +16,7 @@ public class UserRepository {
                 Connection conn = DBUtil.getConnection();
                 PreparedStatement checkStmt  = conn.prepareStatement(checkSql)
         ) {
-            checkStmt.setString(1, user.getId());
+            checkStmt.setString(1, member.getUsername());
             ResultSet rs = checkStmt.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
                 System.out.println("중복된 아이디입니다.");
@@ -25,9 +24,9 @@ public class UserRepository {
             }
 
             try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
-                pstmt.setString(1, user.getId());
-                pstmt.setString(2, user.getPassword());
-                pstmt.setString(3, user.getNickname());
+                pstmt.setString(1, member.getUsername());
+                pstmt.setString(2, member.getPassword());
+                pstmt.setString(3, member.getNickname());
                 pstmt.executeUpdate();
                 return true; // 성공
             }
@@ -60,7 +59,7 @@ public class UserRepository {
         return false; // 실패 또는 중복 아님
     }
 
-    public User findUserById(String username) {
+    public Member findUserByUserName(String username) {
         String sql = "SELECT username, password, nickname FROM member WHERE username = ?";
         try (
                 Connection conn = DBUtil.getConnection();
@@ -69,7 +68,7 @@ public class UserRepository {
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new User(
+                return new Member(
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("nickname")
