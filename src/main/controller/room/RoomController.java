@@ -1,7 +1,6 @@
 package main.controller.room;
 
 import main.db.RoomDAO;
-import main.model.Paging;
 import main.model.Room;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList"})
+@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList", "/leaveRoom"})
 public class RoomController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -45,61 +44,15 @@ public class RoomController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
-        RoomDAO dao = new RoomDAO();
-
-        String pageParam = request.getParameter("page");
-        int currentPage = 1;
-        if (pageParam != null) {
-            try {
-                currentPage = Integer.parseInt(pageParam);
-            } catch (NumberFormatException e) {
-                currentPage = 1;
-            }
-        }
-
-        int postPage = 10; // 한 페이지당 방 수
-        int pageNum = 10;  // 페이지 네비게이션 범위
-        int total = dao.getRoomcountAll(); //전체 방 수
-        int totalPages = ((total - 1) / postPage) + 1; //전체 페이지 개수
-
-        int startPage = ((currentPage - 1) / pageNum) * pageNum + 1;
-        //현재 페이지의 마지막 번호
-        int endPage = startPage + pageNum - 1;
-        if (endPage > totalPages) {
-            endPage = totalPages;
-        }
-
-        //이전&다음
-        boolean prev = startPage > 1;
-        boolean next = endPage < totalPages;
-
-        int offset = (currentPage - 1) * postPage;
-
-        Paging paging = new Paging();
-        paging.setCurrentpage(currentPage);
-        paging.setPageNum(pageNum);
-        paging.setStart(prev);
-        paging.setEnd(next);
-        paging.setStartPage(startPage);
-        paging.setEndPage(endPage);
-        paging.setTotalPages(totalPages);
-
-        //디버깅용 로그
-        System.out.println("==페이징처리==");
-        System.out.println("현재 페이지: "+currentPage+", 시작 페이지: "+startPage+", 마지막 페이지: "+endPage+", 총 페이징 수: "+totalPages);
-
-        //해당 페이징에 필요한 방만 가져오기
-        List<Room> dbRooms = dao.getRoomsByPage(offset, postPage);
-        List<Room> displayRooms = getDisplayRooms(dbRooms);
-
-        // 페이지 표시
-        request.setAttribute("roomList", displayRooms);
-        request.setAttribute("paging", paging);
 
         if ("/lobby".equals(path)) {
+            // 로비 페이지 표시
+            request.setAttribute("roomList", getRooms());
             request.getRequestDispatcher("/WEB-INF/views/room/room.jsp").forward(request, response);
         } else if ("/getRoomList".equals(path)) {
-        request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
+            // AJAX 요청으로 방 목록 조회
+            request.setAttribute("roomList", getRooms());
+            request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
         }
     }
 
@@ -222,6 +175,34 @@ public class RoomController extends HttpServlet {
                 }
             }
             response.sendRedirect("lobby");
+        } else if ("/leaveRoom".equals(path)) {
+            // 방 나가기 처리
+            String roomIdStr = request.getParameter("roomId");
+            HttpSession session = request.getSession();
+            String userId = (String) session.getAttribute("userId");
+
+            if (roomIdStr != null && userId != null) {
+                try {
+                    int roomId = Integer.parseInt(roomIdStr);
+                    boolean roomDeleted = leaveRoom(roomId, userId);
+
+                    // 세션에서 방 관련 정보 제거
+                    session.removeAttribute("roomId");
+                    session.removeAttribute("roomCreator");
+                    session.removeAttribute("roomPlayers");
+                    session.removeAttribute("roomStatus");
+
+                    if (roomDeleted) {
+                        System.out.println("방 " + roomId + "가 모든 플레이어가 나가서 삭제되었습니다.");
+                    }
+
+                    response.sendRedirect("lobby");
+                } catch (NumberFormatException e) {
+                    response.sendRedirect("lobby");
+                }
+            } else {
+                response.sendRedirect("lobby");
+            }
         }
     }
 
@@ -264,24 +245,75 @@ public class RoomController extends HttpServlet {
     }
 
     /**
-     * 화면에 보여지는 목룍만 추출해주는 메서드
-     * (페이징 처리한 목록의 roomid를 가져옴)
-    * */
-    private List<Room> getDisplayRooms(List<Room> dbRooms) {
-        List<Room> displayRooms = new ArrayList<>();
-        for (Room dbRoom : dbRooms) {
-            Room memoryRoom = findRoomById(dbRoom.getId()); 
-            if (memoryRoom != null) {
-                displayRooms.add(memoryRoom);
-            } else {
-                if (dbRoom.getPlayers() == null) {
-                    dbRoom.setPlayers(new ArrayList<>());
-                }
-                displayRooms.add(dbRoom);
-                roomSet.add(dbRoom);
+     * 방에서 플레이어가 나가는 처리
+     * @param roomId 방 ID
+     * @param userId 나가는 사용자 ID
+     * @return 방이 삭제되었는지 여부
+     */
+    public static boolean leaveRoom(int roomId, String userId) {
+        Room room = null;
+        for (Room r : roomSet) {
+            if (r.getId() == roomId) {
+                room = r;
+                break;
             }
         }
-        return displayRooms;
+
+        if (room != null && room.getPlayers() != null) {
+            // 플레이어 목록에서 해당 사용자 제거
+            room.getPlayers().remove(userId);
+
+            System.out.println("=== 방 나가기 ===");
+            System.out.println("방 ID: " + roomId + ", 나간 사용자: " + userId);
+            System.out.println("남은 인원수: " + room.getPlayers().size());
+            System.out.println("남은 플레이어: " + room.getPlayers());
+
+            // 방에 아무도 없으면 방 삭제
+            if (room.getPlayers().isEmpty()) {
+                return deleteRoom(roomId);
+            } else {
+                // 남은 인원이 1명이면 상태를 '대기중'으로 변경
+                if (room.getPlayers().size() == 1) {
+                    room.setStatus("대기중");
+                    RoomDAO dao = new RoomDAO();
+                    dao.updateRoomStatus(roomId, "대기중");
+                    System.out.println("방 " + roomId + " 상태를 '대기중'으로 변경");
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 방을 완전히 삭제하는 메서드
+     * @param roomId 삭제할 방 ID
+     * @return 삭제 성공 여부
+     */
+    private static boolean deleteRoom(int roomId) {
+        // 메모리에서 방 제거
+        Room roomToRemove = null;
+        for (Room room : roomSet) {
+            if (room.getId() == roomId) {
+                roomToRemove = room;
+                break;
+            }
+        }
+
+        if (roomToRemove != null) {
+            roomSet.remove(roomToRemove);
+
+            // DB에서도 방 삭제
+            RoomDAO dao = new RoomDAO();
+            boolean deleted = dao.deleteRoom(roomId);
+
+            System.out.println("=== 방 삭제 ===");
+            System.out.println("방 ID: " + roomId + " 삭제 결과: " + deleted);
+
+            return deleted;
+        }
+
+        return false;
     }
 
     /**
@@ -305,5 +337,13 @@ public class RoomController extends HttpServlet {
             RoomDAO dao = new RoomDAO();
             dao.updateRoomStatus(roomId, "대기중");
         }
+    }
+
+    /**
+     * 게임 종료 시 모든 플레이어를 방에서 내보내고 방을 삭제하는 메서드
+     * (GameController에서 게임 종료 시 호출)
+     */
+    public static void endGameAndDeleteRoom(int roomId) {
+        deleteRoom(roomId);
     }
 }
