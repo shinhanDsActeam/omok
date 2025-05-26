@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList"})
+@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList", "/leaveRoom"})
 public class RoomController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -100,6 +100,36 @@ public class RoomController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/room/room.jsp").forward(request, response);
         } else if ("/getRoomList".equals(path)) {
             request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
+        } else if ("/leaveRoom".equals(path)) {
+            String roomIdStr = request.getParameter("roomId");
+            HttpSession session = request.getSession();
+            String userId = (String) session.getAttribute("userId");
+
+            if (roomIdStr != null && userId != null) {
+                try {
+                    int roomId = Integer.parseInt(roomIdStr);
+                    boolean roomDeleted = leaveRoom(roomId, userId);
+
+                    // 세션에서 방 관련 정보 제거
+                    session.removeAttribute("roomId");
+                    session.removeAttribute("roomCreator");
+                    session.removeAttribute("roomPlayers");
+                    session.removeAttribute("roomStatus");
+
+                    if (roomDeleted) {
+                        System.out.println("방 " + roomId + "가 모든 플레이어가 나가서 삭제되었습니다.");
+                    }
+
+                    response.sendRedirect("lobby");
+                    return; // 중요: 리턴으로 메서드 종료
+                } catch (NumberFormatException e) {
+                    response.sendRedirect("lobby");
+                    return;
+                }
+            } else {
+                response.sendRedirect("lobby");
+                return;
+            }
         }
     }
 
@@ -337,21 +367,9 @@ public class RoomController extends HttpServlet {
             System.out.println("남은 인원수: " + room.getPlayers().size());
             System.out.println("남은 플레이어: " + room.getPlayers());
 
-            // 방에 아무도 없으면 방 삭제
-            if (room.getPlayers().isEmpty()) {
-                return deleteRoom(roomId);
-            } else {
-                // 남은 인원이 1명이면 상태를 '대기중'으로 변경
-                if (room.getPlayers().size() == 1) {
-                    room.setStatus("대기중");
-                    RoomDAO dao = new RoomDAO();
-                    dao.updateRoomStatus(roomId, "대기중");
-                    System.out.println("방 " + roomId + " 상태를 '대기중'으로 변경");
-                }
-            }
         }
-
-        return false;
+        System.out.println("삭제 완료");
+        return deleteRoom(roomId);
     }
 
     /**
