@@ -9,7 +9,6 @@
     <script>
         const contextPath = '<%= request.getContextPath() %>';
     </script>
-    <script src="<%= request.getContextPath() %>/js/login.js"></script>
 </head>
 <body>
 <h1>로그인</h1>
@@ -18,10 +17,12 @@
         <input type="text" id="username" name="username" placeholder="아이디">
     </div>
     <div>
-        <input type="password" id="pw" name="pw" placeholder="비밀번호">
+        <input type="password" id="password" name="password" placeholder="비밀번호">
     </div>
     <div>
         <input type="button" id="loginBtn" value="로그인">
     </div>
 </form>
+<script src="<%= request.getContextPath() %>/js/login.js"></script>
 </body>
+</html>

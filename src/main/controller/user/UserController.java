@@ -54,12 +54,12 @@ public class UserController extends HttpServlet {
 
         if ("/join".equals(path)) {
             String username = request.getParameter("username");
-            String pw = request.getParameter("pw");
+            String password = request.getParameter("password");
             String nickname = request.getParameter("nickname");
 
             // 유효성 검사 (간단 예시)
-            if (username == null || pw == null || nickname == null ||
-                    username.isBlank() || pw.isBlank() || nickname.isBlank()) {
+            if (username == null || password == null || nickname == null ||
+                    username.isBlank() || password.isBlank() || nickname.isBlank()) {
                 request.setAttribute("error", "모든 항목을 입력해주세요.");
                 request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
                 return;
@@ -74,7 +74,7 @@ public class UserController extends HttpServlet {
                 return;
             }
 
-            User user = new User(username, pw, nickname);
+            User user = new User(username, password, nickname);
             boolean success = repo.insertJoin(user);
 
             if (success) {
@@ -85,10 +85,10 @@ public class UserController extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
             }
 
-            System.out.println("username=" + username + ", pw=" + pw + ", nickname=" + nickname);
+            System.out.println("username=" + username + ", password=" + password + ", nickname=" + nickname);
         } else if("/login".equals(path)) {
             String username = request.getParameter("username");
-            String pw = request.getParameter("pw");
+            String password = request.getParameter("password");
 
             UserRepository repo = new UserRepository();
             User user = repo.findUserById(username);
@@ -97,7 +97,7 @@ public class UserController extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
 
-            if (user != null && user.getPassword().equals(pw)) {
+            if (user != null && user.getPassword().equals(password)) {
                 // 로그인 성공
                 request.getSession().setAttribute("loginUser", user);
                 out.print("{\"success\": true}");

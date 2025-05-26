@@ -11,7 +11,7 @@ import java.sql.Statement;
 public class UserRepository {
     public boolean insertJoin(User user) {
         String checkSql = "SELECT COUNT(*) FROM member WHERE username = ?";
-        String insertSql = "INSERT INTO member (username, pw, nickname) VALUES (?, ?, ?)";
+        String insertSql = "INSERT INTO member (username, password, nickname) VALUES (?, ?, ?)";
 
         try (
                 Connection conn = DBUtil.getConnection();
@@ -61,7 +61,7 @@ public class UserRepository {
     }
 
     public User findUserById(String username) {
-        String sql = "SELECT username, pw, nickname FROM member WHERE username = ?";
+        String sql = "SELECT username, password, nickname FROM member WHERE username = ?";
         try (
                 Connection conn = DBUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)
@@ -71,7 +71,7 @@ public class UserRepository {
             if (rs.next()) {
                 return new User(
                         rs.getString("username"),
-                        rs.getString("pw"),
+                        rs.getString("password"),
                         rs.getString("nickname")
                 );
             }

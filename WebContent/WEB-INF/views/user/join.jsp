@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/join.css">
-    <script src="<%= request.getContextPath() %>/js/join.js"></script>
     <script>
       const contextPath = '<%= request.getContextPath() %>';
     </script>
@@ -19,7 +18,7 @@
         <input type="button" id="checkIdBtn" value="중복체크">
     </div>
     <div>
-        <input type="password" id="pw" name="pw" placeholder="비밀번호"><br>
+        <input type="password" id="password" name="password" placeholder="비밀번호"><br>
         <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인">
         <span id="passwordMessage"></span>
     </div>
@@ -31,5 +30,6 @@
         <input type="submit" value="가입하기">
     </div>
 </form>
+<script src="<%= request.getContextPath() %>/js/join.js"></script>
 </body>
 </html>

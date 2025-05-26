@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const checkIdBtn = document.getElementById('checkIdBtn');
     const checkNicknameBtn = document.getElementById('checkNicknameBtn');
-    const passwordInput = document.getElementById('pw');
+    const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
 
     // 아이디 중복 체크
