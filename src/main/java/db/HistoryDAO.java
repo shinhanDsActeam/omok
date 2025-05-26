@@ -1,7 +1,7 @@
-package main.db;
+package main.java.db;
 
-import main.dto.HistoryDTO;
-import main.dto.RankingDTO;
+import main.java.dto.HistoryDTO;
+import main.java.dto.RankingDTO;
 import main.java.util.DBUtil;
 
 import java.sql.Connection;

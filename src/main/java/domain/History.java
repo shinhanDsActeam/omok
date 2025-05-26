@@ -1,4 +1,4 @@
-package main.domain;
+package main.java.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

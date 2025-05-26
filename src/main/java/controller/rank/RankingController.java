@@ -1,8 +1,8 @@
-package main.controller.rank;
+package main.java.controller.rank;
 
-import main.db.HistoryDAO;
-import main.db.MemberDAO;
-import main.dto.RankingDTO;
+import main.java.db.HistoryDAO;
+import main.java.db.MemberDAO;
+import main.java.dto.RankingDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

@@ -1,6 +1,6 @@
-package main.db;
+package main.java.db;
 
-import main.domain.Member;
+import main.java.domain.Member;
 import main.java.util.DBUtil;
 
 import java.sql.Connection;

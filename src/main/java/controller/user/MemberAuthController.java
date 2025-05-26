@@ -1,6 +1,6 @@
-package main.controller.user;
-import main.db.MemberDAO;
-import main.domain.Member;
+package main.java.controller.user;
+import main.java.db.MemberDAO;
+import main.java.domain.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
