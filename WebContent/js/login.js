@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loginBtn.addEventListener('click', function () {
         const username = document.getElementById('username').value;
-        const pw = document.getElementById('pw').value;
+        const password = document.getElementById('password').value;
 
-        if (!username || !pw) {
+        if (!username || !password) {
             alert("아이디와 비밀번호를 모두 입력하세요.");
             return;
         }
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `username=${encodeURIComponent(username)}&pw=${encodeURIComponent(pw)}`
+            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
         })
             .then(response => response.json())
             .then(data => {
