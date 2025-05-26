@@ -1,51 +1,45 @@
-package main.controller.user;
+package main.controller.rank;
 
 import main.db.HistoryDAO;
-import main.dto.HistoryDTO;
-import main.domain.Member;
+import main.db.MemberDAO;
+import main.dto.RankingDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serial;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/mypage"})
-public class MemberController extends HttpServlet {
+@WebServlet(urlPatterns = {"/ranking"})
+public class RankingController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private HistoryDAO historyDAO = HistoryDAO.getInstance();
+    private MemberDAO memberDAO = MemberDAO.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
-        if("/mypage".equals(path)) {
+        if("/ranking".equals(path)) {
             int currentPage = Integer.parseInt(request.getParameter("page") == null ? "1" : request.getParameter("page"));
             int pageSize = 10;
 
-            HttpSession session = request.getSession();
-            Member member = (Member) session.getAttribute("loginUser");
-            if (member == null) {
-                response.sendRedirect("login");
-                return;
-            }
-
-            int memberId = member.getId();
-
-            int totalCount = historyDAO.countByMemberId(member.getId()); // 전체 개수
+            int totalCount = memberDAO.countTotalUser(); // 유저 수
             int totalPages = (int)Math.ceil((double)totalCount / pageSize);
             int offset = (currentPage - 1) * pageSize;
 
-            List<HistoryDTO> historyList = historyDAO.findByMemberIdWithPaging(memberId, offset, pageSize);
+            System.out.println("[ LOG ] : page = " + currentPage + ", pageSize = " + pageSize + ", offset = " + offset
+                    + ", totalCount = " + totalCount + ", totalPages = " + totalPages);
 
-            request.setAttribute("historyList", historyList);
+            List<RankingDTO> historyList = historyDAO.getRanking(offset, pageSize);
+
+            request.setAttribute("rankingList", historyList);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
-            request.getRequestDispatcher("/WEB-INF/views/user/mypage.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/user/ranking.jsp").forward(request, response);
         }
     }
 }

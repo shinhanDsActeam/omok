@@ -1,6 +1,6 @@
 package main.db;
 
-import main.model.Room;
+import main.domain.Room;
 
 import java.sql.*;
 import java.util.ArrayList;

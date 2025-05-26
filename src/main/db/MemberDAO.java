@@ -1,6 +1,6 @@
 package main.db;
 
-import main.model.Member;
+import main.domain.Member;
 import main.util.DBUtil;
 
 import java.sql.Connection;
@@ -8,6 +8,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class MemberDAO {
+    private static MemberDAO instance = new MemberDAO();
+
+    private MemberDAO() {
+    }
+
+    public static MemberDAO getInstance() {
+        return instance;
+    }
+
     public boolean insertJoin(Member member) {
         String checkSql = "SELECT COUNT(*) FROM member WHERE username = ?";
         String insertSql = "INSERT INTO member (username, password, nickname) VALUES (?, ?, ?)";
@@ -79,5 +88,21 @@ public class MemberDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int countTotalUser(){
+        String sql = "SELECT COUNT(*) FROM member";
+        try (
+                Connection conn = DBUtil.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()
+        ) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
