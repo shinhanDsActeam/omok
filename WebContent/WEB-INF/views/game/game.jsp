@@ -19,17 +19,17 @@
     <div class="tree"></div>
 </div>
 
-<!-- ✅ 게임 전체 UI -->
+<!-- 게임 전체 UI -->
 <div class="game-wrapper">
 
-    <!-- ✅ 좌측: 흑돌 유저 정보 -->
+    <!-- 좌측: 흑돌 유저 정보 -->
     <div class="player-info black-player">
         <h3>흑돌 (방장)</h3>
         <p id="host-nickname">흑돌왕</p>
         <div class="time-limit">30초</div>
     </div>
 
-    <!-- ✅ 중앙: 오목판 -->
+    <!-- 중앙: 오목판 -->
     <div class="container">
         <h1 id="game-title">5~ 빈틈없이</h1>
         <div class="board-container">
@@ -44,7 +44,7 @@
 
     </div>
 
-    <!-- ✅ 우측 통합 박스: 백돌 + 채팅 -->
+    <!-- 우측 통합 박스: 백돌 + 채팅 -->
     <div class="right-panel">
         <div class="player-info white-player">
             <h3>백돌 (참가자)</h3>
@@ -60,7 +60,7 @@
     </div>
 </div>
 
-<!-- ✅ 승리 메시지만 표시 (확인 버튼 제거) -->
+<!-- 승리 메시지만 표시 (확인 버튼 제거) -->
 <div class="win-overlay">
     <div class="win-content">
         <div class="win-message"></div>
@@ -68,12 +68,12 @@
 
         <div id="game-end-buttons" style="display:none;">
             <button class="end-btn" onclick="requestRematch()">재대결</button>
-            <button class="end-btn" onclick="location.href='<%= request.getContextPath() %>/lobby'">방 떠나기</button>
+            <button class="end-btn" onclick="location.href='<%= request.getContextPath() %>/leaveRoom'">방 떠나기</button>
         </div>
     </div>
 </div>
 
-<!-- 🔧 인트로 화면 (호스트만 상태 메시지/버튼 표시) -->
+<!-- 인트로 화면 (호스트만 상태 메시지/버튼 표시) -->
 <div class="intro-overlay">
     <div class="intro-title">5 ~ 빈틈없이</div>
     <div class="intro-text">무림 최고수의 지혜와 기법으로 오행의 비전을 완성하라!</div>
