@@ -32,8 +32,8 @@ public class UserController extends HttpServlet {
         }  else if ("/check-username".equals(path)) {
             // 아이디 중복 체크
             String username = request.getParameter("username");
-            boolean duplicate = repo.findUserById(username) != null;
             MemberDAO repo = new MemberDAO();
+            boolean duplicate = repo.findUserByUsername(username) != null;
 
             response.setContentType("application/json");
             response.getWriter().write("{\"duplicate\":" + duplicate + "}");
@@ -90,13 +90,14 @@ public class UserController extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
-            User user = repo.findUserById(username);
             MemberDAO repo = new MemberDAO();
+            Member member = repo.findUserByUsername(username);
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
 
+            if (member != null && member.getPassword().equals(password)) {
                 // 로그인 성공
                 request.getSession().setAttribute("loginUser", member);
                 out.print("{\"success\": true}");

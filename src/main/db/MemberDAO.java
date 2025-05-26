@@ -59,7 +59,7 @@ public class MemberDAO {
         return false; // 실패 또는 중복 아님
     }
 
-    public Member findUserByUserName(String username) {
+    public Member findUserByUsername(String username) {
         String sql = "SELECT username, password, nickname FROM member WHERE username = ?";
         try (
                 Connection conn = DBUtil.getConnection();
