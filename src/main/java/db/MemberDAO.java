@@ -1,7 +1,7 @@
 package main.db;
 
 import main.domain.Member;
-import main.util.DBUtil;
+import main.java.util.DBUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

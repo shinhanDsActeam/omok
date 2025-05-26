@@ -1,7 +1,7 @@
 package main.controller.game;
 
 import main.dto.Player;
-import main.service.Board;
+import main.java.service.Board;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
