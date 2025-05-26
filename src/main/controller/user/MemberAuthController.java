@@ -1,6 +1,6 @@
 package main.controller.user;
-import main.db.UserRepository;
-import main.model.User;
+import main.db.MemberDAO;
+import main.model.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.Serial;
 
 @WebServlet(urlPatterns = {"/login", "/join", "/check-username", "/check-nickname"})
-public class UserController extends HttpServlet {
+public class MemberAuthController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -32,15 +32,15 @@ public class UserController extends HttpServlet {
         }  else if ("/check-username".equals(path)) {
             // 아이디 중복 체크
             String username = request.getParameter("username");
-            UserRepository repo = new UserRepository();
-            boolean duplicate = repo.findUserById(username) != null;
+            MemberDAO repo = new MemberDAO();
+            boolean duplicate = repo.findUserByUsername(username) != null;
 
             response.setContentType("application/json");
             response.getWriter().write("{\"duplicate\":" + duplicate + "}");
         } else if ("/check-nickname".equals(path)) {
             // 닉네임 중복 체크
             String nickname = request.getParameter("nickname");
-            UserRepository repo = new UserRepository();
+            MemberDAO repo = new MemberDAO();
             boolean duplicate = repo.checkDuplicateNickname(nickname);
 
             response.setContentType("application/json");
@@ -65,7 +65,7 @@ public class UserController extends HttpServlet {
                 return;
             }
 
-            UserRepository repo = new UserRepository();
+            MemberDAO repo = new MemberDAO();
 
             // 닉네임 중복 체크
             if (repo.checkDuplicateNickname(nickname)) {
@@ -74,7 +74,7 @@ public class UserController extends HttpServlet {
                 return;
             }
 
-            User user = new User(username, password, nickname);
+            Member user = new Member(username, password, nickname);
             boolean success = repo.insertJoin(user);
 
             if (success) {
@@ -90,16 +90,16 @@ public class UserController extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
-            UserRepository repo = new UserRepository();
-            User user = repo.findUserById(username);
+            MemberDAO repo = new MemberDAO();
+            Member member = repo.findUserByUsername(username);
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
 
-            if (user != null && user.getPassword().equals(password)) {
+            if (member != null && member.getPassword().equals(password)) {
                 // 로그인 성공
-                request.getSession().setAttribute("loginUser", user);
+                request.getSession().setAttribute("loginUser", member);
                 out.print("{\"success\": true}");
             } else {
                 // 로그인 실패
