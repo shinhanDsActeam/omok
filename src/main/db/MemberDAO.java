@@ -60,7 +60,7 @@ public class MemberDAO {
     }
 
     public Member findUserByUsername(String username) {
-        String sql = "SELECT username, password, nickname FROM member WHERE username = ?";
+        String sql = "SELECT id, username, password, nickname FROM member WHERE username = ?";
         try (
                 Connection conn = DBUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)
@@ -69,6 +69,7 @@ public class MemberDAO {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return new Member(
+                        rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("nickname")
