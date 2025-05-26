@@ -1,6 +1,6 @@
 package main.db;
 
-import main.model.Member;
+import main.domain.Member;
 import main.util.DBUtil;
 
 import java.sql.Connection;

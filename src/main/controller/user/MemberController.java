@@ -2,7 +2,7 @@ package main.controller.user;
 
 import main.db.HistoryDAO;
 import main.dto.HistoryDTO;
-import main.model.Member;
+import main.domain.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
