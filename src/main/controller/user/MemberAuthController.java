@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
@@ -24,11 +25,16 @@ public class MemberAuthController extends HttpServlet {
             // 회원가입 페이지 표시
             request.getRequestDispatcher("/WEB-INF/views/user/join.jsp").forward(request, response);
         } else if ("/login".equals(path)) {
+            HttpSession session = request.getSession();
+            Member loginUser = (Member) session.getAttribute("loginUser");
+
+            if (loginUser != null) {
+                response.sendRedirect(request.getContextPath() + "/"); // 이미 로그인된 경우 메인으로
+                return;
+            }
+
             // 로그인 페이지 표시
             request.getRequestDispatcher("/WEB-INF/views/user/login.jsp").forward(request, response);
-        } else if ("/mypage".equals(path)) {
-            // 마이페이지 표시
-            request.getRequestDispatcher("/WEB-INF/views/user/mypage.jsp").forward(request, response);
         }  else if ("/check-username".equals(path)) {
             // 아이디 중복 체크
             String username = request.getParameter("username");

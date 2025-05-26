@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 public class MemberDAO {
     public boolean insertJoin(Member member) {
         String checkSql = "SELECT COUNT(*) FROM member WHERE username = ?";
-        String insertSql = "INSERT INTO member (username, password, nickname) VALUES (?, ?, ?)";
+        String insertSql = "INSERT INTO member (username, pw, nickname) VALUES (?, ?, ?)";
 
         try (
                 Connection conn = DBUtil.getConnection();
@@ -60,7 +60,7 @@ public class MemberDAO {
     }
 
     public Member findUserByUsername(String username) {
-        String sql = "SELECT id, username, password, nickname FROM member WHERE username = ?";
+        String sql = "SELECT id, username, pw, nickname FROM member WHERE username = ?";
         try (
                 Connection conn = DBUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)
@@ -71,7 +71,7 @@ public class MemberDAO {
                 return new Member(
                         rs.getInt("id"),
                         rs.getString("username"),
-                        rs.getString("password"),
+                        rs.getString("pw"),
                         rs.getString("nickname")
                 );
             }
