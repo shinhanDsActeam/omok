@@ -2,12 +2,14 @@ package main.controller.user;
 
 import main.db.HistoryDAO;
 import main.dto.HistoryDTO;
+import main.model.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
@@ -30,20 +32,20 @@ public class MemberController extends HttpServlet {
             int currentPage = Integer.parseInt(request.getParameter("page") == null ? "1" : request.getParameter("page"));
             int pageSize = 10;
 
-            int userId = 1;
-//            TODO : 윤희님 코드 머지 후 userId는 세션에서 가져오기.
-//            HttpSession session = request.getSession();
-//            Integer userId = (Integer) session.getAttribute("userId");
-//            if (userId == null) {
-//                response.sendRedirect("login.jsp");
-//                return;
-//            }
+            HttpSession session = request.getSession();
+            Member member = (Member) session.getAttribute("loginUser");
+            if (member == null) {
+                response.sendRedirect("login");
+                return;
+            }
 
-            int totalCount = historyDAO.countByUser(userId); // 전체 개수
+            int memberId = member.getId();
+
+            int totalCount = historyDAO.countByUser(member.getId()); // 전체 개수
             int totalPages = (int)Math.ceil((double)totalCount / pageSize);
             int offset = (currentPage - 1) * pageSize;
 
-            List<HistoryDTO> historyList = historyDAO.findByUser(userId, offset, pageSize);
+            List<HistoryDTO> historyList = historyDAO.findByUser(memberId, offset, pageSize);
 
             request.setAttribute("historyList", historyList);
             request.setAttribute("currentPage", currentPage);
