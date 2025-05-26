@@ -1,7 +1,7 @@
 package main.controller.room;
 
 import main.db.RoomDAO;
-import main.model.Paging;
+import main.dto.Paging;
 import main.domain.Room;
 
 import java.io.IOException;
