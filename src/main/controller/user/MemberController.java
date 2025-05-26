@@ -25,10 +25,6 @@ public class MemberController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
         if("/mypage".equals(path)) {
-            response.setContentType("text/html; charset=UTF-8");
-
-            PrintWriter out = response.getWriter();
-
             int currentPage = Integer.parseInt(request.getParameter("page") == null ? "1" : request.getParameter("page"));
             int pageSize = 10;
 
