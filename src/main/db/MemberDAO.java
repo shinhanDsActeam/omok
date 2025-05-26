@@ -89,4 +89,20 @@ public class MemberDAO {
         }
         return null;
     }
+
+    public int countTotalUser(){
+        String sql = "SELECT COUNT(*) FROM member";
+        try (
+                Connection conn = DBUtil.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()
+        ) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
