@@ -1,6 +1,6 @@
 package main.java.controller.game;
 
-import main.dto.Player;
+import main.java.dto.Player;
 import main.java.service.Board;
 
 import javax.servlet.ServletException;

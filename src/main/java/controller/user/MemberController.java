@@ -1,8 +1,8 @@
 package main.java.controller.user;
 
-import main.db.HistoryDAO;
-import main.dto.HistoryDTO;
-import main.domain.Member;
+import main.java.db.HistoryDAO;
+import main.java.dto.HistoryDTO;
+import main.java.domain.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
