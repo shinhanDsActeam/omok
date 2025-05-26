@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList"})
+@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList", "/leaveRoom"})
 public class RoomController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -175,6 +175,34 @@ public class RoomController extends HttpServlet {
                 }
             }
             response.sendRedirect("lobby");
+        } else if ("/leaveRoom".equals(path)) {
+            // 방 나가기 처리
+            String roomIdStr = request.getParameter("roomId");
+            HttpSession session = request.getSession();
+            String userId = (String) session.getAttribute("userId");
+
+            if (roomIdStr != null && userId != null) {
+                try {
+                    int roomId = Integer.parseInt(roomIdStr);
+                    boolean roomDeleted = leaveRoom(roomId, userId);
+
+                    // 세션에서 방 관련 정보 제거
+                    session.removeAttribute("roomId");
+                    session.removeAttribute("roomCreator");
+                    session.removeAttribute("roomPlayers");
+                    session.removeAttribute("roomStatus");
+
+                    if (roomDeleted) {
+                        System.out.println("방 " + roomId + "가 모든 플레이어가 나가서 삭제되었습니다.");
+                    }
+
+                    response.sendRedirect("lobby");
+                } catch (NumberFormatException e) {
+                    response.sendRedirect("lobby");
+                }
+            } else {
+                response.sendRedirect("lobby");
+            }
         }
     }
 
@@ -217,6 +245,78 @@ public class RoomController extends HttpServlet {
     }
 
     /**
+     * 방에서 플레이어가 나가는 처리
+     * @param roomId 방 ID
+     * @param userId 나가는 사용자 ID
+     * @return 방이 삭제되었는지 여부
+     */
+    public static boolean leaveRoom(int roomId, String userId) {
+        Room room = null;
+        for (Room r : roomSet) {
+            if (r.getId() == roomId) {
+                room = r;
+                break;
+            }
+        }
+
+        if (room != null && room.getPlayers() != null) {
+            // 플레이어 목록에서 해당 사용자 제거
+            room.getPlayers().remove(userId);
+
+            System.out.println("=== 방 나가기 ===");
+            System.out.println("방 ID: " + roomId + ", 나간 사용자: " + userId);
+            System.out.println("남은 인원수: " + room.getPlayers().size());
+            System.out.println("남은 플레이어: " + room.getPlayers());
+
+            // 방에 아무도 없으면 방 삭제
+            if (room.getPlayers().isEmpty()) {
+                return deleteRoom(roomId);
+            } else {
+                // 남은 인원이 1명이면 상태를 '대기중'으로 변경
+                if (room.getPlayers().size() == 1) {
+                    room.setStatus("대기중");
+                    RoomDAO dao = new RoomDAO();
+                    dao.updateRoomStatus(roomId, "대기중");
+                    System.out.println("방 " + roomId + " 상태를 '대기중'으로 변경");
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 방을 완전히 삭제하는 메서드
+     * @param roomId 삭제할 방 ID
+     * @return 삭제 성공 여부
+     */
+    private static boolean deleteRoom(int roomId) {
+        // 메모리에서 방 제거
+        Room roomToRemove = null;
+        for (Room room : roomSet) {
+            if (room.getId() == roomId) {
+                roomToRemove = room;
+                break;
+            }
+        }
+
+        if (roomToRemove != null) {
+            roomSet.remove(roomToRemove);
+
+            // DB에서도 방 삭제
+            RoomDAO dao = new RoomDAO();
+            boolean deleted = dao.deleteRoom(roomId);
+
+            System.out.println("=== 방 삭제 ===");
+            System.out.println("방 ID: " + roomId + " 삭제 결과: " + deleted);
+
+            return deleted;
+        }
+
+        return false;
+    }
+
+    /**
      * 게임 종료 시 방 상태를 다시 '대기중'으로 변경하는 메서드
      * (GameController에서 호출 가능)
      */
@@ -237,5 +337,13 @@ public class RoomController extends HttpServlet {
             RoomDAO dao = new RoomDAO();
             dao.updateRoomStatus(roomId, "대기중");
         }
+    }
+
+    /**
+     * 게임 종료 시 모든 플레이어를 방에서 내보내고 방을 삭제하는 메서드
+     * (GameController에서 게임 종료 시 호출)
+     */
+    public static void endGameAndDeleteRoom(int roomId) {
+        deleteRoom(roomId);
     }
 }

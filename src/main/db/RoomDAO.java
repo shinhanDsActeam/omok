@@ -87,6 +87,33 @@ public class RoomDAO {
     }
 
     /**
+     * 방을 DB에서 삭제
+     * @param roomId 삭제할 방 ID
+     * @return 삭제 성공 여부
+     */
+    public boolean deleteRoom(int roomId) {
+        String sql = "DELETE FROM rooms WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, roomId);
+            int affectedRows = pstmt.executeUpdate();
+
+            System.out.println("DB에서 방 " + roomId + " 삭제 - 영향받은 행: " + affectedRows);
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("방 삭제 실패: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
+    }
+
+    /**
      * DB에서 가장 큰 room_id 값을 조회
      * @return 마지막 방 ID, 방이 없으면 0 반환
      */
