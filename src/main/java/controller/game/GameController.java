@@ -1,4 +1,4 @@
-package main.controller.game;
+package main.java.controller.game;
 
 import main.dto.Player;
 import main.java.service.Board;

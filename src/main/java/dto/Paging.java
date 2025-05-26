@@ -1,4 +1,4 @@
-package main.dto;
+package main.java.dto;
 import lombok.Getter;
 import lombok.Setter;
 
