@@ -1,4 +1,4 @@
-package main.db;
+package src.main.db;
 
 import main.model.Room;
 

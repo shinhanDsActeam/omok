@@ -18,7 +18,7 @@
         <input type="button" id="checkIdBtn" value="중복체크">
     </div>
     <div>
-        <input type="password" id="password" name="password" placeholder="비밀번호"><br>
+        <input type="password" id="pw" name="pw" placeholder="비밀번호"><br>
         <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인">
         <span id="passwordMessage"></span>
     </div>
