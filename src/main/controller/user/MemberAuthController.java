@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.Serial;
 
 @WebServlet(urlPatterns = {"/login", "/join", "/check-username", "/check-nickname"})
-public class UserController extends HttpServlet {
+public class MemberAuthController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
 
