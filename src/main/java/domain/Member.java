@@ -1,4 +1,4 @@
-package main.domain;
+package main.java.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

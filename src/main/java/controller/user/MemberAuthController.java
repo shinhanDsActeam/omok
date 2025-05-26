@@ -1,4 +1,4 @@
-package main.controller.user;
+package main.java.controller.user;
 import main.db.MemberDAO;
 import main.domain.Member;
 

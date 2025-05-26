@@ -1,4 +1,4 @@
-package main.dto;
+package main.java.dto;
 
 public class Player {
     public String name;

@@ -1,4 +1,4 @@
-package main.controller.user;
+package main.java.controller.user;
 
 import main.db.HistoryDAO;
 import main.dto.HistoryDTO;

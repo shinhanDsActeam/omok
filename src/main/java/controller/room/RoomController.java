@@ -1,4 +1,4 @@
-package main.controller.room;
+package main.java.controller.room;
 
 import main.db.RoomDAO;
 import main.dto.Paging;

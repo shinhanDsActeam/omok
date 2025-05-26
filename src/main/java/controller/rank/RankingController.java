@@ -1,4 +1,4 @@
-package main.controller.rank;
+package main.java.controller.rank;
 
 import main.db.HistoryDAO;
 import main.db.MemberDAO;

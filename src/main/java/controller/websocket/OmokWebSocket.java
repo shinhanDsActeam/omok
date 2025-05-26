@@ -1,6 +1,6 @@
-package main.controller.websocket;
+package main.java.controller.websocket;
 
-import main.controller.game.GameController;
+import main.java.controller.game.GameController;
 import main.java.service.Board;
 import org.json.JSONObject;
 

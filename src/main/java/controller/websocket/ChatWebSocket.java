@@ -1,4 +1,4 @@
-package main.controller.websocket;
+package main.java.controller.websocket;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;

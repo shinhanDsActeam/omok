@@ -1,4 +1,4 @@
-package main.db;
+package main.java.db;
 
 import main.dto.HistoryDTO;
 import main.dto.RankingDTO;
