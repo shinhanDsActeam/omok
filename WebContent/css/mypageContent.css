@@ -73,11 +73,7 @@
     background-color: #A0522D;
 }
 
-/* 페이징 처리 */
-.pagination {
-    margin-top: 20px;
-    text-align: center;
-}
+
 /* 전체 페이징 영역 */
 .pagination-wrapper {
     display: flex;
