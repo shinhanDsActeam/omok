@@ -29,6 +29,17 @@ public class GameController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // ✅ 세션에서 로그인 사용자 확인
+        var session = request.getSession(false);
+        var loginUser = (session != null) ? session.getAttribute("loginUser") : null;
+
+        if (loginUser == null) {
+            // 로그인 안 된 상태면 로그인 페이지로 리다이렉트
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        // 정상 접근 시 게임 JSP로 이동
         String roomId = request.getParameter("roomId");
         request.setAttribute("roomId", roomId);
         request.getRequestDispatcher("WEB-INF/views/game/game.jsp").forward(request, response);

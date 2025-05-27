@@ -1,6 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="main.java.domain.Member" %>
 <%
+    Member loginUser = (Member) session.getAttribute("loginUser");
+    String loginId = loginUser != null ? loginUser.getUsername() : "";
+    String nickname = loginUser != null ? loginUser.getNickname() : "";
     String roomId = request.getParameter("roomId");
+    boolean isHost = "true".equals(request.getParameter("host"));
 %>
 <!DOCTYPE html>
 <html>
@@ -9,12 +14,13 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/game.css">
 </head>
 <body>
+
+<!-- 배경 -->
 <div class="mountain-bg">
     <div class="mountain"></div>
     <div class="mountain"></div>
     <div class="mountain"></div>
 </div>
-
 <div class="trees">
     <div class="tree"></div>
     <div class="tree"></div>
@@ -28,7 +34,7 @@
     <!-- 좌측: 흑돌 유저 정보 -->
     <div class="player-info black-player">
         <h3>흑돌 (방장)</h3>
-        <p id="host-nickname">흑돌왕</p>
+        <p id="host-nickname"><%= isHost ? nickname : "" %></p>
         <div class="time-limit">30초</div>
     </div>
 
@@ -44,26 +50,27 @@
         </div>
         <button id="restart-btn">게임 재시작</button>
         <button id="start-btn" style="display:none;">게임 시작하기</button>
-
     </div>
 
-    <!-- 우측 통합 박스: 백돌 + 채팅 -->
+    <!-- 우측: 백돌 유저 정보 + 채팅 -->
     <div class="right-panel">
         <div class="player-info white-player">
             <h3>백돌 (참가자)</h3>
-            <p id="guest-nickname">백돌천사</p>
+            <p id="guest-nickname"><%= !isHost ? nickname : "" %></p>
             <div class="time-limit">30초</div>
         </div>
 
         <div class="chat-box">
             <div class="chat-log" id="chat-log"></div>
-            <input type="text" id="chat-input" placeholder="메시지 입력..." />
-            <button id="chat-send">전송</button>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="메시지 입력..." />
+                <button id="chat-send">전송</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- 승리 메시지만 표시 (확인 버튼 제거) -->
+<!-- 승리 메시지 -->
 <div class="win-overlay">
     <div class="win-content">
         <div class="win-message"></div>
@@ -76,21 +83,22 @@
     </div>
 </div>
 
-<!-- 인트로 화면 (호스트만 상태 메시지/버튼 표시) -->
+<!-- 인트로 (방장 전용 메시지) -->
 <div class="intro-overlay">
     <div class="intro-title">5 ~ 빈틈없이</div>
     <div class="intro-text">무림 최고수의 지혜와 기법으로 오행의 비전을 완성하라!</div>
-    <% if ("true".equals(request.getParameter("host"))) { %>
+    <% if (isHost) { %>
         <div id="status-message">⏳ 참가자 기다리는 중...</div>
         <button id="intro-start-btn" style="display:none;">게임 시작</button>
     <% } %>
 </div>
 
-<!-- 사용자 및 방 정보 전달 -->
+<!-- 사용자 정보 및 JS 변수 전달 -->
 <script>
-  const username = '<%= session.getAttribute("username") %>';
-  const roomId = '<%= request.getParameter("roomId") %>';
-  const isHost = <%= "true".equals(request.getParameter("host")) %>;
+    const loginId = '<%= loginId %>';
+    const nickname = '<%= nickname %>';
+    const roomId = '<%= roomId %>';
+    const isHost = <%= isHost %>;
 </script>
 
 <script src="<%= request.getContextPath() %>/js/game.js"></script>
