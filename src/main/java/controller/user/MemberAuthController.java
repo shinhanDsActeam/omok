@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
 
-@WebServlet(urlPatterns = {"/login", "/join", "/check-username", "/check-nickname"})
+@WebServlet(urlPatterns = {"/login", "/join", "/check-username", "/check-nickname", "/logout"})
 public class MemberAuthController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -50,6 +50,10 @@ public class MemberAuthController extends HttpServlet {
 
             response.setContentType("application/json");
             response.getWriter().write("{\"duplicate\":" + duplicate + "}");
+        } else if("/logout".equals(path)) {
+            HttpSession session = request.getSession();
+            session.invalidate();
+            response.sendRedirect(request.getContextPath() + "/lobby");
         }
     }
 
