@@ -29,12 +29,11 @@ public class OmokWebSocket {
         List<Session> sessions = roomSessions.get(roomId);
         sessions.add(session);
 
-        // ✅ 세션에서 닉네임 가져오기
         HttpSession httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
 
         if (httpSession == null) {
             System.err.println("❌ WebSocket 연결 중 HttpSession이 null입니다. 로그인 안 된 상태에서 연결 시도됨.");
-            session.close(); // 연결 차단
+            session.close();
             return;
         }
 
@@ -52,7 +51,6 @@ public class OmokWebSocket {
 
         boolean ready = (sessions.size() == 2);
 
-        // ✅ 두 명 다 입장한 경우 닉네임 정보 전송
         if (ready) {
             String hostNickname = (String) sessions.get(0).getUserProperties().get("nickname");
             String guestNickname = (String) sessions.get(1).getUserProperties().get("nickname");
@@ -74,13 +72,12 @@ public class OmokWebSocket {
                 }
             }
         } else {
-            // 1명만 입장한 경우 기본 메시지 전송
             try {
                 JSONObject msg = new JSONObject();
                 msg.put("type", "userJoined");
                 msg.put("ready", false);
-                msg.put("isHost", true); // 최초 입장자는 방장
-                msg.put("hostNickname", nickname); // 자기 닉네임만 알려줌
+                msg.put("isHost", true);
+                msg.put("hostNickname", nickname);
                 msg.put("guestNickname", JSONObject.NULL);
                 session.getBasicRemote().sendText(msg.toString());
             } catch (IOException e) {
@@ -113,7 +110,7 @@ public class OmokWebSocket {
                         List<JSONObject> stones = new ArrayList<>();
                         for (int row = 0; row < 15; row++) {
                             for (int col = 0; col < 15; col++) {
-                                String stone = board.getStone(row, col); // null, "black", "white"
+                                String stone = board.getStone(row, col);
                                 if (stone != null) {
                                     JSONObject obj = new JSONObject();
                                     obj.put("row", row);
@@ -127,8 +124,25 @@ public class OmokWebSocket {
                         JSONObject response = new JSONObject();
                         response.put("type", "syncBoard");
                         response.put("stones", stones);
-
                         session.getBasicRemote().sendText(response.toString());
+                        return;
+                    case "turnChange":
+                        JSONObject turnMsg = new JSONObject();
+                        turnMsg.put("type", "turnChange");
+                        turnMsg.put("currentPlayer", data.getString("currentPlayer"));
+                        broadcast(roomId, turnMsg.toString());
+                        return;
+                    case "timeoutAlert":
+                        JSONObject timeoutMsg = new JSONObject();
+                        timeoutMsg.put("type", "timeoutAlert");
+                        broadcast(roomId, timeoutMsg.toString());
+                        return;
+                    case "timerUpdate":
+                        JSONObject timerMsg = new JSONObject();
+                        timerMsg.put("type", "timerUpdate");
+                        timerMsg.put("currentPlayer", data.getString("currentPlayer"));
+                        timerMsg.put("time", data.getInt("time"));
+                        broadcast(roomId, timerMsg.toString());
                         return;
                 }
             }
