@@ -16,10 +16,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const roomId = new URLSearchParams(window.location.search).get('roomId');
     // const nickname = '임시 닉네임';
     const contextPath = location.pathname.split('/')[1] ? '/' + location.pathname.split('/')[1] : '';
+    const isHostBool = (isHost === true || isHost === "true");
 
     let gameBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(null));
     let currentPlayer = 'black';
     let gameEnded = false;
+    let myTurn = false;
+
+    let turnTimer = null;
+    let remainingTime = 30;
 
     const socket = new WebSocket("ws://" + location.host + location.pathname.replace(/\/[^\/]*$/, '') + "/ws/omok/" + roomId);
     const chatSocket = new WebSocket(`ws://${location.host}${contextPath}/ws/chat/${roomId}`);
@@ -34,6 +39,40 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = JSON.parse(event.data);
         console.log("📨 메시지:", data);
 
+        if (data.type === "startGame") {
+            startGameAnimation();
+            if (isHost) {
+                currentPlayer = 'black';
+                myTurn = true;
+                updateGameInfo();
+            } else {
+                myTurn = false;
+            }
+            return;
+        }
+
+        if (data.type === "turnChange") {
+            currentPlayer = data.currentPlayer;
+            myTurn = data.currentPlayer === (isHost ? 'black' : 'white');
+            updateGameInfo();
+            return;
+        }
+
+        if (data.type === "timeoutAlert") {
+            const msgBox = document.createElement('div');
+            msgBox.className = 'timeout-alert';
+            msgBox.textContent = !myTurn ? "🎯 이제 당신의 차례입니다!" : "⏰ 시간 초과! 상대 턴으로 넘어갑니다!";
+            document.body.appendChild(msgBox);
+            setTimeout(() => document.body.removeChild(msgBox), 3000);
+            return;
+        }
+
+        if (data.type === "timerUpdate") {
+            const targetClass = data.currentPlayer === 'black' ? '.black-player .time-limit' : '.white-player .time-limit';
+            const el = document.querySelector(targetClass);
+            if (el) el.textContent = `${data.time}초`;
+        }
+
         if (data.type === "userJoined") {
             if (data.hostNickname) {
                 document.getElementById("host-nickname").textContent = data.hostNickname;
@@ -42,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById("guest-nickname").textContent = data.guestNickname;
             }
 
-            if (isHost) {
+            if (isHostBool) {
                 if (!data.ready) {
                     if (statusMessageIntro) statusMessageIntro.textContent = '⏳ 참가자 기다리는 중...';
                     if (introStartBtn) introStartBtn.style.display = 'none';
@@ -54,10 +93,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (data.type === "startGame") {
-            startGameAnimation();
-            return;
-        }
+//        if (data.type === "startGame") {
+//            startGameAnimation();
+//            return;
+//        }
 
         if (data.type === "rematchRequest") {
             location.reload();
@@ -84,6 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
             placeStone(cell, stone);
             gameBoard[row][col] = stone;
 
+            stopTurnTimer();
+
             if (data.gameOver) {
                 gameEnded = true;
                 winMessage.textContent = data.message;
@@ -92,11 +133,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 winOverlay.style.pointerEvents = 'auto';
                 document.getElementById("game-end-buttons").style.display = 'flex';
             } else {
-                currentPlayer = stone === 'black' ? 'white' : 'black';
-                updateGameInfo();
+                socket.send(JSON.stringify({
+                    type: "turnChange",
+                    roomId,
+                    currentPlayer: currentPlayer === 'black' ? 'white' : 'black'
+                }));
             }
         }
     };
+
+    // 추가 CSS 삽입 (1초 알림용)
+    const style = document.createElement('style');
+    style.textContent = `.timeout-alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-size: 18px;
+        z-index: 9999;
+        animation: fadeOut 1s ease-in-out forwards;
+    }
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+    }`;
+    document.head.appendChild(style);
 
     if (introStartBtn) {
         introStartBtn.addEventListener('click', () => {
@@ -137,6 +202,61 @@ document.addEventListener('DOMContentLoaded', function () {
         winOverlay.style.pointerEvents = 'none';
 
         socket.send(JSON.stringify({ type: "rematchRequest", roomId }));
+    }
+
+    function startTurnTimer() {
+        stopTurnTimer();
+        remainingTime = 30;
+        updateTimerUI();
+
+        // 첫 broadcast로 초기값 전달
+        socket.send(JSON.stringify({
+            type: "timerUpdate",
+            roomId,
+            currentPlayer,
+            time: remainingTime
+        }));
+
+        turnTimer = setInterval(() => {
+            remainingTime--;
+            updateTimerUI();
+
+            // 실시간 broadcast
+            socket.send(JSON.stringify({
+                type: "timerUpdate",
+                roomId,
+                currentPlayer,
+                time: remainingTime
+            }));
+
+            if (remainingTime <= 0) {
+                handleTimeout();
+            }
+        }, 1000);
+    }
+
+    function stopTurnTimer() {
+        if (turnTimer) {
+            clearInterval(turnTimer);
+            turnTimer = null;
+        }
+    }
+
+    function updateTimerUI() {
+        const target = currentPlayer === 'black'
+            ? document.querySelector('.black-player .time-limit')
+            : document.querySelector('.white-player .time-limit');
+        if (target) target.textContent = `${remainingTime}초`;
+    }
+
+    function handleTimeout() {
+        stopTurnTimer();
+        socket.send(JSON.stringify({ type: "timeoutAlert", roomId }));
+        socket.send(JSON.stringify({
+            type: "turnChange",
+            roomId,
+            currentPlayer: currentPlayer === 'black' ? 'white' : 'black'
+        }));
     }
 
     //채팅 메시지 수신처리
@@ -206,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function handleCellClick(event) {
-        if (gameEnded) return;
+        if (gameEnded || !myTurn) return;
 
         const cell = event.currentTarget;
         const row = parseInt(cell.dataset.row);
@@ -222,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 socket.send(JSON.stringify({
                     row, col,
-                    stone: data.stone,
+                    stone: currentPlayer,
                     gameOver: data.gameOver,
                     message: data.message
                 }));
@@ -266,6 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateGameInfo() {
         turnIndicator.textContent = `${currentPlayer === 'black' ? '흑돌' : '백돌'} 차례입니다`;
         turnIndicator.className = currentPlayer;
+        if (myTurn) startTurnTimer();
     }
 
     function restartGame() {
