@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const loginBtn = document.getElementById('loginBtn');
-
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            loginBtn.click();
+        }
+    });
     loginBtn.addEventListener('click', function () {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
@@ -26,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             if (data.success) {
-                alert("로그인 성공!");
+                // alert("로그인 성공!");
                 window.location.href = `${path}/lobby`;
             } else {
                 alert("아이디 또는 비밀번호가 잘못되었습니다.");
