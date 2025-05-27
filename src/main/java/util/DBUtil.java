@@ -8,7 +8,7 @@ import java.util.Properties;
 public class DBUtil {
     public static Connection getConnection() throws Exception {
         Properties props = new Properties();
-        System.out.println("File path: " + DBUtil.class.getClassLoader().getResource("db-config.properties"));
+//        System.out.println("File path: " + DBUtil.class.getClassLoader().getResource("db-config.properties"));
         try (InputStream input = DBUtil.class.getClassLoader().getResourceAsStream("db-config.properties")) {
             if (input == null) {
                 throw new RuntimeException("Cannot find db-config.properties in classpath.");

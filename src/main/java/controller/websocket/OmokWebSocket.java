@@ -88,12 +88,12 @@ public class OmokWebSocket {
 
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("roomId") String roomId) {
-        System.out.println("📩 메시지 수신 (room " + roomId + "): " + message);
+//        System.out.println("📩 메시지 수신 (room " + roomId + "): " + message);
         try {
             JSONObject data = new JSONObject(message);
             if (data.has("type")) {
                 String type = data.getString("type");
-                System.out.println("➡ 메시지 타입: " + type);
+//                System.out.println("➡ 메시지 타입: " + type);
 
                 switch (type) {
                     case "startGame":
@@ -143,6 +143,12 @@ public class OmokWebSocket {
                         timerMsg.put("currentPlayer", data.getString("currentPlayer"));
                         timerMsg.put("time", data.getInt("time"));
                         broadcast(roomId, timerMsg.toString());
+                        return;
+                    case "surrender":
+                        JSONObject surrenderMsg = new JSONObject();
+                        surrenderMsg.put("type", "surrender");
+                        surrenderMsg.put("nickname", data.getString("nickname"));
+                        broadcast(roomId, surrenderMsg.toString());
                         return;
                 }
             }

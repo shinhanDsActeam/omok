@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusMessageGame = document.querySelector('#game-info #status-message');
     const statusMessageIntro = document.querySelector('.intro-overlay #status-message');
     const turnIndicator = document.getElementById('turn-indicator');
-    const restartBtn = document.getElementById('restart-btn');
+//    const restartBtn = document.getElementById('restart-btn');
+    const surrenderBtn = document.getElementById('surrender-btn');
     const winOverlay = document.querySelector('.win-overlay');
     const winMessage = document.querySelector('.win-message');
     const martialMessage = document.querySelector('.martial-message');
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("📨 메시지:", data);
+//        console.log("📨 메시지:", data);
 
         if (data.type === "startGame") {
             startGameAnimation();
@@ -68,9 +69,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (data.type === "timerUpdate") {
-            const targetClass = data.currentPlayer === 'black' ? '.black-player .time-limit' : '.white-player .time-limit';
+            const { currentPlayer, time } = data;
+            if (!currentPlayer || typeof time !== "number") return;
+
+            const targetClass = currentPlayer === 'black'
+                ? '.black-player .time-limit'
+                : '.white-player .time-limit';
             const el = document.querySelector(targetClass);
-            if (el) el.textContent = `${data.time}초`;
+            if (el) el.textContent = `${time}초`;
         }
 
         if (data.type === "userJoined") {
@@ -116,28 +122,39 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const { row, col, stone } = data;
+        if (data.type === "surrender") {
+            gameEnded = true;
+            winMessage.textContent = `${data.nickname} 님이 기권하셨습니다.`;
+            martialMessage.textContent = '승리는 당신의 것!';
+            winOverlay.style.opacity = '1';
+            winOverlay.style.pointerEvents = 'auto';
+            document.getElementById("game-end-buttons").style.display = 'flex';
+            return;
+        }
 
-        if (gameBoard[row][col] === null && !gameEnded) {
-            const cell = board.querySelector(`[data-row='${row}'][data-col='${col}']`);
-            placeStone(cell, stone);
-            gameBoard[row][col] = stone;
+        if (data.type === 'stonePlaced') {
+            const { row, col, stone } = data;
+            if (gameBoard[row][col] === null && !gameEnded) {
+                const cell = board.querySelector(`[data-row='${row}'][data-col='${col}']`);
+                placeStone(cell, stone);
+                gameBoard[row][col] = stone;
 
-            stopTurnTimer();
+                stopTurnTimer();
 
-            if (data.gameOver) {
-                gameEnded = true;
-                winMessage.textContent = data.message;
-                martialMessage.textContent = '천하무적 승리의 순간!';
-                winOverlay.style.opacity = '1';
-                winOverlay.style.pointerEvents = 'auto';
-                document.getElementById("game-end-buttons").style.display = 'flex';
-            } else {
-                socket.send(JSON.stringify({
-                    type: "turnChange",
-                    roomId,
-                    currentPlayer: currentPlayer === 'black' ? 'white' : 'black'
-                }));
+                if (data.gameOver) {
+                    gameEnded = true;
+                    winMessage.textContent = data.message;
+                    martialMessage.textContent = '천하무적 승리의 순간!';
+                    winOverlay.style.opacity = '1';
+                    winOverlay.style.pointerEvents = 'auto';
+                    document.getElementById("game-end-buttons").style.display = 'flex';
+                } else {
+                    socket.send(JSON.stringify({
+                        type: "turnChange",
+                        roomId,
+                        currentPlayer: currentPlayer === 'black' ? 'white' : 'black'
+                    }));
+                }
             }
         }
     };
@@ -341,6 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.success) {
                 socket.send(JSON.stringify({
+                    type: "stonePlaced",
                     row, col,
                     stone: currentPlayer,
                     gameOver: data.gameOver,
@@ -405,7 +423,22 @@ document.addEventListener('DOMContentLoaded', function () {
         winOverlay.style.pointerEvents = 'none';
     }
 
-    if (restartBtn) restartBtn.addEventListener('click', restartGame);
+//    if (restartBtn) restartBtn.addEventListener('click', restartGame);
+
+    // game.js 내부
+     if (surrenderBtn) {
+        surrenderBtn.addEventListener('click', () => {
+            if (!gameEnded && confirm("정말 기권하시겠습니까?")) {
+                socket.send(JSON.stringify({
+                    type: "surrender",
+                    nickname,
+                    roomId
+                }));
+                window.location.href = `${contextPath}/leaveRoom?roomId=${roomId}`;
+            }
+        });
+    }
+
     if (closeWinBtn) {
         closeWinBtn.addEventListener('click', () => {
             winOverlay.style.opacity = '0';
