@@ -39,7 +39,7 @@ public class RankingController extends HttpServlet {
             request.setAttribute("rankingList", historyList);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
-            request.getRequestDispatcher("/WEB-INF/views/user/ranking.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/ranking/ranking.jsp").forward(request, response);
         }
     }
 }

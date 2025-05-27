@@ -5,5 +5,5 @@
 <c:import url="../layout.jsp">
     <c:param name="pageTitle" value="랭킹"/>
     <c:param name="extraCss" value="/css/ranking.css"/>
-    <c:param name="cardBox" value="user/rankingContent.jsp"/>
+    <c:param name="cardBox" value="ranking/rankingContent.jsp"/>
 </c:import>
