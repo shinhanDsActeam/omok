@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // ✅ contextPath가 정의되지 않았다면 기본값 사용
-        const contextPath = window.contextPath || '';
+        // ✅ JSP에서 전역 변수로 넘긴 contextPath 사용
+        const path = typeof contextPath !== 'undefined' ? contextPath : '';
 
-        fetch(`${contextPath}/login`, {
+        fetch(`${path}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -27,11 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.success) {
                 alert("로그인 성공!");
-
-                // ✅ WebSocket 연결이나 추가 확인 로직 넣고 싶다면 여기서 처리 가능
-
-                // ✅ 로그인 후 이동
-                window.location.href = `${contextPath}/lobby`;
+                window.location.href = `${path}/lobby`;
             } else {
                 alert("아이디 또는 비밀번호가 잘못되었습니다.");
             }
