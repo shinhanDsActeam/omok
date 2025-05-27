@@ -8,11 +8,12 @@
     color: #8B4513;
     font-size: 1.1em;
     padding: 30px;
-    background-color: #f9f9f9;
-    border: 1px dashed #c0a070;
-    border-radius: 8px;
     margin-top: 20px;
     line-height: 1.6;
+    background-image: url('../image/letter.png');  /* 생성한 사진 경로 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* 전적 테이블 */

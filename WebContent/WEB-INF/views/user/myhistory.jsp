@@ -4,6 +4,6 @@
 
 <c:import url="../layout.jsp">
     <c:param name="pageTitle" value="마이페이지"/>
-    <c:param name="extraCss" value="/css/mypageContent.css"/>
-    <c:param name="cardBox" value="user/mypageContent.jsp"/>
+    <c:param name="extraCss" value="/css/myhistoryContent.css"/>
+    <c:param name="cardBox" value="user/myhistoryContent.jsp"/>
 </c:import>

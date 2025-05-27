@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/mypage"})
+@WebServlet(urlPatterns = {"/myhistory"})
 public class MemberController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class MemberController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
-        if("/mypage".equals(path)) {
+        if("/myhistory".equals(path)) {
             int currentPage = Integer.parseInt(request.getParameter("page") == null ? "1" : request.getParameter("page"));
             int pageSize = 10;
 
@@ -45,7 +45,7 @@ public class MemberController extends HttpServlet {
             request.setAttribute("historyList", historyList);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
-            request.getRequestDispatcher("/WEB-INF/views/user/mypage.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/user/myhistory.jsp").forward(request, response);
         }
     }
 }
