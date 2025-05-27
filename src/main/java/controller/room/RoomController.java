@@ -29,7 +29,6 @@ public class RoomController extends HttpServlet {
     private static final AtomicInteger roomIdGenerator = new AtomicInteger(1);
 
     static {
-        // 서버 시작 시 DB에서 마지막 방 ID를 가져와서 초기화
         try {
             RoomDAO dao = new RoomDAO();
             int lastRoomId = dao.getLastRoomId();
@@ -45,6 +44,8 @@ public class RoomController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
         RoomDAO dao = new RoomDAO();
+
+        if (!checkLogin(request, response)) return;
 
         String pageParam = request.getParameter("page");
         int currentPage = 1;
@@ -136,6 +137,8 @@ public class RoomController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String path = request.getServletPath();
+
+        if (!checkLogin(request, response)) return;
 
         if ("/createRoom".equals(path)) {
             // 새 방 생성
@@ -432,4 +435,15 @@ public class RoomController extends HttpServlet {
     public static void endGameAndDeleteRoom(int roomId) {
         deleteRoom(roomId);
     }
+
+    private boolean checkLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        if (session == null || session.getAttribute("loginUser") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return false;
+        }
+        return true;
+    }
+
+
 }
