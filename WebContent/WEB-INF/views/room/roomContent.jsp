@@ -4,11 +4,15 @@
 
 <h1>5~ 빈틈없이</h1>
 
-<div class="button-container">
-    <button class="button" id="createRoomBtn">방 만들기</button>
+
+
+<div class="title-wrapper">
+    <h2 class="section-title">참여 가능한 방</h2>
+    <div class="right-button">
+        <button class="button" id="createRoomBtn">방 만들기</button>
+    </div>
 </div>
 
-<h2>참여 가능한 방</h2>
 <table class="room-list">
     <thead>
     <tr>

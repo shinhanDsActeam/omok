@@ -10,33 +10,56 @@ h2 {
     margin-top: 20px;
 }
 
-.button-container {
-    display: flex;
-    justify-content: center;
+.title-wrapper {
+    position: relative;
     margin-bottom: 20px;
+    padding: 0 50px; /* 여유 공간 (선택사항) */
+}
+
+.section-title {
+    text-align: center;
+    margin: 0;
+    font-size: 1.8em;
+    color: #8B4513;
+}
+
+.right-button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .button {
-    background-color: #8B4513;
-    color: white;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
     padding: 10px 20px;
     margin: 0 10px;
     font-size: 1.2em;
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
-.button:hover {
-    background-color: #A0522D;
+.button:hover, .button.active{
+    color: #ffcc00;
+    text-shadow:
+            0 0 4px #ffcc00,
+            0 0 8px #ffd700,
+            0 0 12px #ffaa00;
+    transform: scale(1.08);
 }
-
 
 .room-list {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    text-align: center;
     /*background-color: #fff;*/
     border-radius: 5px;
     overflow: hidden;
@@ -49,6 +72,7 @@ h2 {
 }
 
 .room-list td {
+    text-align: center;
     padding: 8px;
     border-bottom: 1px solid #ddd;
 }
@@ -62,17 +86,42 @@ h2 {
     background-color: ;
 }
 
-.join-btn {
-    background-color: #4CAF50;
-    color: white;
+.join-btn{
+
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
     border: none;
+    cursor: pointer;
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    /*
+    opacity: 0;
+    transform: translateY(30px);
+    animation: introAppear 1s forwards 2.5s;*/
+    display: block;
+    margin: 0 auto;
     border-radius: 3px;
     padding: 5px 10px;
+    /*ackground-color: #8B4513;*/
+    /*color: white;*/
+    /*border: none;
+    border-radius: 5px;*/
+    /*padding: 10px 20px;*/
+    /*margin: 0 10px;*/
+    font-size: 1.2em;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.join-btn:hover {
-    background-color: #45a049;
+.join-btn:hover, .join-btn.active{
+    color: #ffcc00;
+    text-shadow:
+            0 0 4px #ffcc00,
+            0 0 8px #ffd700,
+            0 0 12px #ffaa00;
+    transform: scale(1.08);
 }
 
 /* 모달 스타일 */
@@ -160,7 +209,7 @@ h2 {
     height: 38px;
     margin: 0 5px;
     border-radius: 6px;
-    background-color: white;
+    /*background-color: white;*/
     color: #8B4513;
     font-weight: 500;
     text-decoration: none;
