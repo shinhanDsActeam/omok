@@ -19,6 +19,7 @@
         <li><a href="/omok/mypage">👤 나의 신상기록</a></li>  <%-- 마이페이지 --%>
         <li><a href="/omok/mypage">⚙️ 나의 전적</a></li>      <%-- 전적 --%>
         <li><a href="#">️✉️ 나의 서찰함</a></li>    <%-- 알림 --%>
+        <li><a href="/omok/lobby">️● 승부하러 가기</a></li>    <%-- 로비 --%>
         <hr>
         <li><a href="/omok/logout">🚪 귀가하기</a></li>       <%-- 로그아웃 --%>
     </ul>
