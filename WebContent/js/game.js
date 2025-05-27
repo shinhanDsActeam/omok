@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const boardStartBtn = document.getElementById('start-btn');
     const boardContainer = document.querySelector('.board-container');
     const roomId = new URLSearchParams(window.location.search).get('roomId');
-    const nickname = '임시 닉네임';
+    // const nickname = '임시 닉네임';
     const contextPath = location.pathname.split('/')[1] ? '/' + location.pathname.split('/')[1] : '';
 
     let gameBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(null));
@@ -35,6 +35,13 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("📨 메시지:", data);
 
         if (data.type === "userJoined") {
+            if (data.hostNickname) {
+                document.getElementById("host-nickname").textContent = data.hostNickname;
+            }
+            if (data.guestNickname) {
+                document.getElementById("guest-nickname").textContent = data.guestNickname;
+            }
+
             if (isHost) {
                 if (!data.ready) {
                     if (statusMessageIntro) statusMessageIntro.textContent = '⏳ 참가자 기다리는 중...';
@@ -137,7 +144,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = JSON.parse(event.data);
         const chatLog = document.getElementById('chat-log');
         const msg = document.createElement('div');
-        msg.innerHTML = `<b>${data.sender}:</b> ${data.message}`;
+        msg.classList.add('chat-message');
+        msg.innerHTML = `<span class="chat-nickname">${data.sender}</span>: <span class="chat-text">${data.message}</span>`;
         chatLog.appendChild(msg);
         chatLog.scrollTop = chatLog.scrollHeight;
     };

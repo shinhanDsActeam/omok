@@ -101,7 +101,10 @@ public class MemberAuthController extends HttpServlet {
 
             if (member != null && member.getPassword().equals(password)) {
                 // 로그인 성공
-                request.getSession().setAttribute("loginUser", member);
+                HttpSession session = request.getSession();
+                session.setAttribute("loginUser", member);
+                session.setAttribute("username", member.getUsername());
+                session.setAttribute("nickname", member.getNickname());
                 out.print("{\"success\": true}");
             } else {
                 // 로그인 실패

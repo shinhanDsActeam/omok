@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // ✅ contextPath가 정의되지 않았다면 기본값 사용
+        const contextPath = window.contextPath || '';
+
         fetch(`${contextPath}/login`, {
             method: 'POST',
             headers: {
@@ -17,18 +20,25 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("로그인 성공!");
-                    window.location.href = `${contextPath}/lobby`;
-                } else {
-                    alert("아이디 또는 비밀번호가 잘못되었습니다.");
-                }
-            })
-            .catch(err => {
-                console.error("로그인 요청 실패:", err);
-                alert("서버 오류가 발생했습니다.");
-            });
+        .then(response => {
+            if (!response.ok) throw new Error("서버 응답 오류");
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert("로그인 성공!");
+
+                // ✅ WebSocket 연결이나 추가 확인 로직 넣고 싶다면 여기서 처리 가능
+
+                // ✅ 로그인 후 이동
+                window.location.href = `${contextPath}/lobby`;
+            } else {
+                alert("아이디 또는 비밀번호가 잘못되었습니다.");
+            }
+        })
+        .catch(err => {
+            console.error("로그인 요청 실패:", err);
+            alert("서버 오류가 발생했습니다.");
+        });
     });
 });
