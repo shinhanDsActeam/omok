@@ -150,6 +150,21 @@ public class OmokWebSocket {
                         surrenderMsg.put("nickname", data.getString("nickname"));
                         broadcast(roomId, surrenderMsg.toString());
                         return;
+                    case "leaveRoom":
+                        JSONObject leaveMsg = new JSONObject();
+                        leaveMsg.put("type", "opponentLeft");
+                        leaveMsg.put("nickname", data.getString("nickname"));
+                        broadcast(roomId, leaveMsg.toString());
+
+                        // 현재 세션 제거
+                        List<Session> leaveSessions = roomSessions.get(roomId);
+                        if (leaveSessions != null) {
+                            leaveSessions.remove(session);
+                            if (leaveSessions.isEmpty()) {
+                                roomSessions.remove(roomId);
+                            }
+                        }
+                        return;
                 }
             }
             broadcast(roomId, message);
