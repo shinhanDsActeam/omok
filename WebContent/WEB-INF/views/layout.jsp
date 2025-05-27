@@ -15,6 +15,7 @@
     <title><c:out value="${pageTitle}" /></title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/layout.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pagination.css" />
     <c:if test="${not empty param.extraCss}">
         <link rel="stylesheet" href="${pageContext.request.contextPath}${param.extraCss}" />
     </c:if>

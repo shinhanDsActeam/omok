@@ -55,6 +55,7 @@ h2 {
     transform: scale(1.08);
 }
 
+
 .room-list {
     width: 100%;
     border-collapse: collapse;
@@ -83,13 +84,13 @@ h2 {
 }
 
 .room-list tr:nth-child(even) {
-    background-color: ;
+    /*background-color: ;*/
 }
 
 .join-btn{
-
     background: linear-gradient(to bottom, #DCB35C, #b89346);
     color: #333;
+    font-size: 20px;
     border: none;
     cursor: pointer;
     font-family: 'Nanum Myeongjo', serif;
@@ -179,79 +180,4 @@ h2 {
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
-}
-
-
-/* 전체 페이징 영역 */
-.pagination-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    position: relative;
-    margin-top: 20px;
-}
-
-/* 숫자 버튼 중앙 고정 */
-.page-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-
-/* 숫자 버튼 스타일 */
-.page-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    margin: 0 5px;
-    border-radius: 6px;
-    /*background-color: white;*/
-    color: #8B4513;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.page-link:hover, .page-link.active{
-    color: #ffcc00;
-    text-shadow:
-            0 0 4px #ffcc00,
-            0 0 8px #ffd700,
-            0 0 12px #ffaa00;
-    transform: scale(1.08);
-}
-
-
-/* 이전 / 다음 버튼 (아이콘 스타일) */
-.page-nav-btn {
-    display: inline-block;
-    margin: 0 10px;
-    padding: 6px 10px;
-    color: #8B4513;
-    background: none;
-    border: none;
-    font-size: 1.6em;
-    font-weight: bold;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.disabled-btn {
-    color: #d0c6b8 !important;
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.5;
-}
-
-.glow-hover:hover {
-    color: #ffcc00;
-    text-shadow:
-            0 0 4px #ffcc00,
-            0 0 8px #ffcc00,
-            0 0 14px #ff9900,
-            0 0 18px #ff8800;
 }
