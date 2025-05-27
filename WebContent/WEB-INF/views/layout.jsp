@@ -14,7 +14,9 @@
     <meta charset="UTF-8">
     <title><c:out value="${pageTitle}" /></title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/layout.css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pagination.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/slidebar.css" />
+    <script src="${pageContext.request.contextPath}/js/slidebar.js"></script>
     <c:if test="${not empty param.extraCss}">
         <link rel="stylesheet" href="${pageContext.request.contextPath}${param.extraCss}" />
     </c:if>
@@ -24,13 +26,13 @@
 </head>
 <body>
 <div class="wrapper">
-    <jsp:include page="sidebar.jspf" />
-
     <div class="container">
         <div class="card-box">
             <jsp:include page="${cardBox}" />
         </div>
     </div>
+
+    <jsp:include page="slidebar.jsp" />
 </div>
 
 <c:if test="${not empty param.extraModal}">
