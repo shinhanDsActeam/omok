@@ -5,17 +5,17 @@
 <c:choose>
     <c:when test="${empty historyList}">
         <div class="empty-message">
-            아직 전적이 없습니다 🐣<br>
-            첫 게임을 플레이해보세요!
+            아직 치른 승부가 없습니다.<br>
+            첫 대국에 나서 역사를 기록해주세요.
         </div>
     </c:when>
     <c:otherwise>
         <table class="record-table">
             <thead>
             <tr>
-                <th>승패</th>
-                <th>대전상대</th>
-                <th>게임 일시</th>
+                <th>결과</th>
+                <th>결전 상대</th>
+                <th>결전 일시</th>
             </tr>
             </thead>
             <tbody>
@@ -25,7 +25,9 @@
             <c:forEach var="match" items="${historyList}">
                 <tr class="${fn:toUpperCase(fn:trim(match.result)) == 'WIN' ? 'win-row' :
                                                 fn:toUpperCase(fn:trim(match.result)) == 'LOSE' ? 'lose-row' : 'draw-row'}">
-                    <td><strong>${match.result}</strong></td>
+                    <td><strong>${fn:toUpperCase(fn:trim(match.result)) == 'WIN' ? '승' :
+                            fn:toUpperCase(fn:trim(match.result)) == 'LOSE' ? '패' : '무'}
+                    </strong></td>
                     <td>${match.opponent}</td>
                     <td>${match.matchDate}</td>
                 </tr>
