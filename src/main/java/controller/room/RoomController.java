@@ -85,8 +85,8 @@ public class RoomController extends HttpServlet {
         paging.setTotalPages(totalPages);
 
         //디버깅용 로그
-        System.out.println("==페이징처리==");
-        System.out.println("현재 페이지: "+currentPage+", 시작 페이지: "+startPage+", 마지막 페이지: "+endPage+", 총 페이징 수: "+totalPages);
+//        System.out.println("==페이징처리==");
+//        System.out.println("현재 페이지: "+currentPage+", 시작 페이지: "+startPage+", 마지막 페이지: "+endPage+", 총 페이징 수: "+totalPages);
 
         //해당 페이징에 필요한 방만 가져오기
         List<Room> dbRooms = dao.getRoomsByPage(offset, postPage);

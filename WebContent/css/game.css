@@ -522,7 +522,7 @@ body::before {
     opacity: 0;
 }
 
-#restart-btn {
+#surrender-btn {
     margin-top: 25px;
     padding: 12px 25px;
     font-size: 18px;
@@ -546,14 +546,14 @@ body::before {
     100% { opacity: 1; transform: translateZ(20px) translateY(0); }
 }
 
-#restart-btn:hover {
+#surrender-btn:hover {
     background: linear-gradient(to bottom, #a05717, #8B4513);
     transform: translateZ(25px) translateY(-3px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
     0 0 10px rgba(139, 69, 19, 0.6);
 }
 
-#restart-btn:active {
+#surrender-btn:active {
     transform: translateZ(15px) translateY(1px);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }

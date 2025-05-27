@@ -48,7 +48,8 @@
             <div id="status-message">게임을 시작합니다!</div>
             <div id="turn-indicator" class="black">흑돌 차례입니다</div>
         </div>
-        <button id="restart-btn">게임 재시작</button>
+        <!-- <%-- <button id="restart-btn">게임 재시작</button> --%> -->
+        <button id="surrender-btn">기권하기</button>
         <button id="start-btn" style="display:none;">게임 시작하기</button>
     </div>
 
