@@ -13,3 +13,13 @@
         </form>
     </div>
 </div>
+
+<div id="deleteRoomModal" class="modal">
+    <div class="modal-content">
+        <p class="modal-text"></p>
+        <div class="modal-buttons">
+            <button id="confirmBtn">삭제</button>
+            <button id="cancelBtn">취소</button>
+        </div>
+    </div>
+</div>

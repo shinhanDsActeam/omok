@@ -155,11 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('삭제 버튼 클릭됨! 방 ID:', roomId);
 
                 // 삭제 확인
-                if (confirm(`방 ${roomId}을(를) 정말 삭제하시겠습니까?`)) {
+                showDeleteRoomModal(`방 ${roomId}을(를) 정말 삭제하시겠습니까?`, () => {
                     deleteRoom(roomId);
-                } else {
-                    console.log('삭제 취소됨');
-                }
+                });
             });
         });
     }
@@ -193,5 +191,38 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         xhr.send(`roomId=${roomId}`);
+    }
+    function showDeleteRoomModal(message, onConfirm) {
+        const modal = document.getElementById('deleteRoomModal');
+        const modalText = modal.querySelector('.modal-text');
+        const confirmBtn = modal.querySelector('#confirmBtn');
+        const cancelBtn = modal.querySelector('#cancelBtn');
+
+        modalText.textContent = message;
+        modal.style.display = 'flex';
+
+        function closeModal() {
+            modal.style.display = 'none';
+            confirmBtn.removeEventListener('click', handleConfirm);
+            cancelBtn.removeEventListener('click', handleCancel);
+        }
+
+        function handleConfirm() {
+            onConfirm();
+            closeModal();
+        }
+
+        function handleCancel() {
+            closeModal();
+            console.log('삭제 취소됨');
+        }
+
+        confirmBtn.addEventListener('click', handleConfirm);
+        cancelBtn.addEventListener('click', handleCancel);
+
+        // 바깥 클릭으로 닫기
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
     }
 });
