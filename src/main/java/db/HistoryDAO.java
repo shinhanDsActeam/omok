@@ -2,6 +2,7 @@ package main.java.db;
 
 import main.java.dto.HistoryDTO;
 import main.java.dto.RankingDTO;
+import main.java.dto.MemberInfoDTO;
 import main.java.util.DBUtil;
 
 import java.sql.Connection;
@@ -91,7 +92,56 @@ public class HistoryDAO {
         }
     }
 
-    public List<RankingDTO> getRanking(int offset, int pageSize) {
+    public MemberInfoDTO getRankingByMemberId(int memberId) {
+        MemberInfoDTO memberInfo = new MemberInfoDTO();
+        String sql = "SELECT " +
+                "    m.nickname AS nickname, " +
+                "    SUM(CASE " +
+                "        WHEN h.member_id = m.id AND h.result = 'WIN' THEN 1 " +
+                "        WHEN h.opponent_id = m.id AND h.result = 'LOSE' THEN 1 " +
+                "        ELSE 0 END) AS win_count, " +
+                "    SUM(CASE " +
+                "        WHEN h.member_id = m.id AND h.result = 'LOSE' THEN 1 " +
+                "        WHEN h.opponent_id = m.id AND h.result = 'WIN' THEN 1 " +
+                "        ELSE 0 END) AS lose_count, " +
+                "    SUM(CASE " +
+                "        WHEN h.result = 'DRAW' AND (h.member_id = m.id OR h.opponent_id = m.id) THEN 1 " +
+                "        ELSE 0 END) AS draw_count, " +
+                "    COUNT(h.id) AS total_count, " +
+                "    COALESCE(ROUND(( " +
+                "        SUM(CASE " +
+                "            WHEN h.member_id = m.id AND h.result = 'WIN' THEN 1 " +
+                "            WHEN h.opponent_id = m.id AND h.result = 'LOSE' THEN 1 " +
+                "            ELSE 0 END) " +
+                "        / COUNT(h.id) " +
+                "    ) * 100, 2),0) AS win_rate " +
+                "FROM member m " +
+                "LEFT JOIN history h ON (h.member_id = m.id OR h.opponent_id = m.id) " +
+                "WHERE m.id = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, memberId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    memberInfo.setNickname(rs.getString("nickname"));
+                    memberInfo.setTotalCount(rs.getInt("total_count"));
+                    memberInfo.setWinCount(rs.getInt("win_count"));
+                    memberInfo.setLoseCount(rs.getInt("lose_count"));
+                    memberInfo.setDrawCount(rs.getInt("draw_count"));
+                    memberInfo.setWinRate(rs.getDouble("win_rate"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return memberInfo;
+    }
+
+    public List<RankingDTO> getRankingList(int offset, int pageSize) {
         List<RankingDTO> list = new ArrayList<>();
         String sql = "SELECT  " +
                 "    RANK() OVER (ORDER BY score DESC) AS ranking,  " +

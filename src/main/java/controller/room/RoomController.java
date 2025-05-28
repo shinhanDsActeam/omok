@@ -24,14 +24,15 @@ public class RoomController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private static RoomDAO roomDAO = RoomDAO.getInstance();
+
     // 방 목록을 저장하는 Set (메모리상에 보관) - 실제 게임 진행 정보
     private static final Set<Room> roomSet = ConcurrentHashMap.newKeySet();
     private static final AtomicInteger roomIdGenerator = new AtomicInteger(1);
 
     static {
         try {
-            RoomDAO dao = new RoomDAO();
-            int lastRoomId = dao.getLastRoomId();
+            int lastRoomId = roomDAO.getLastRoomId();
             if (lastRoomId > 0) {
                 roomIdGenerator.set(lastRoomId + 1);
             }
@@ -43,7 +44,6 @@ public class RoomController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
-        RoomDAO dao = new RoomDAO();
 
         if (!checkLogin(request, response)) return;
 
@@ -59,7 +59,7 @@ public class RoomController extends HttpServlet {
 
         int postPage = 10; // 한 페이지당 방 수
         int pageNum = 10;  // 페이지 네비게이션 범위
-        int total = dao.getRoomcountAll(); //전체 방 수
+        int total = roomDAO.getRoomcountAll(); //전체 방 수
         int totalPages = ((total - 1) / postPage) + 1; //전체 페이지 개수
 
         int startPage = ((currentPage - 1) / pageNum) * pageNum + 1;
@@ -89,7 +89,7 @@ public class RoomController extends HttpServlet {
 //        System.out.println("현재 페이지: "+currentPage+", 시작 페이지: "+startPage+", 마지막 페이지: "+endPage+", 총 페이징 수: "+totalPages);
 
         //해당 페이징에 필요한 방만 가져오기
-        List<Room> dbRooms = dao.getRoomsByPage(offset, postPage);
+        List<Room> dbRooms = roomDAO.getRoomsByPage(offset, postPage);
         List<Room> displayRooms = getDisplayRooms(dbRooms);
 
         // 페이지 표시
@@ -98,8 +98,6 @@ public class RoomController extends HttpServlet {
 
         if ("/lobby".equals(path)) {
             request.getRequestDispatcher("/WEB-INF/views/room/room.jsp").forward(request, response);
-        } else if ("/getRoomList".equals(path)) {
-            request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
         } else if ("/leaveRoom".equals(path)) {
             String roomIdStr = request.getParameter("roomId");
             HttpSession session = request.getSession();
@@ -172,8 +170,7 @@ public class RoomController extends HttpServlet {
             System.out.println("방 생성 후 인원수: " + newRoom.getPlayers().size());
             System.out.println("플레이어 목록: " + newRoom.getPlayers());
 
-            RoomDAO dao = new RoomDAO();
-            boolean success = dao.insertRoom(newRoom);
+            boolean success = roomDAO.insertRoom(newRoom);
 
             if (success) {
                 roomSet.add(newRoom);
@@ -227,8 +224,7 @@ public class RoomController extends HttpServlet {
                             room.setStatus("게임중");
 
                             // DB에도 상태 업데이트
-                            RoomDAO dao = new RoomDAO();
-                            boolean statusUpdated = dao.updateRoomStatus(roomId, "게임중");
+                            boolean statusUpdated = roomDAO.updateRoomStatus(roomId, "게임중");
 
                             System.out.println("=== 상태 변경 ===");
                             System.out.println("방 " + roomId + " 상태를 '게임중'으로 변경");
@@ -322,8 +318,7 @@ public class RoomController extends HttpServlet {
         List<Room> displayRooms = new ArrayList<>();
 
         // DB에서 방 기본 정보 가져오기
-        RoomDAO dao = new RoomDAO();
-        List<Room> dbRooms = dao.getAllRooms();
+        List<Room> dbRooms = roomDAO.getAllRooms();
 
         for (Room dbRoom : dbRooms) {
             // 메모리에서 해당 방의 실제 상태 찾기
@@ -415,8 +410,7 @@ public class RoomController extends HttpServlet {
             room.getPlayers().clear(); // 플레이어 목록 초기화
 
             // DB에도 상태 업데이트
-            RoomDAO dao = new RoomDAO();
-            dao.updateRoomStatus(roomId, "대기중");
+            roomDAO.updateRoomStatus(roomId, "대기중");
         }
     }
 
@@ -439,8 +433,7 @@ public class RoomController extends HttpServlet {
             roomSet.remove(roomToRemove);
 
             // DB에서도 방 삭제
-            RoomDAO dao = new RoomDAO();
-            boolean deleted = dao.deleteRoom(roomId);
+            boolean deleted = roomDAO.deleteRoom(roomId);
 
             System.out.println("=== 방 삭제 ===");
             System.out.println("방 ID: " + roomId + " 삭제 결과: " + deleted);

@@ -1,4 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <link href="https://fonts.googleapis.com/css2?family=Playwrite+DK+Loopet:wght@100..400&display=swap" rel="stylesheet">
 
 <button id="profileBtn">
@@ -12,12 +15,12 @@
             <img class="img" src="${pageContext.request.contextPath}/image/profile.png" alt="프로필">
         </div>
         <div class="profile-info">
-            <strong>kwiyoon</strong>
+            <strong>${loginUser.nickname}</strong>
         </div>
     </div>
     <ul class="menu-list">
         <li><a href="/omok/mypage">👤 나의 신상기록</a></li>  <%-- 마이페이지 --%>
-        <li><a href="/omok/mypage">⚙️ 나의 전적</a></li>      <%-- 전적 --%>
+        <li><a href="/omok/myhistory">⚙️ 나의 전적</a></li>      <%-- 전적 --%>
         <li><a href="#">️✉️ 나의 서찰함</a></li>    <%-- 알림 --%>
         <li><a href="/omok/lobby">️● 승부하러 가기</a></li>    <%-- 로비 --%>
         <hr>

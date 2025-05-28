@@ -3,8 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const slidebar = document.getElementById('slidebar');
     const closeBtn = document.getElementById('closeBtn');
 
-    profileBtn.addEventListener('click', () => {
+    profileBtn.addEventListener('click', (e) => {
         console.log('pb');
+        e.stopPropagation();
         slidebar.classList.add('open');
     });
 
@@ -13,4 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         slidebar.classList.remove('open');
     });
+
+    slidebar.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+    });
+
+    document.addEventListener('click', () => {
+        if (slidebar.classList.contains('open')) {
+            slidebar.classList.remove('open');
+        }
+    });
+
 });
