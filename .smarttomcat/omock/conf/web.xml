@@ -28,7 +28,7 @@
   <!-- "/WEB-INF/web.xml" deployment descriptor from your own               -->
   <!-- applications.                                                        -->
   <!--                                                                      -->
-  <!-- WARNING:  Do not configure application-specific resources here!      -->
+  <!-- WARNING:  Do not configure application-specific main.resources here!      -->
   <!-- They should go in the "/WEB-INF/web.xml" file in your application.   -->
 
 
@@ -36,7 +36,7 @@
 
 
   <!-- The default servlet for all web applications, that serves static     -->
-  <!-- resources.  It processes all requests that are not mapped to other   -->
+  <!-- main.resources.  It processes all requests that are not mapped to other   -->
   <!-- servlets with servlet mappings (defined either here or in your own   -->
   <!-- web.xml file).  This servlet supports the following initialization   -->
   <!-- parameters (default values are in square brackets):                  -->
@@ -45,7 +45,7 @@
   <!--                       by this servlet. Useful values are 0, 1, and   -->
   <!--                       11 where higher values mean more detail. [0]   -->
   <!--                                                                      -->
-  <!--   fileEncoding        Encoding to be used to read static resources   -->
+  <!--   fileEncoding        Encoding to be used to read static main.resources   -->
   <!--                       [platform default]                             -->
   <!--                                                                      -->
   <!--   useBomIfPresent     If a static file contains a byte order mark    -->
@@ -54,16 +54,16 @@
   <!--                       [true]                                         -->
   <!--                                                                      -->
   <!--   input               Input buffer size (in bytes) when reading      -->
-  <!--                       resources to be served.  [2048]                -->
+  <!--                       main.resources to be served.  [2048]                -->
   <!--                                                                      -->
   <!--   listings            Should directory listings be produced if there -->
   <!--                       is no welcome file in this directory?  [false] -->
   <!--                       WARNING: Listings for directories with many    -->
   <!--                       entries can be slow and may consume            -->
-  <!--                       significant proportions of server resources.   -->
+  <!--                       significant proportions of server main.resources.   -->
   <!--                                                                      -->
   <!--   output              Output buffer size (in bytes) when writing     -->
-  <!--                       resources to be served.  [2048]                -->
+  <!--                       main.resources to be served.  [2048]                -->
   <!--                                                                      -->
   <!--   readonly            Is this context "read only", so HTTP           -->
   <!--                       commands like PUT and DELETE are               -->
@@ -308,7 +308,7 @@
   <!--                       relative to the context root, instead of       -->
   <!--                       the server root? [false]                       -->
   <!--                                                                      -->
-  <!--   inputEncoding       The encoding to assume for SSI resources if    -->
+  <!--   inputEncoding       The encoding to assume for SSI main.resources if    -->
   <!--                       one is not available from the resource.        -->
   <!--                       [Platform default]                             -->
   <!--                                                                      -->
@@ -642,7 +642,7 @@
 
 
   <!-- ===================== Default MIME Type Mappings =================== -->
-  <!-- When serving static resources, Tomcat will automatically generate    -->
+  <!-- When serving static main.resources, Tomcat will automatically generate    -->
   <!-- a "Content-Type" header based on the resource's filename extension,  -->
   <!-- based on these mappings.  Additional mappings can be added here (to  -->
   <!-- apply to all web applications), or in your own application's web.xml -->

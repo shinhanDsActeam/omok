@@ -4,24 +4,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const createRoomModal = document.getElementById('createRoomModal');
     const closeModalBtn = document.querySelector('.close');
 
-
-
-    window.onload = function() {
-        refreshRoomList();
-        setInterval(refreshRoomList, 3000);  // 3초마다 리스트 갱신
-    };
-
     let currentPage = 1;
 
     // 방 만들기 버튼 클릭 시 모달 표시
-    createRoomBtn.addEventListener('click', function() {
-        createRoomModal.style.display = 'block';
-    });
+    if (createRoomBtn) {
+        createRoomBtn.addEventListener('click', function() {
+            createRoomModal.style.display = 'block';
+        });
+    }
 
     // 모달 닫기 버튼
-    closeModalBtn.addEventListener('click', function() {
-        createRoomModal.style.display = 'none';
-    });
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', function() {
+            createRoomModal.style.display = 'none';
+        });
+    }
 
     // 모달 외부 클릭 시 닫기
     window.addEventListener('click', function(event) {
@@ -30,24 +27,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 방 목록 자동 갱신 (5초마다)
-    function refreshRoomList(page = 1) {
-        // AJAX를 사용하여 방 목록 갱신 (JSP 조각을 가져와서 업데이트)
+    // 초기 삭제 버튼 이벤트 바인딩
+    attachDeleteListeners();
+    attachPaginationListeners();
+
+    // 페이지 로드 시 자동 갱신 시작
+    refreshRoomList();
+    setInterval(refreshRoomList, 3000);  // 3초마다 리스트 갱신
+
+    // 방 목록 자동 갱신
+    function refreshRoomList(page = currentPage) {
+        console.log('방 목록 갱신 시작 - 페이지:', page);
+
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `getRoomList?page=${page}`, true);
         xhr.onload = function () {
             if (xhr.status === 200) {
+                console.log('방 목록 갱신 성공');
+
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(xhr.responseText, 'text/html');
 
+                // tbody 업데이트
                 const newTbody = doc.querySelector('tbody');
                 const roomListTable = document.querySelector('.room-list');
-                const oldTbody = roomListTable.querySelector('tbody');
 
-                if (newTbody && oldTbody) {
-                    oldTbody.replaceWith(newTbody);
-                    attachPaginationListeners(); // 새 링크 바인딩
+                if (roomListTable) {
+                    const oldTbody = roomListTable.querySelector('tbody');
+
+                    if (newTbody && oldTbody) {
+                        oldTbody.replaceWith(newTbody);
+                        console.log('테이블 업데이트 완료');
+
+                        // 이벤트 리스너 재바인딩
+                        attachPaginationListeners();
+                        attachDeleteListeners();
+                    }
                 }
+
+                // 페이징 정보도 업데이트
+                const newPagination = doc.querySelector('.pagination-wrapper');
+                const oldPagination = document.querySelector('.pagination-wrapper');
+
+                if (newPagination && oldPagination) {
+                    oldPagination.replaceWith(newPagination);
+                    attachPaginationListeners();
+                }
+
             } else {
                 console.error('방 목록 불러오기 실패:', xhr.status);
             }
@@ -60,16 +86,86 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 페이지 링크 클릭 이벤트 바인딩
     function attachPaginationListeners() {
-        const pageLinks = document.querySelectorAll('.pagination-link');
+        const pageLinks = document.querySelectorAll('.page-link, .page-nav-btn');
+        console.log('페이지 링크 바인딩:', pageLinks.length + '개');
+
         pageLinks.forEach(link => {
-            link.addEventListener('click', function (event) {
+            // 기존 이벤트 리스너 제거 후 새로 추가
+            const newLink = link.cloneNode(true);
+            link.parentNode.replaceChild(newLink, link);
+
+            newLink.addEventListener('click', function (event) {
                 event.preventDefault();
-                const page = parseInt(this.dataset.page);
-                if (!isNaN(page)) {
-                    currentPage = page;
-                    refreshRoomList(currentPage);
+                const href = this.getAttribute('href');
+                if (href && href.includes('page=')) {
+                    const page = parseInt(href.split('page=')[1]);
+                    if (!isNaN(page)) {
+                        currentPage = page;
+                        console.log('페이지 변경:', currentPage);
+                        refreshRoomList(currentPage);
+                    }
                 }
             });
         });
+    }
+
+    // 삭제 버튼 클릭 이벤트 바인딩
+    function attachDeleteListeners() {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        console.log('삭제 버튼 바인딩:', deleteButtons.length + '개 발견');
+
+        deleteButtons.forEach((button, index) => {
+            console.log('삭제 버튼', index + 1, ':', button, 'roomId:', button.dataset.roomId);
+
+            // 기존 이벤트 리스너 제거 후 새로 추가
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+
+            newButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const roomId = this.dataset.roomId;
+                console.log('삭제 버튼 클릭됨! 방 ID:', roomId);
+
+                // 삭제 확인
+                if (confirm(`방 ${roomId}을(를) 정말 삭제하시겠습니까?`)) {
+                    deleteRoom(roomId);
+                } else {
+                    console.log('삭제 취소됨');
+                }
+            });
+        });
+    }
+
+    // 방 삭제 함수 - /deleteRoom 엔드포인트 추가 필요
+    function deleteRoom(roomId) {
+        console.log('방 삭제 요청:', roomId);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'deleteRoom', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onload = function() {
+            console.log('삭제 응답 상태:', xhr.status);
+            console.log('삭제 응답 내용:', xhr.responseText);
+
+            if (xhr.status === 200) {
+                console.log('방 삭제 성공');
+                alert('방이 삭제되었습니다.');
+                // 방 목록 새로고침
+                refreshRoomList(currentPage);
+            } else {
+                console.error('방 삭제 실패:', xhr.status, xhr.responseText);
+                alert('방 삭제에 실패했습니다.');
+            }
+        };
+
+        xhr.onerror = function() {
+            console.error('방 삭제 요청 실패');
+            alert('서버 연결에 실패했습니다.');
+        };
+
+        xhr.send(`roomId=${roomId}`);
     }
 });

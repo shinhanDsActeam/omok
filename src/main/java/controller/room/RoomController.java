@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList", "/leaveRoom"})
+@WebServlet(urlPatterns = {"/lobby", "/createRoom", "/joinRoom", "/getRoomList", "/leaveRoom", "/deleteRoom"})
 public class RoomController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -282,6 +282,29 @@ public class RoomController extends HttpServlet {
                 }
             } else {
                 response.sendRedirect("lobby");
+            }
+        }
+        else if ("/deleteRoom".equals(path)) {
+            // 방 삭제 처리
+            String roomIdStr = request.getParameter("roomId");
+
+            if (roomIdStr != null && !roomIdStr.trim().isEmpty()) {
+                try {
+                    int roomId = Integer.parseInt(roomIdStr);
+                    boolean deleted = deleteRoom(roomId);
+
+                    if (deleted) {
+                        response.getWriter().write("삭제 성공");
+                        System.out.println("방 " + roomId + " 삭제 완료");
+                    } else {
+                        response.getWriter().write("삭제 실패");
+                        System.out.println("방 " + roomId + " 삭제 실패");
+                    }
+                } catch (NumberFormatException e) {
+                    response.getWriter().write("잘못된 방 ID");
+                }
+            } else {
+                response.getWriter().write("방 ID가 필요합니다");
             }
         }
     }

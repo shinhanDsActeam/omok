@@ -4,8 +4,6 @@
 
 <h1>5~ 빈틈없이</h1>
 
-
-
 <div class="title-wrapper">
     <h2 class="section-title">참여 가능한 방</h2>
     <div class="right-button">
@@ -16,6 +14,7 @@
 <table class="room-list">
     <thead>
     <tr>
+        <th>삭제</th>
         <th>방 번호</th>
         <th>방 이름</th>
         <th>상태</th>
@@ -26,12 +25,16 @@
     <c:choose>
         <c:when test="${empty roomList}">
             <tr>
-                <td colspan="4">현재 생성된 방이 없습니다.</td>
+                <td colspan="5">현재 생성된 방이 없습니다.</td>
             </tr>
         </c:when>
         <c:otherwise>
             <c:forEach var="room" items="${roomList}">
                 <tr>
+                    <td>
+                        <button class="delete-btn" data-room-id="${room.id}" title="방 삭제">
+                        </button>
+                    </td>
                     <td>${room.id}</td>
                     <td>${room.name}</td>
                     <td>${room.status}</td>
