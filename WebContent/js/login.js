@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const loginBtn = document.getElementById('loginBtn');
-    //const joinBtn = document.getElementById('joinBtn');
+    const joinBtn = document.getElementById('joinBtn');
 
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
@@ -9,12 +9,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-//    // joinBtn 클릭 시 /join 페이지로 이동
-//        joinBtn.addEventListener('click', function () {
-//            //const path = typeof contextPath !== 'undefined' ? contextPath : '';
-//            window.location.href = `${path}/join`;
-//        });
-//    });
+   // joinBtn 클릭 시 /join 페이지로 이동
+   joinBtn.addEventListener('click', function () {
+       const path = typeof contextPath !== 'undefined' ? contextPath : '';
+       window.location.href = `${path}/join`;
+   });
 
     loginBtn.addEventListener('click', function () {
         const username = document.getElementById('username').value;
