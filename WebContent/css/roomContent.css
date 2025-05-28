@@ -88,30 +88,64 @@ h2 {
 
 /* 삭제 버튼 스타일 */
 .delete-btn {
-    background: linear-gradient(to bottom, #ff6b6b, #e55353);
+    background: linear-gradient(135deg, #ff4757, #ff3742, #ff2d37);
     color: white;
     border: none;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    font-size: 16px;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 4px 12px rgba(255, 71, 87, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.delete-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
 .delete-btn:hover {
-    background: linear-gradient(to bottom, #ff5252, #d32f2f);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.4);
+    background: linear-gradient(135deg, #ff3742, #ff2d37, #ff1e2d);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+        0 6px 20px rgba(255, 71, 87, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .delete-btn:active {
-    transform: scale(0.95);
+    transform: translateY(0) scale(0.95);
+    transition-duration: 0.1s;
 }
 
 .join-btn{

@@ -33,7 +33,6 @@
                 <tr>
                     <td>
                         <button class="delete-btn" data-room-id="${room.id}" title="방 삭제">
-                            🗑️
                         </button>
                     </td>
                     <td>${room.id}</td>
