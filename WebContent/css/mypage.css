@@ -1,0 +1,63 @@
+:root {
+    --drop-duration: 0.8s;
+}
+
+.container {
+    background-image: url('../image/horse.png');
+    background-size: 600px 600px;  /* 반응형 비율 유지 */
+    background-position: center;
+    background-repeat: no-repeat;
+    padding : 0;
+    height: 600px;
+
+    /* 등장 애니메이션 준비 */
+    opacity: 0;
+    transform: scale(0.5);
+    animation: drop var(--drop-duration) ease-out forwards;
+
+    /* 글씨 absolute 포지셔닝 위해 필요 */
+    position: relative;
+}
+
+@keyframes drop {
+    0% { transform: translateY(-500px) rotateX(60deg) rotateZ(15deg); opacity: 0; }
+    50% { transform: translateY(50px) rotateX(20deg) rotateZ(-5deg); opacity: 1; }
+    75% { transform: translateY(-20px) rotateX(15deg) rotateZ(2deg); opacity: 1; }
+    100% { transform: translateY(0) rotateX(0deg) rotateZ(0deg); opacity: 1; }
+}
+
+
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    font-weight: bold;
+    color: #999; /* 메탈릭 은색 */
+    text-shadow:
+            1px 1px 1px #fff,      /* 빛 반사 하이라이트 */
+            -1px -1px 1px #666,    /* 어두운 음영 */
+            0 0 5px rgba(255,255,255,0.4); /* 부드러운 광택 */
+    display: flex;
+    gap: 4px;
+}
+
+
+@keyframes engrave {
+    0% {
+        opacity: 0;
+        transform: scale(1.5) rotateX(90deg);
+        text-shadow:
+                0 0 10px #fff,
+                0 0 20px #fff;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateX(0);
+        text-shadow:
+                1px 1px 1px #fff,
+                -1px -1px 1px #666,
+                0 0 5px rgba(255,255,255,0.4);
+    }
+}

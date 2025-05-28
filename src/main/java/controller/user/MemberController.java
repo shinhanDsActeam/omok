@@ -3,6 +3,7 @@ package main.java.controller.user;
 import main.java.db.HistoryDAO;
 import main.java.dto.HistoryDTO;
 import main.java.domain.Member;
+import main.java.dto.MemberInfoDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/myhistory"})
+@WebServlet(urlPatterns = {"/myhistory", "/mypage"})
 public class MemberController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -46,6 +47,16 @@ public class MemberController extends HttpServlet {
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
             request.getRequestDispatcher("/WEB-INF/views/user/myhistory.jsp").forward(request, response);
+        }else if("/mypage".equals(path)) {
+            HttpSession session = request.getSession();
+            Member member = (Member) session.getAttribute("loginUser");
+            if (member == null) {
+                response.sendRedirect("login");
+                return;
+            }
+
+            request.setAttribute("info", historyDAO.getRankingByMemberId(member.getId()));
+            request.getRequestDispatcher("/WEB-INF/views/user/mypage.jsp").forward(request, response);
         }
     }
 }

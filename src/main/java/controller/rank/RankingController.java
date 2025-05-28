@@ -34,7 +34,7 @@ public class RankingController extends HttpServlet {
             System.out.println("[ LOG ] : page = " + currentPage + ", pageSize = " + pageSize + ", offset = " + offset
                     + ", totalCount = " + totalCount + ", totalPages = " + totalPages);
 
-            List<RankingDTO> historyList = historyDAO.getRanking(offset, pageSize);
+            List<RankingDTO> historyList = historyDAO.getRankingList(offset, pageSize);
 
             request.setAttribute("rankingList", historyList);
             request.setAttribute("currentPage", currentPage);
