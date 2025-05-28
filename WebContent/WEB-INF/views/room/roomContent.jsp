@@ -32,8 +32,10 @@
             <c:forEach var="room" items="${roomList}">
                 <tr>
                     <td>
-                        <button class="delete-btn" data-room-id="${room.id}" title="방 삭제">
-                        </button>
+                        <c:if test="${room.status != '게임중'}">
+                            <button class="delete-btn" data-room-id="${room.id}" title="방 삭제">
+                            </button>
+                        </c:if>
                     </td>
                     <td>${room.id}</td>
                     <td>${room.name}</td>
