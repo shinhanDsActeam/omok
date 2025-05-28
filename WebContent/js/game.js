@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (data.gameOver) {
                     gameEnded = true;
-                    winMessage.textContent = `${data.winnerNickname} 승리!`;
+                    winMessage.textContent = `${data.winnerNickname}님의 승리!`;
                     martialMessage.textContent = '천하무적 승리의 순간!';
                     winOverlay.style.opacity = '1';
                     winOverlay.style.pointerEvents = 'auto';
