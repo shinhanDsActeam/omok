@@ -1,73 +1,149 @@
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
+
 h1{
     color: #8B4513;
     font-size: 65px;
-    margin-bottom: 20px;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+
 }
 
 body {
-    background-color: #f0e0d0;
-    font-family: 'Malgun Gothic', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
+  position: relative;
+  margin: 0;
+  height: 100vh;
+  font-family: 'Nanum Myeongjo', serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.4; /*  배경 투명도 설정 */
+  z-index: -1;
 }
 
 .container {
-    background-color: #fef8e8;
+    /*background-color: #fef8e8;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
     padding: 20px;
     width: 70%;
     height: 55%;
+    max-width: 800px;*/
+
+    background-image: url('../image/omokroomlist.jpg'); /* 이미지 경로 설정 */
+    background-size:cover; /* 이미지를 비율 유지하며 맞춤 */
+    background-position: center;
+    background-repeat: no-repeat;
+    /*background-color: #fff;*/
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    padding: 20px;
+    width: 70%;
+    height: 60%;
     max-width: 800px;
 }
 
+
 input[type="text"],
 input[type="password"] {
-    width: 55%;
+    width: 50%;
     height: 30px;
-    border-radius: 20px; /* 중복된 border-radius 중 하나만 사용 */
+    border-radius: 20px;
     padding: 10px;
-    margin: 15px 0 15px 90px;
+    margin: 15px 0 15px 140px;
     border: 1px solid #8b4512;
+    text-align: left;
 }
 input::placeholder {
     font-size: 25px;
     color: gray;
 }
 
-input[type="button"]{
-    height: 50px;
-    padding: 0 20px;
-    margin-left: 10px;
-    border: 1px solid #8b4512;
-    border-radius:20px;
-    background-color: #e0e0e0;
+input[type="submit"] {
+    height: 55px;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    border: none;
+    border-radius: 20px;
     cursor: pointer;
-    font-family: 'Malgun Gothic', sans-serif;
-    font-size: 20px;
-    background-color: #ffeec6;
-    color : #8b4512;
+    font-family: 'Nanum Myeongjo', serif;
     font-weight: bold;
+    font-size: 30px;
+    color: #8b4512;
+    margin: 20px auto; /* 가운데 정렬 위해 좌우 마진 자동 */
+    transition: all 0.3s ease;
+    transition: background-color 0.3s;
+    padding: 0 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    display: block;
 }
 
-input[type="submit"] {
+input[type="button"] {
     height: 50px;
-    padding: 0 20px;
-    margin-left: 10px;
-    border: 1px solid #8b4512;
-    border-radius:20px;
-    background-color: #e0e0e0;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    border: none;
+    border-radius: 20px;
     cursor: pointer;
-    font-family: 'Malgun Gothic', sans-serif;
-    font-size: 25px;
-    background-color: #ffeec6;
+    font-family: 'Nanum Myeongjo', serif;
     font-weight: bold;
-    color: #8b4512; /* ← 'font'가 아니라 'color'를 써야 글자색 적용됨 */
-    margin: 0 auto; /* 가운데 정렬 위해 좌우 마진 자동 */
-    display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    padding: 10px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 20px;
+}
+
+/*
+input[type="button"]:hover,action,
+ input[type="submit"]:hover,action {
+    color: #ffcc00;
+        text-shadow:
+        0 0 4px #ffcc00,
+        0 0 8px #ffd700,
+        0 0 12px #ffaa00;
+    transform: scale(1.08);
+}*/
+
+input.checking[type="button"]:hover,
+input.checking[type="button"]:active,
+ input[type="submit"]:hover,action {
+    color: #ffcc00;
+        text-shadow:
+            0 0 4px #ffcc00,
+            0 0 8px #ffd700,
+            0 0 12px #ffaa00;
+        transform: scale(1.08);
+}
+
+input.checked[type="button"],
+input.checked[type="submit"] {
+    background: #ccc;
+    color: #666;
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none; /* 클릭 불가능하게 */
+    transform: none;
 }
