@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentPage = 1;
 
+    // URL에서 현재 페이지 파라미터 읽기
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+    if (pageParam) {
+        currentPage = parseInt(pageParam);
+    }
+
     // 방 만들기 버튼 클릭 시 모달 표시
     if (createRoomBtn) {
         createRoomBtn.addEventListener('click', function() {
@@ -31,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     attachDeleteListeners();
     attachPaginationListeners();
 
-    // 페이지 로드 시 자동 갱신 시작
+    // 페이지 로드 시 자동 갱신 시작 (현재 페이지 유지)
     refreshRoomList();
     setInterval(refreshRoomList, 3000);  // 3초마다 리스트 갱신
 
@@ -40,7 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('방 목록 갱신 시작 - 페이지:', page);
 
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', `getRoomList?page=${page}`, true);
+        // URL을 lobby로 통일
+        xhr.open('GET', `lobby?page=${page}`, true);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 console.log('방 목록 갱신 성공');
@@ -60,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log('테이블 업데이트 완료');
 
                         // 이벤트 리스너 재바인딩
-                        attachPaginationListeners();
                         attachDeleteListeners();
                     }
                 }
@@ -102,12 +109,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!isNaN(page)) {
                         currentPage = page;
                         console.log('페이지 변경:', currentPage);
+
+                        // URL 변경 (브라우저 히스토리에 추가)
+                        const newUrl = `${window.location.pathname}?page=${page}`;
+                        window.history.pushState({page: page}, '', newUrl);
+
+                        // 방 목록 갱신
                         refreshRoomList(currentPage);
                     }
                 }
             });
         });
     }
+
+    // 브라우저 뒤로가기/앞으로가기 처리
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.page) {
+            currentPage = event.state.page;
+        } else {
+            // URL에서 페이지 파라미터 다시 읽기
+            const urlParams = new URLSearchParams(window.location.search);
+            const pageParam = urlParams.get('page');
+            currentPage = pageParam ? parseInt(pageParam) : 1;
+        }
+        refreshRoomList(currentPage);
+    });
 
     // 삭제 버튼 클릭 이벤트 바인딩
     function attachDeleteListeners() {
@@ -138,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 방 삭제 함수 - /deleteRoom 엔드포인트 추가 필요
+    // 방 삭제 함수
     function deleteRoom(roomId) {
         console.log('방 삭제 요청:', roomId);
 
@@ -153,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (xhr.status === 200) {
                 console.log('방 삭제 성공');
                 alert('방이 삭제되었습니다.');
-                // 방 목록 새로고침
+                // 방 목록 새로고침 (현재 페이지 유지)
                 refreshRoomList(currentPage);
             } else {
                 console.error('방 삭제 실패:', xhr.status, xhr.responseText);
