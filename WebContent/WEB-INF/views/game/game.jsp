@@ -79,7 +79,7 @@
 
         <div id="game-end-buttons" style="display:none;">
             <button class="end-btn" onclick="requestRematch()">재대결</button>
-            <button class="end-btn" onclick="location.href='<%= request.getContextPath() %>/leaveRoom?roomId=<%= roomId %>'">방 떠나기</button>
+            <button class="end-btn" onclick="leaveRoom()">방 떠나기</button>
         </div>
     </div>
 </div>

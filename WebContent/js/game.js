@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (data.gameOver) {
                     gameEnded = true;
-                    winMessage.textContent = data.message;
+                    winMessage.textContent = `${data.winnerNickname} 승리!`;
                     martialMessage.textContent = '천하무적 승리의 순간!';
                     winOverlay.style.opacity = '1';
                     winOverlay.style.pointerEvents = 'auto';
@@ -156,6 +156,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     }));
                 }
             }
+        }
+
+        if (data.type === "opponentLeft") {
+            alert("👋 상대방이 조용히 방을 떠났습니다.\n⚔️ 승부는 다음 기회에 이어가세요.");
+            window.location.href = `${contextPath}/leaveRoom?roomId=${roomId}`;
+            return;
         }
     };
 
@@ -312,6 +318,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    window.leaveRoom = function () {
+        socket.send(JSON.stringify({
+            type: "leaveRoom",
+            nickname,
+            roomId
+        }));
+        window.location.href = `${contextPath}/leaveRoom?roomId=${roomId}`;
+    };
+
     function createDustEffect() {
         const container = boardContainer;
         for (let i = 0; i < 30; i++) {
@@ -362,6 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     row, col,
                     stone: currentPlayer,
                     gameOver: data.gameOver,
+                    winnerNickname: nickname,
                     message: data.message
                 }));
             } else {
