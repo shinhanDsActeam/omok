@@ -97,20 +97,10 @@ h2 {
     font-weight: bold;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
-    /*
-    opacity: 0;
-    transform: translateY(30px);
-    animation: introAppear 1s forwards 2.5s;*/
     display: block;
     margin: 0 auto;
     border-radius: 3px;
     padding: 5px 10px;
-    /*ackground-color: #8B4513;*/
-    /*color: white;*/
-    /*border: none;
-    border-radius: 5px;*/
-    /*padding: 10px 20px;*/
-    /*margin: 0 10px;*/
     font-size: 1.2em;
     cursor: pointer;
     transition: background-color 0.3s;
