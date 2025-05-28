@@ -101,6 +101,8 @@
     const roomId = '<%= roomId %>';
     const isHost = <%= isHost %>;
 </script>
+<!-- 돌 놓기 사운드 -->
+<audio id="stone-sound" src="<%= request.getContextPath() %>/sounds/stone.wav" preload="auto"></audio>
 
 <script src="<%= request.getContextPath() %>/js/game.js"></script>
 </body>

@@ -1,3 +1,9 @@
+let userInteracted = false;
+
+document.addEventListener('click', () => {
+    userInteracted = true;
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     const boardSize = 15;
     const board = document.getElementById('board');
@@ -395,6 +401,12 @@ document.addEventListener('DOMContentLoaded', function () {
         stone.classList.add('stone', player);
         cell.appendChild(stone);
         createEnergyEffect(cell, player);
+        // ✅ 사용자 상호작용 이후에만 사운드 재생
+        const sound = document.getElementById('stone-sound');
+        if (userInteracted && sound) {
+            sound.currentTime = 0;
+            sound.play().catch(e => console.warn("사운드 재생 실패", e));
+        }
     }
 
     function createEnergyEffect(cell, player) {
