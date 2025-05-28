@@ -79,6 +79,7 @@ h2 {
     vertical-align: middle; /* 내용을 세로 가운데 정렬 */
 }
 
+
 /* 삭제 버튼 컬럼도 고정 너비로 설정 */
 .room-list td:first-child {
     width: 80px; /* 삭제 버튼 컬럼 고정 너비 */
