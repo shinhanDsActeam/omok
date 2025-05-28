@@ -98,8 +98,6 @@ public class RoomController extends HttpServlet {
 
         if ("/lobby".equals(path)) {
             request.getRequestDispatcher("/WEB-INF/views/room/room.jsp").forward(request, response);
-        } else if ("/getRoomList".equals(path)) {
-            request.getRequestDispatcher("/WEB-INF/views/room/room-list-fragment.jsp").forward(request, response);
         } else if ("/leaveRoom".equals(path)) {
             String roomIdStr = request.getParameter("roomId");
             HttpSession session = request.getSession();
