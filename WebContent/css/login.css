@@ -1,29 +1,67 @@
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
 h1{
     color: #8B4513;
     font-size: 65px;
-    margin-bottom: 20px;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+
 }
 
 body {
-    background-color: #f0e0d0;
-    font-family: 'Malgun Gothic', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
+  position: relative;
+  margin: 0;
+  height: 100vh;
+  font-family: 'Nanum Myeongjo', serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.4; /*  배경 투명도 설정 */
+  z-index: -1;
 }
 
 .container {
-    background-color: #fef8e8;
+    /*background-color: #fef8e8;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
     padding: 20px;
     width: 45%;
     height: 45%;
+    max-width: 800px;*/
+
+    background-image: url('../image/omokroomlist.jpg'); /* 이미지 경로 설정 */
+    background-size:cover; /* 이미지를 비율 유지하며 맞춤 */
+    background-position: center;
+    background-repeat: no-repeat;
+    /*background-color: #fff;*/
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    padding: 60px 20px 10px 20px;
+    width: 43%;
+    height: 43%;
     max-width: 800px;
+    text-align: center;
 }
 
 input[type="text"],
@@ -42,17 +80,26 @@ input::placeholder {
 }
 input[type="button"] {
     height: 50px;
-    padding: 0 20px;
-    margin-left: 10px;
-    border: 1px solid #8b4512;
-    border-radius:20px;
-    background-color: #e0e0e0;
-    cursor: pointer;
-    font-family: 'Malgun Gothic', sans-serif;
-    font-size: 25px;
-    background-color: #ffeec6;
-    font-weight: bold;
-    color: #8b4512; /* ← 'font'가 아니라 'color'를 써야 글자색 적용됨 */
-    margin: 0 auto; /* 가운데 정렬 위해 좌우 마진 자동 */
-    display: block;
+        background: linear-gradient(to bottom, #DCB35C, #b89346);
+        color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Nanum Myeongjo', serif;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+        padding: 10px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 30px;
+}
+input[type="button"]:hover,action {
+    color: #ffcc00;
+        text-shadow:
+                0 0 4px #ffcc00,
+                0 0 8px #ffd700,
+                0 0 12px #ffaa00;
+        transform: scale(1.08);
 }
