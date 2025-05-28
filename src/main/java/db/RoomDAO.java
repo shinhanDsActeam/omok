@@ -9,6 +9,14 @@ import java.util.List;
 import static main.java.util.DBUtil.getConnection;
 
 public class RoomDAO {
+    private static RoomDAO instance = new RoomDAO();
+
+    private RoomDAO() {
+    }
+
+    public static RoomDAO getInstance() {
+        return instance;
+    }
 
     public boolean insertRoom(Room room) {
         String sql = "INSERT INTO rooms (name, status) VALUES (?, ?)";
