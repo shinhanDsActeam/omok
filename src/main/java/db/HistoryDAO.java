@@ -73,13 +73,13 @@ public class HistoryDAO {
     }
 
     // 3. 결과 저장
-    public void addHistory(int userId, int opponentId, String result) {
+    public void addHistory(int memberId, int opponentId, String result) {
         String sql = "INSERT INTO history (member_id, opponent_id, result) VALUES (?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, userId);
+            pstmt.setInt(1, memberId);
             pstmt.setInt(2, opponentId);
             pstmt.setString(3, result);
 
