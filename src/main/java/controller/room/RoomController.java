@@ -374,8 +374,6 @@ public class RoomController extends HttpServlet {
         return deleteRoom(room);
     }
 
-    }
-
     /**
      * 게임 종료 시 방 상태를 다시 '대기중'으로 변경하는 메서드
      * (GameController에서 호출 가능)
