@@ -361,17 +361,21 @@ public class RoomController extends HttpServlet {
         Room room = findRoomById(roomId);
 
         if (room != null && room.getPlayers() != null) {
-            // 플레이어 목록에서 해당 사용자 제거
-            room.getPlayers().remove(memberId);
+            // 💡 값으로 삭제하도록 수정
+            room.getPlayers().remove((Object) memberId);
 
             System.out.println("=== 방 나가기 ===");
             System.out.println("방 ID: " + roomId + ", 나간 사용자: " + memberId);
             System.out.println("남은 인원수: " + room.getPlayers().size());
             System.out.println("남은 플레이어: " + room.getPlayers());
 
+            // 💡 방에 아무도 없으면 삭제
+            if (room.getPlayers().isEmpty()) {
+                return deleteRoom(room);
+            }
         }
-        System.out.println("삭제 완료");
-        return deleteRoom(room);
+
+        return false;
     }
 
     /**
