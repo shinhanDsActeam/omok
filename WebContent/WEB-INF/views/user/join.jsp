@@ -10,19 +10,19 @@
 
 <body>
 <div class="login-wrapper">
-    <h1>회원가입</h1>
+    <h1>가입하기</h1>
     <form action="<%= request.getContextPath() %>/join" method="post" class="container">
         <div>
-            <input type="text" id="username" name="username" placeholder="아이디">
-            <input type="button" id="checkIdBtn" value="${empty param.checked ? '중복체크' : '확인완료'}"><br>
-            <input type="password" id="password" name="password" placeholder="비밀번호"><br>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인">
+            <input type="text" id="username" name="username" placeholder="식별자">
+            <input type="button" id="checkIdBtn" value="${empty param.checked ? '중복확인' : '확인완료'}"><br>
+            <input type="password" id="password" name="password" placeholder="암호"><br>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="암호 확인">
             <span id="passwordMessage" class="passwordMessage"></span><br>
-            <input type="text" id="nickname" name="nickname" placeholder="닉네임">
-            <input type="button" id="checkNicknameBtn" value="${empty param.checked ? '중복체크' : '확인완료'}"><br>
+            <input type="text" id="nickname" name="nickname" placeholder="별호">
+            <input type="button" id="checkNicknameBtn" value="${empty param.checked ? '중복확인' : '확인완료'}"><br>
         </div>
         <div>
-            <input type="submit" value="가입하기">
+            <input type="submit" value="확인">
         </div>
     </form>
     <script>

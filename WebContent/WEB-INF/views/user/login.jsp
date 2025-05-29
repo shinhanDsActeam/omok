@@ -12,13 +12,13 @@
 </head>
 <body>
 <div class="login-wrapper">
-    <h1>로그인</h1>
+    <h1>들어가기</h1>
     <form id="loginForm" action="/login" method="post" class="container">
         <div>
-            <input type="text" id="username" name="username" placeholder="아이디"><br>
-            <input type="password" id="password" name="password" placeholder="비밀번호"><br>
-            <input type="button" id="joinBtn" value="회원가입">
-            <input type="button" id="loginBtn" value="로그인">
+            <input type="text" id="username" name="username" placeholder="식별자"><br>
+            <input type="password" id="password" name="password" placeholder="암호"><br>
+            <input type="button" class = "btn" id="joinBtn" value="가입하기">
+            <input type="button" class = "btn" id="loginBtn" value="확인">
         </div>
     </form>
 </div>

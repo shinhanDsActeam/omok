@@ -47,7 +47,7 @@ body::before {
 }
 
 .card-box {
-    background-image: url('../image/omokroomlist.jpg'); /* 이미지 경로 설정 */
+    background-image: url('../image/korean.png'); /* 이미지 경로 설정 */
     background-size:cover; /* 이미지를 비율 유지하며 맞춤 */
     background-position: center;
     background-repeat: no-repeat;

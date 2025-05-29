@@ -9,7 +9,7 @@
 </button>
 
 <div id="slidebar" class="slidebar">
-    <button id="closeBtn" class="close-btn">✖</button>
+    <button id="closeBtn" class="close-btn">×</button>
     <div class="profile-header">
         <div id="profileImg">
             <img class="img" src="${pageContext.request.contextPath}/image/profile.png" alt="프로필">

@@ -1,3 +1,14 @@
+@font-face {
+    font-family: 'Shilla_Culture';
+    src: url('../fonts/Shilla_Culture(M).otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+}
+
 .login-wrapper {
   display: flex;
   flex-direction: column;
@@ -16,11 +27,12 @@ h1{
 
 }
 
+
+
 body {
   position: relative;
   margin: 0;
   height: 100vh;
-  font-family: 'Nanum Myeongjo', serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,63 +54,57 @@ body::before {
 }
 
 .container {
-    /*background-color: #fef8e8;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    padding: 20px;
-    width: 45%;
-    height: 45%;
-    max-width: 800px;*/
-
-    background-image: url('../image/omokroomlist.jpg'); /* 이미지 경로 설정 */
-    background-size:cover; /* 이미지를 비율 유지하며 맞춤 */
+    background-image: url('../image/doong.png'); /* 이미지 경로 설정 */
+    background-size: contain; /* 이미지를 비율 유지하며 맞춤 */
     background-position: center;
     background-repeat: no-repeat;
-    /*background-color: #fff;*/
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    padding: 20px ;
-    width: 40%;
-    max-width: 800px;
+    padding: 6vw 2vw; /* 화면 크기에 따라 패딩도 유동적으로 */
     text-align: center;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input {
+    /*font-size: 25px;*/
+    font-size: 1.2rem;
 }
 
 input[type="text"],
 input[type="password"] {
-    width: 55%;
-    height: 30px;
-    border-radius: 20px; /* 중복된 border-radius 중 하나만 사용 */
-    padding: 10px;
+    height: 1.8rem;
+    border-radius: 1rem; /* 중복된 border-radius 중 하나만 사용 */
+    padding: 0.7rem 1.2rem;
     border: 1px solid #8b4512;
-    display: block;
-    margin: 15px auto;
+    margin: 1rem 5rem;
+    text-align: left;
 }
 input::placeholder {
-    font-size: 25px;
+    font-size: 1.2rem;
     color: gray;
 }
 input[type="button"] {
-    height: 50px;
-        background: linear-gradient(to bottom, #DCB35C, #b89346);
-        color: #333;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-family: 'Nanum Myeongjo', serif;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
-        padding: 10px 20px;
-        margin: 0 10px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        font-size: 30px;
+    height: 2.4rem;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    padding: 0 1.3rem;
+    margin: 0 1.6rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1.2rem;
 }
 input[type="button"]:hover,action {
     color: #ffcc00;
-        text-shadow:
-                0 0 4px #ffcc00,
-                0 0 8px #ffd700,
-                0 0 12px #ffaa00;
-        transform: scale(1.08);
+    text-shadow:
+            0 0 4px #ffcc00,
+            0 0 8px #ffd700,
+            0 0 12px #ffaa00;
+    transform: scale(1.08);
 }
