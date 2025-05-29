@@ -173,6 +173,22 @@ public class OmokWebSocket {
                         JSONObject surrenderMsg = new JSONObject();
                         surrenderMsg.put("type", "surrender");
                         surrenderMsg.put("nickname", data.getString("nickname"));
+                        String loserNickname = data.getString("nickname");
+
+                        // 현재 방 세션 정보 가져오기
+                        List<Session> sessions = roomSessions.get(roomId);
+                        if (sessions == null || sessions.size() < 2) return;
+
+                        String hostNickname = (String) sessions.get(0).getUserProperties().get("nickname");
+                        String guestNickname = (String) sessions.get(1).getUserProperties().get("nickname");
+
+                        Integer hostId = MemberDAO.getInstance().getIdByNickname(hostNickname);
+                        Integer guestId = MemberDAO.getInstance().getIdByNickname(guestNickname);
+
+                        if (hostId != null && guestId != null) {
+                            String winner = loserNickname.equals(hostNickname) ? "guest" : "host";
+                            HistoryService.recordMatchResult(hostId, guestId, winner);
+                        }
                         broadcast(roomId, surrenderMsg.toString());
                         return;
                     case "leaveRoom":
