@@ -154,6 +154,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     winOverlay.style.opacity = '1';
                     winOverlay.style.pointerEvents = 'auto';
                     document.getElementById("game-end-buttons").style.display = 'flex';
+                    // ✅ 승리 사운드 재생
+                    const victorySound = document.getElementById('end-sound');
+                    if (userInteracted && victorySound) {
+                        victorySound.currentTime = 0;
+                        victorySound.play().catch(e => console.warn("승리 사운드 재생 실패", e));
+                    }
                 } else {
                     socket.send(JSON.stringify({
                         type: "turnChange",
