@@ -19,7 +19,7 @@ public class RoomDAO {
     }
 
     public boolean insertRoom(Room room) {
-        String sql = "INSERT INTO rooms (name, status) VALUES (?, ?)";
+        String sql = "INSERT INTO rooms (name, status, creator) VALUES (?, ?, ?)";
 
         try (
                 Connection conn = getConnection();
@@ -27,6 +27,7 @@ public class RoomDAO {
 
             pstmt.setString(1, room.getName());
             pstmt.setString(2, room.getStatus());
+            pstmt.setInt(3, room.getCreator());
             pstmt.executeUpdate();
 
             // DB에서 생성된 AUTO_INCREMENT ID 가져오기
@@ -120,7 +121,7 @@ public class RoomDAO {
     }
 
     //방의 총 개수
-    public int getRoomcountAll(){
+    public int getRoomCountAll(){
         int total = 0;
         String sql = "SELECT COUNT(*) FROM rooms";
 

@@ -4,8 +4,9 @@
     Member loginUser = (Member) session.getAttribute("loginUser");
     String loginId = loginUser != null ? loginUser.getUsername() : "";
     String nickname = loginUser != null ? loginUser.getNickname() : "";
+    int memberId = loginUser != null ? loginUser.getId() : null;
     String roomId = request.getParameter("roomId");
-    boolean isHost = "true".equals(request.getParameter("host"));
+    boolean isHost = (memberId == ((int) session.getAttribute("roomCreator")));
 %>
 <!DOCTYPE html>
 <html>
@@ -98,6 +99,7 @@
 <script>
     const loginId = '<%= loginId %>';
     const nickname = '<%= nickname %>';
+    const memberId = '<%= memberId %>';
     const roomId = '<%= roomId %>';
     const isHost = <%= isHost %>;
 </script>

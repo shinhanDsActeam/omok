@@ -19,4 +19,13 @@ public class Member {
         this.password = password;
         this.nickname = nickname;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Member) {
+            Member member = (Member) obj;
+            return this.id == member.getId();
+        }
+        return false;
+    }
 }

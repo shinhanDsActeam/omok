@@ -1,5 +1,7 @@
 package main.java.controller.game;
 
+import main.java.db.MemberDAO;
+import main.java.domain.Member;
 import main.java.dto.Player;
 import main.java.service.Board;
 
@@ -26,6 +28,8 @@ public class GameController extends HttpServlet {
     public static Board getBoard(String roomId) {
         return boards.get(roomId);
     }
+
+    static MemberDAO memberDAO = MemberDAO.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,12 +62,12 @@ public class GameController extends HttpServlet {
                 return;
             }
 
-            String action = request.getParameter("action");
-            if ("restart".equals(action)) {
-                initializeRoom(roomId);
-                out.print("{\"success\":true, \"message\":\"게임이 초기화되었습니다.\"}");
-                return;
-            }
+//            String action = request.getParameter("action");
+//            if ("restart".equals(action)) {
+//                initializeRoom(roomId);
+//                out.print("{\"success\":true, \"message\":\"게임이 초기화되었습니다.\"}");
+//                return;
+//            }
 
             initializeRoom(roomId); // 없으면 초기화함
 
@@ -85,9 +89,10 @@ public class GameController extends HttpServlet {
             }
 
             String stone = currentPlayer.stone.equals("black") ? "O" : "X";
+
             board.placeStone(row, col, stone);
             boolean isWin = board.checkWin(row, col, stone);
-            String msg = currentPlayer.name + (isWin ? " 승리!" : "의 차례입니다");
+            String msg = currentPlayer.getName() + (isWin ? " 승리!" : "의 차례입니다");
 
             out.printf(
                     "{\"success\":true, \"stone\":\"%s\", \"message\":\"%s\", \"gameOver\":%b}",
@@ -108,18 +113,20 @@ public class GameController extends HttpServlet {
     private void initializeRoom(String roomId) {
         boards.putIfAbsent(roomId, new Board(15));
         players.putIfAbsent(roomId, new Player[]{
-                new Player("플레이어1", "black"),
-                new Player("플레이어2", "white")
+                new Player(new Member(), "black"),
+                new Player(new Member(), "white")
         });
         currentPlayers.putIfAbsent(roomId, players.get(roomId)[0]);
     }
 
-    public static void resetRoom(String roomId) {
+    public static void resetRoom(String roomId /*, int hostId, int guestId*/) {
         boards.put(roomId, new Board(15));
+        /*
         players.put(roomId, new Player[]{
-                new Player("플레이어1", "black"),
-                new Player("플레이어2", "white")
+                new Player(memberDAO.getMemberById(hostId), "black"),
+                new Player(memberDAO.getMemberById(guestId), "white")
         });
+        */
         currentPlayers.put(roomId, players.get(roomId)[0]);
     }
 
