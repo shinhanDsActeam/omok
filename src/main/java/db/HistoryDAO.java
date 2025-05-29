@@ -60,7 +60,7 @@ public class HistoryDAO {
                 "JOIN member mem ON m.member_id = mem.id  " +
                 "JOIN member opp ON m.opponent_id = opp.id  " +
                 "WHERE m.member_id = ? OR m.opponent_id = ?  " +
-                "ORDER BY m.match_date DESC  " +
+                "ORDER BY m.id DESC  " +
                 "LIMIT ? OFFSET ?";
 
         try (Connection conn = DBUtil.getConnection();
