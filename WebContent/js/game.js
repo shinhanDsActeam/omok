@@ -61,6 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.type === "turnChange") {
             currentPlayer = data.currentPlayer;
             myTurn = data.currentPlayer === (isHost ? 'black' : 'white');
+            // 상대 시간 초기화
+            const opponentClass = currentPlayer === 'black'
+                ? '.white-player .time-limit'
+                : '.black-player .time-limit';
+            const opponentEl = document.querySelector(opponentClass);
+            if (opponentEl) opponentEl.textContent = `30초`;
             updateGameInfo();
             return;
         }
@@ -70,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
             msgBox.className = 'timeout-alert';
             msgBox.textContent = !myTurn ? "🎯 이제 당신의 차례입니다!" : "⏰ 시간 초과! 상대 턴으로 넘어갑니다!";
             document.body.appendChild(msgBox);
-            setTimeout(() => document.body.removeChild(msgBox), 3000);
+            setTimeout(() => document.body.removeChild(msgBox), 7000);
             return;
         }
 
