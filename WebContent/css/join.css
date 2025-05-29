@@ -60,7 +60,6 @@ body::before {
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
     padding: 20px;
     width: 70%;
-    height: 60%;
     max-width: 800px;
 }
 
