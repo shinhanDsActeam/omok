@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
             winOverlay.style.opacity = '1';
             winOverlay.style.pointerEvents = 'auto';
             document.getElementById("game-end-buttons").style.display = 'flex';
+            document.getElementById("rematch").style.display = 'none';
             return;
         }
 

@@ -1,22 +1,27 @@
 package main.java.domain;
+import lombok.Getter;
+import lombok.Setter;
+import main.java.dto.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
+@Setter
 public class Room {
     private int id;
-    private String name;
-    private String status;  // "대기중", "게임중" 등
-    private String creator;  // 방 생성자 ID
-    private List<String> players;  // 참여 플레이어 ID 목록
+    private String name;   // 방제
+    private String status; // "대기중", "게임중" 등
+    private int creator;   // 방 생성자 ID
+    private List<Integer> players;  // 참여 플레이어 id 목록
 
-    public Room(int id, String name, String creator) {
+    public Room(int id, String name) {
         this.id = id;
         this.name = name;
         this.creator = creator;
         this.status = "대기중";
         this.players = new ArrayList<>();
-        this.players.add(creator);  // 생성자를 첫 번째 플레이어로 추가
     }
 
     public Room() {
@@ -24,53 +29,35 @@ public class Room {
         this.status = "대기중";  // 기본 상태도 설정
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    public List<String> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(List<String> players) {
+    public void setPlayers(List<Integer> players) {
         this.players = players != null ? players : new ArrayList<>();
     }
 
-    public void addPlayer(String playerId) {
+    public int getPlayersSize(){
+        if(players == null) return 0;
+        return players.size();
+    }
+
+    public boolean addPlayer(int player) {
         if (this.players == null) {
             this.players = new ArrayList<>();
         }
-        if (!players.contains(playerId)) {
-            players.add(playerId);
+        if (!players.contains(player)) {
+            players.add(player);
+            return true;
         }
+        return false;
+    }
+
+    public boolean deletePlayer(int player) {
+        if (this.players == null) {
+            return false;
+        }
+        if (players.contains(player)) {
+            players.remove(player);
+            return true;
+        }
+        return false;
     }
 
     public boolean isFull() {

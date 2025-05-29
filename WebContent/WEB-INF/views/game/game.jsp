@@ -4,8 +4,9 @@
     Member loginUser = (Member) session.getAttribute("loginUser");
     String loginId = loginUser != null ? loginUser.getUsername() : "";
     String nickname = loginUser != null ? loginUser.getNickname() : "";
+    int memberId = loginUser != null ? loginUser.getId() : null;
     String roomId = request.getParameter("roomId");
-    boolean isHost = "true".equals(request.getParameter("host"));
+    boolean isHost = (memberId == ((int) session.getAttribute("roomCreator")));
 %>
 <!DOCTYPE html>
 <html>
@@ -78,7 +79,7 @@
         <div class="martial-message"></div>
 
         <div id="game-end-buttons" style="display:none;">
-            <button class="end-btn" onclick="requestRematch()">재대결</button>
+            <button id = "rematch" class="end-btn" onclick="requestRematch()">재대결</button>
             <button class="end-btn" onclick="leaveRoom()">방 떠나기</button>
         </div>
     </div>
@@ -98,6 +99,7 @@
 <script>
     const loginId = '<%= loginId %>';
     const nickname = '<%= nickname %>';
+    const memberId = '<%= memberId %>';
     const roomId = '<%= roomId %>';
     const isHost = <%= isHost %>;
 </script>
