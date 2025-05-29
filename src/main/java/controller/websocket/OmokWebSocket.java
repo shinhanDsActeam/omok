@@ -1,7 +1,9 @@
 package main.java.controller.websocket;
 
 import main.java.controller.game.GameController;
+import main.java.db.MemberDAO;
 import main.java.service.Board;
+import main.java.service.HistoryService;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpSession;
@@ -98,6 +100,29 @@ public class OmokWebSocket {
                 switch (type) {
                     case "startGame":
                         broadcast(roomId, new JSONObject().put("type", "startGame").toString());
+                        return;
+                    case "stonePlaced":
+                        if (data.getBoolean("gameOver")) {
+                            String winnerNickname = data.getString("winnerNickname");
+
+                            // 현재 방 세션 정보 가져오기
+                            List<Session> sessions = roomSessions.get(roomId);
+                            if (sessions == null || sessions.size() < 2) return;
+
+                            String hostNickname = (String) sessions.get(0).getUserProperties().get("nickname");
+                            String guestNickname = (String) sessions.get(1).getUserProperties().get("nickname");
+
+                            Integer hostId = MemberDAO.getInstance().getIdByNickname(hostNickname);
+                            Integer guestId = MemberDAO.getInstance().getIdByNickname(guestNickname);
+
+                            if (hostId != null && guestId != null) {
+                                String winner = winnerNickname.equals(hostNickname) ? "host" : "guest";
+                                HistoryService.recordMatchResult(hostId, guestId, winner);
+                            }
+                        }
+
+                        // 이 메시지는 원래처럼 broadcast도 해줘야 함
+                        broadcast(roomId, message);
                         return;
                     case "rematchRequest":
                         GameController.resetRoom(roomId);
