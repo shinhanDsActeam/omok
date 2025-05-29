@@ -28,18 +28,18 @@ public class RoomController extends HttpServlet {
 
     // 방 목록을 저장하는 Set (메모리상에 보관) - 실제 게임 진행 정보
     private static final Set<Room> roomSet = ConcurrentHashMap.newKeySet();
-    private static final AtomicInteger roomIdGenerator = new AtomicInteger(1);
-
-    static {
-        try {
-            int lastRoomId = roomDAO.getLastRoomId();
-            if (lastRoomId > 0) {
-                roomIdGenerator.set(lastRoomId + 1);
-            }
-        } catch (Exception e) {
-            System.err.println("방 ID 초기화 실패: " + e.getMessage());
-        }
-    }
+//    private static final AtomicInteger roomIdGenerator = new AtomicInteger(1);
+//
+//    static {
+//        try {
+//            int lastRoomId = roomDAO.getLastRoomId();
+//            if (lastRoomId > 0) {
+//                roomIdGenerator.set(lastRoomId + 1);
+//            }
+//        } catch (Exception e) {
+//            System.err.println("방 ID 초기화 실패: " + e.getMessage());
+//        }
+//    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -142,7 +142,7 @@ public class RoomController extends HttpServlet {
             // 새 방 생성
             String roomName = request.getParameter("roomName");
             if (roomName == null || roomName.trim().isEmpty()) {
-                roomName = "방 " + roomIdGenerator.get();
+                roomName = "방";
             }
 
             HttpSession session = request.getSession();
@@ -153,41 +153,33 @@ public class RoomController extends HttpServlet {
                 session.setAttribute("userId", userId);
             }
 
-            int roomId = roomIdGenerator.getAndIncrement();
-            Room newRoom = new Room(roomId, roomName, userId);
-            newRoom.setStatus("대기중"); // 초기 상태 설정
-
-            // 방장도 플레이어 목록에 추가
-            if (newRoom.getPlayers() == null) {
-                newRoom.setPlayers(new ArrayList<>());
-            }
-            // addPlayer 대신 직접 리스트에 추가
+            Room newRoom = new Room();
+            newRoom.setName(roomName);
+            newRoom.setCreator(userId);
+            newRoom.setStatus("대기중");
+            newRoom.setPlayers(new ArrayList<>());
             newRoom.getPlayers().add(userId);
 
-            // 디버깅용 로그
-            System.out.println("=== 방 생성 ===");
-            System.out.println("방 ID: " + roomId + ", 방장: " + userId);
-            System.out.println("방 생성 후 인원수: " + newRoom.getPlayers().size());
-            System.out.println("플레이어 목록: " + newRoom.getPlayers());
-
-            boolean success = roomDAO.insertRoom(newRoom);
+            boolean success = roomDAO.insertRoom(newRoom); // DB에서 id 세팅됨
 
             if (success) {
+                int dbRoomId = newRoom.getId(); // DB에서 받아온 ID
+
                 roomSet.add(newRoom);
 
-                session.setAttribute("roomId", newRoom.getId());
+                session.setAttribute("roomId", dbRoomId);
                 session.setAttribute("roomCreator", newRoom.getCreator());
                 session.setAttribute("roomPlayers", newRoom.getPlayers());
                 session.setAttribute("roomStatus", newRoom.getStatus());
 
-                // 방을 만든 사람은 바로 게임 화면으로 (host=true)
-                response.sendRedirect("game?roomId=" + roomId + "&host=true");
+                // 생성된 DB ID를 기반으로 redirect
+                response.sendRedirect("game?roomId=" + dbRoomId + "&host=true");
             } else {
                 response.getWriter().write("방 생성 실패");
             }
-        } else if ("/joinRoom".equals(path)) {
-            String roomIdStr = request.getParameter("roomId");
-            if (roomIdStr != null && !roomIdStr.trim().isEmpty()) {
+            } else if ("/joinRoom".equals(path)) {
+                String roomIdStr = request.getParameter("roomId");
+                if (roomIdStr != null && !roomIdStr.trim().isEmpty()) {
                 try {
                     int roomId = Integer.parseInt(roomIdStr);
                     Room room = findRoomById(roomId);
