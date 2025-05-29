@@ -41,18 +41,36 @@ public class HistoryDAO {
     // 특정 유저의 전적 페이징 조회
     public List<HistoryDTO> findByMemberIdWithPaging(int memberId, int offset, int pageSize) {
         List<HistoryDTO> list = new ArrayList<>();
-        String sql = "SELECT h.result, h.match_date, m.nickname AS opponent " +
-                "FROM history h " +
-                "JOIN member m ON h.opponent_id = m.id " +
-                "WHERE h.member_id = ? " +
-                "ORDER BY h.match_date DESC " +
+        String sql = "SELECT  " +
+                "    CASE  " +
+                "        WHEN m.member_id = ? THEN opp.nickname  " +
+                "        ELSE mem.nickname  " +
+                "    END AS opponent,  " +
+                "    CASE  " +
+                "        WHEN m.member_id = ? THEN m.result  " +
+                "        ELSE  " +
+                "            CASE m.result  " +
+                "                WHEN 'WIN' THEN 'LOSE'  " +
+                "                WHEN 'LOSE' THEN 'WIN'  " +
+                "                ELSE m.result  " +
+                "            END  " +
+                "    END AS result,  " +
+                "    m.match_date  " +
+                "FROM history m  " +
+                "JOIN member mem ON m.member_id = mem.id  " +
+                "JOIN member opp ON m.opponent_id = opp.id  " +
+                "WHERE m.member_id = ? OR m.opponent_id = ?  " +
+                "ORDER BY m.match_date DESC  " +
                 "LIMIT ? OFFSET ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, memberId);
-            pstmt.setInt(2, pageSize);
-            pstmt.setInt(3, offset);
+            pstmt.setInt(2, memberId);
+            pstmt.setInt(3, memberId);
+            pstmt.setInt(4, memberId);
+            pstmt.setInt(5, pageSize);
+            pstmt.setInt(6, offset);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
