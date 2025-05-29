@@ -105,4 +105,21 @@ public class MemberDAO {
         }
         return 0;
     }
+
+    public Integer getIdByNickname(String nickname) {
+        String sql = "SELECT id FROM member WHERE nickname = ?";
+        try (
+                Connection conn = DBUtil.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setString(1, nickname);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
