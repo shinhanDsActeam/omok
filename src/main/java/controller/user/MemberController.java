@@ -23,10 +23,10 @@ public class MemberController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int PAGE_SIZE = 8;
         String path = request.getServletPath();
         if("/myhistory".equals(path)) {
             int currentPage = Integer.parseInt(request.getParameter("page") == null ? "1" : request.getParameter("page"));
-            int pageSize = 10;
 
             HttpSession session = request.getSession();
             Member member = (Member) session.getAttribute("loginUser");
@@ -38,11 +38,12 @@ public class MemberController extends HttpServlet {
             int memberId = member.getId();
 
             int totalCount = historyDAO.countByMemberId(member.getId()); // 전체 개수
-            int totalPages = (int)Math.ceil((double)totalCount / pageSize);
-            int offset = (currentPage - 1) * pageSize;
+            int totalPages = (int)Math.ceil((double)totalCount / PAGE_SIZE);
+            int offset = (currentPage - 1) * PAGE_SIZE;
 
-            List<HistoryDTO> historyList = historyDAO.findByMemberIdWithPaging(memberId, offset, pageSize);
+            List<HistoryDTO> historyList = historyDAO.findByMemberIdWithPaging(memberId, offset, PAGE_SIZE);
 
+            request.setAttribute("pageSize", PAGE_SIZE);
             request.setAttribute("historyList", historyList);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
@@ -55,7 +56,9 @@ public class MemberController extends HttpServlet {
                 return;
             }
 
-            request.setAttribute("info", historyDAO.getRankingByMemberId(member.getId()));
+            MemberInfoDTO dto = historyDAO.getRankingByMemberId(member.getId());
+            request.setAttribute("info", dto);
+            request.setAttribute("winRate", dto.getWinRate());
             request.getRequestDispatcher("/WEB-INF/views/user/mypage.jsp").forward(request, response);
         }
     }

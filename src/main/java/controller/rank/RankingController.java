@@ -23,19 +23,22 @@ public class RankingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
+        int PAGE_SIZE = 8;
+
         if("/ranking".equals(path)) {
             int currentPage = Integer.parseInt(request.getParameter("page") == null ? "1" : request.getParameter("page"));
-            int pageSize = 10;
+
 
             int totalCount = memberDAO.countTotalUser(); // 유저 수
-            int totalPages = (int)Math.ceil((double)totalCount / pageSize);
-            int offset = (currentPage - 1) * pageSize;
+            int totalPages = (int)Math.ceil((double)totalCount / PAGE_SIZE);
+            int offset = (currentPage - 1) * PAGE_SIZE;
 
-            System.out.println("[ LOG ] : page = " + currentPage + ", pageSize = " + pageSize + ", offset = " + offset
+            System.out.println("[ LOG ] : page = " + currentPage + ", pageSize = " + PAGE_SIZE + ", offset = " + offset
                     + ", totalCount = " + totalCount + ", totalPages = " + totalPages);
 
-            List<RankingDTO> historyList = historyDAO.getRankingList(offset, pageSize);
+            List<RankingDTO> historyList = historyDAO.getRankingList(offset, PAGE_SIZE);
 
+            request.setAttribute("pageSize", PAGE_SIZE);
             request.setAttribute("rankingList", historyList);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("totalPages", totalPages);
