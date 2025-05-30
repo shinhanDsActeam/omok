@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
-<p>로그인한 사용자 ID: ${sessionScope.userId}</p>
+<%--<p>로그인한 사용자 ID: ${sessionScope.userId}</p>--%>
 <h1>5~ 빈틈없이</h1>
 
 <div class="title-wrapper">
@@ -18,7 +18,7 @@
         <th>방 번호</th>
         <th>방 이름</th>
         <th>상태</th>
-        <th>액션</th>
+        <th>겨루기</th>
     </tr>
     </thead>
     <tbody>

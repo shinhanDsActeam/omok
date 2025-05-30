@@ -32,6 +32,8 @@
     transition: all 0.3s ease;
 }
 
+
+
 .page-link:hover, .page-link.active{
     color: #ffcc00;
     text-shadow:
@@ -40,7 +42,9 @@
             0 0 12px #ffaa00;
     transform: scale(1.08);
 }
-
+.page-link.active {
+    color: #816905;
+}
 
 /* 이전 / 다음 버튼 (아이콘 스타일) */
 .page-nav-btn {
@@ -77,11 +81,33 @@
     height: 42px;
 }
 
-.record-table th,
+.record-table th{
+    /*background-color: #8B4513;*/
+    /*color: #fff;*/
+    border-bottom: 3px solid rgba(53, 35, 17, 0.55) !important;
+    border-top: 3px solid rgba(53, 35, 17, 0.55) !important;
+    padding: 10px;
+    font-size: 1.5rem !important;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+}
+
 .record-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #d9c7aa !important;
+}
+.record-table tr{
+    height: 4vw;
+}
+.record-table th,
+.record-table td {<div class="modal-content">
     text-align: center;
     vertical-align: middle;
     padding: 12px;
     font-size: 1rem;
     line-height: 1.4;
+}
+
+.record-table tr:nth-child(even) {
+    background-color: rgba(103, 103, 103, 0.1);
 }

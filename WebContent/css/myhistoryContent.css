@@ -1,6 +1,15 @@
-.card-box h2 {
+@font-face {
+    font-family: 'Shilla_Culture';
+    src: url('../fonts/Shilla_Culture(M).otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.card-box h1 {
     color: #8B4513;
     margin-bottom: 20px;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+
 }
 
 /* 전적이 없을 때 */
@@ -10,7 +19,7 @@
     padding: 30px;
     margin-top: 20px;
     line-height: 1.6;
-    background-image: url('../image/letter.png');  /* 생성한 사진 경로 */
+    background-image: url('../image/nohistory.png');  /* 생성한 사진 경로 */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -21,47 +30,44 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    background-color: #fff;
     border-radius: 5px;
     overflow: hidden;
 }
 
-.record-table th {
-    background-color: #8B4513;
-    color: white;
-    padding: 10px;
-}
-
-.record-table td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-}
-
-.record-table tr:hover {
-    background-color: #f5f5f5;
-    cursor: pointer;
-}
-
 .record-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: rgba(103, 103, 103, 0.1);
 }
 
 .win-row {
-    background-color: #b3e5fc !important;
+    background-color: rgba(141, 166, 125, 0.15) !important;
+}
+
+.win-row td:first-child {
+    background: url('../image/win.png') no-repeat center;
+    background-size: 40px 40px;
+    position: relative;
+    height: 50px; /* 높이 맞추기 */
 }
 
 .lose-row {
-    background-color: #ef9a9a !important;
+    background-color: rgba(204, 141, 141, 0.15) !important;
 }
 
+.lose-row td:first-child {
+    background: url('../image/lose.png') no-repeat center;
+    background-size: 40px 40px;
+    position: relative;
+    height: 50px; /* 높이 맞추기 */
+}
+
+
 .draw-row {
-    background-color: #eeeeee !important;
+    background-color: rgba(232, 232, 232, 0.25) !important;
 }
 
 /* 버튼 스타일도 일관화 */
 .button {
     background-color: #8B4513;
-    color: white;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
