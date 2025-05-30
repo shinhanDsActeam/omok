@@ -25,9 +25,7 @@
             <c:forEach var="match" items="${historyList}">
                 <tr class="${fn:toUpperCase(fn:trim(match.result)) == 'WIN' ? 'win-row' :
                                                 fn:toUpperCase(fn:trim(match.result)) == 'LOSE' ? 'lose-row' : 'draw-row'}">
-                    <td><strong>${fn:toUpperCase(fn:trim(match.result)) == 'WIN' ? '승' :
-                            fn:toUpperCase(fn:trim(match.result)) == 'LOSE' ? '패' : '무'}
-                    </strong></td>
+                    <td></td>
                     <td>${match.opponent}</td>
                     <td>${match.matchDate}</td>
                 </tr>
