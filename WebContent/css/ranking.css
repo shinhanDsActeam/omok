@@ -33,20 +33,15 @@
 
 
 .record-table td {
-    padding: 15px;
-    font-size: 17px;
+    /*padding: 15px;*/
+    font-size: 18px;
     border-bottom: 1px solid #ddd;
-}
-
-.record-table tr:hover {
-    background-color: rgba(245, 245, 245, 0.3);
-    cursor: pointer;
 }
 
 .record-table tr:nth-child(1), tr:nth-child(2), tr:nth-child(3) {
     /*background-color: #f9f9f9;*/
     font-weight: bolder;
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .button {
