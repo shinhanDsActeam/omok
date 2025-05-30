@@ -59,8 +59,8 @@ public class RoomController extends HttpServlet {
             }
         }
 
-        int postPage = 10; // 한 페이지당 방 수
-        int pageNum = 10;  // 페이지 네비게이션 범위
+        int postPage = 5; // 한 페이지당 방 수
+        int pageNum = 5;  // 페이지 네비게이션 범위
         int total = roomDAO.getRoomCountAll(); //전체 방 수
         int totalPages = ((total - 1) / postPage) + 1; //전체 페이지 개수
 
