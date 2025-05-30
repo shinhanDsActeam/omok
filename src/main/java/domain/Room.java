@@ -16,7 +16,7 @@ public class Room {
     private int creator;   // 방 생성자 ID
     private List<Integer> players;  // 참여 플레이어 id 목록
 
-    public Room(int id, String name) {
+    public Room(int id, String name, int creator) {
         this.id = id;
         this.name = name;
         this.creator = creator;
