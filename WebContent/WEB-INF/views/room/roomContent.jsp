@@ -18,7 +18,7 @@
         <th>방 번호</th>
         <th>방 이름</th>
         <th>상태</th>
-        <th>액션</th>
+        <th>겨루기</th>
     </tr>
     </thead>
     <tbody>

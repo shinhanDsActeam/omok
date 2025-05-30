@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
-<h2>최근 전적</h2>
+<h1>최근 전적</h1>
 <c:choose>
     <c:when test="${empty historyList}">
         <div class="empty-message">
@@ -19,7 +19,7 @@
             </tr>
             </thead>
             <tbody>
-            <c:set var="maxRows" value="10" />
+            <c:set var="maxRows" value="${pageSize}" />
             <c:set var="actualSize" value="${fn:length(historyList)}" />
 
             <c:forEach var="match" items="${historyList}">
