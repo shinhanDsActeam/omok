@@ -1,13 +1,22 @@
+@font-face {
+    font-family: 'Shilla_Culture';
+    src: url('../fonts/Shilla_Culture(M).otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 h1 {
     color: #8B4513;
     font-size: 2.5em;
     margin-bottom: 30px;
     text-shadow: 1px 1px 2px #d0b090;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
 }
 
 h2 {
     color: #8B4513;
     margin-top: 20px;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
 }
 
 .title-wrapper {
@@ -36,7 +45,7 @@ h2 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
     font-weight: bold;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
@@ -66,9 +75,12 @@ h2 {
 }
 
 .room-list th {
-    background-color: #8B4513;
-    color: white;
+    border-bottom: 3px solid rgba(53, 35, 17, 0.55) !important;
+    border-top: 3px solid rgba(53, 35, 17, 0.55) !important;
     padding: 10px;
+    font-size: 1.2rem !important;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+
 }
 
 .room-list td {
@@ -79,6 +91,9 @@ h2 {
     vertical-align: middle; /* 내용을 세로 가운데 정렬 */
 }
 
+.room-list tr:nth-child(even) {
+    background-color: rgba(103, 103, 103, 0.1);
+}
 
 /* 삭제 버튼 컬럼도 고정 너비로 설정 */
 .room-list td:first-child {
@@ -168,11 +183,13 @@ h2 {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
     display: block;
     margin: 0 auto;
+    margin-top: 15px;
     border-radius: 3px;
     padding: 5px 10px;
     font-size: 1.2em;
     cursor: pointer;
     transition: background-color 0.3s;
+    height: 32px;
 }
 
 .join-btn:hover, .join-btn.active{
@@ -223,24 +240,20 @@ h2 {
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin: 15px 40px;
+    /*margin-bottom: 15px;*/
     text-align: left;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
 }
 
 .form-group input {
     width: 100%;
-    padding: 8px;
+    padding: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+    font-size: 1rem;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
 }
-
 
 /* 삭제 모달 */
 #deleteRoomModal {
@@ -253,10 +266,21 @@ h2 {
     z-index: 1000;
 }
 
+#deleteRoomModal > .modal-content{
+    background-image: url("../image/deleteRoomModal.png");
+}
+
+#createRoomModal > .modal-content{
+    background-image: url("../image/createRoomModal.png");
+    border-radius: 14px;
+
+}
+
 .modal-content {
-    background: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /*padding: 20px 30px;*/
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     text-align: center;
 }
@@ -277,6 +301,7 @@ h2 {
 }
 
 #confirmBtn {
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
     background: #d33;
     color: white;
 }
@@ -286,6 +311,7 @@ h2 {
 }
 
 #cancelBtn {
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
     background: #ccc;
     color: #333;
 }
