@@ -98,12 +98,19 @@ public class RoomController extends HttpServlet {
         request.setAttribute("roomList", displayRooms);
         request.setAttribute("paging", paging);
 
+
+        HttpSession session = request.getSession();
+        Member member = (Member) session.getAttribute("loginUser");
+        session.setAttribute("userId", member.getId());
+
+        //session.setAttribute("roomCreator", displayRooms);
+
         if ("/lobby".equals(path)) {
             request.getRequestDispatcher("/WEB-INF/views/room/room.jsp").forward(request, response);
         } else if ("/leaveRoom".equals(path)) {
             String roomIdStr = request.getParameter("roomId");
-            HttpSession session = request.getSession();
-            Member member = (Member) session.getAttribute("loginUser");
+//            HttpSession session = request.getSession();
+//            Member member = (Member) session.getAttribute("loginUser");
 
             if (roomIdStr != null && member != null) {
                 try {
@@ -179,65 +186,65 @@ public class RoomController extends HttpServlet {
             } else {
                 response.getWriter().write("방 생성 실패");
             }
-            } else if ("/joinRoom".equals(path)) {
-                String roomIdStr = request.getParameter("roomId");
-                if (roomIdStr != null && !roomIdStr.trim().isEmpty()) {
-                    try {
-                        int roomId = Integer.parseInt(roomIdStr);
-                        Room room = findRoomById(roomId);
+        } else if ("/joinRoom".equals(path)) {
+            String roomIdStr = request.getParameter("roomId");
+            if (roomIdStr != null && !roomIdStr.trim().isEmpty()) {
+                try {
+                    int roomId = Integer.parseInt(roomIdStr);
+                    Room room = findRoomById(roomId);
 
-                        if (room != null && "대기중".equals(room.getStatus())) {
-                            HttpSession session = request.getSession();
-                            Member member = (Member) session.getAttribute("loginUser");
+                    if (room != null && "대기중".equals(room.getStatus())) {
+                        HttpSession session = request.getSession();
+                        Member member = (Member) session.getAttribute("loginUser");
 
-                            if (member == null) {
-                                response.sendRedirect("login");
-                                return;
-                            }
-
-                            if(!room.addPlayer(member.getId())){
-                                System.out.println("[/joinRoom] : 플레이어 추가 실패 - 중복");
-                            }
-
-                            // 디버깅용 로그
-                            System.out.println("=== 방 참여 [/joinRoom] ===");
-                            System.out.println("방 ID: " + roomId + ", 참여자: " + member.getId());
-                            System.out.println("참여 후 인원수: " + room.getPlayers().size());
-                            System.out.println("플레이어 목록: " + room.getPlayers());
-                            System.out.println("현재 방 상태: " + room.getStatus());
-
-                            // 참여자가 2명이 되었을 때 게임중으로 변경
-                            if (room.getPlayers().size() >= 2) {
-                                room.setStatus("게임중");
-
-                                // DB에도 상태 업데이트
-                                boolean statusUpdated = roomDAO.updateRoomStatus(roomId, "게임중");
-
-                                System.out.println("=== 상태 변경 ===");
-                                System.out.println("방 " + roomId + " 상태를 '게임중'으로 변경");
-                                System.out.println("DB 업데이트 결과: " + statusUpdated);
-                            } else {
-                                System.out.println("아직 인원이 부족합니다. 현재: " + room.getPlayers().size() + "명");
-                            }
-
-                            session.setAttribute("roomId", roomId);
-                            session.setAttribute("roomCreator", room.getCreator());
-                            session.setAttribute("roomPlayers", room.getPlayers());
-                            session.setAttribute("roomStatus", room.getStatus());
-
-                            // TODO : host 관리
-                            // 참여자는 게임 화면으로 (host=false)
-                            response.sendRedirect("game?roomId=" + roomId);
-                            return;
-                        } else if (room != null && "게임중".equals(room.getStatus())) {
-                            // 이미 게임 중인 방에는 입장 불가
-                            response.getWriter().write("이미 게임이 진행 중인 방입니다.");
+                        if (member == null) {
+                            response.sendRedirect("login");
                             return;
                         }
-                    } catch (NumberFormatException e) {
-                        // 잘못된 방 ID
+
+                        if(!room.addPlayer(member.getId())){
+                            System.out.println("[/joinRoom] : 플레이어 추가 실패 - 중복");
+                        }
+
+                        // 디버깅용 로그
+                        System.out.println("=== 방 참여 [/joinRoom] ===");
+                        System.out.println("방 ID: " + roomId + ", 참여자: " + member.getId());
+                        System.out.println("참여 후 인원수: " + room.getPlayers().size());
+                        System.out.println("플레이어 목록: " + room.getPlayers());
+                        System.out.println("현재 방 상태: " + room.getStatus());
+
+                        // 참여자가 2명이 되었을 때 게임중으로 변경
+                        if (room.getPlayers().size() >= 2) {
+                            room.setStatus("게임중");
+
+                            // DB에도 상태 업데이트
+                            boolean statusUpdated = roomDAO.updateRoomStatus(roomId, "게임중");
+
+                            System.out.println("=== 상태 변경 ===");
+                            System.out.println("방 " + roomId + " 상태를 '게임중'으로 변경");
+                            System.out.println("DB 업데이트 결과: " + statusUpdated);
+                        } else {
+                            System.out.println("아직 인원이 부족합니다. 현재: " + room.getPlayers().size() + "명");
+                        }
+
+                        session.setAttribute("roomId", roomId);
+                        session.setAttribute("roomCreator", room.getCreator());
+                        session.setAttribute("roomPlayers", room.getPlayers());
+                        session.setAttribute("roomStatus", room.getStatus());
+
+                        // TODO : host 관리
+                        // 참여자는 게임 화면으로 (host=false)
+                        response.sendRedirect("game?roomId=" + roomId);
+                        return;
+                    } else if (room != null && "게임중".equals(room.getStatus())) {
+                        // 이미 게임 중인 방에는 입장 불가
+                        response.getWriter().write("이미 게임이 진행 중인 방입니다.");
+                        return;
                     }
+                } catch (NumberFormatException e) {
+                    // 잘못된 방 ID
                 }
+            }
             response.sendRedirect("lobby");
         }else if ("/leaveRoom".equals(path)) {
             // 방 나가기 처리
@@ -271,6 +278,10 @@ public class RoomController extends HttpServlet {
         else if ("/deleteRoom".equals(path)) {
             // 방 삭제 처리
             String roomIdStr = request.getParameter("roomId");
+
+            HttpSession session = request.getSession();
+            Member member = (Member) session.getAttribute("loginUser");
+            session.setAttribute("userId", member.getId());
 
             if (roomIdStr != null && !roomIdStr.trim().isEmpty()) {
                 try {
@@ -361,17 +372,21 @@ public class RoomController extends HttpServlet {
         Room room = findRoomById(roomId);
 
         if (room != null && room.getPlayers() != null) {
-            // 플레이어 목록에서 해당 사용자 제거
-            room.getPlayers().remove(memberId);
+            // 💡 값으로 삭제하도록 수정
+            room.getPlayers().remove((Object) memberId);
 
             System.out.println("=== 방 나가기 ===");
             System.out.println("방 ID: " + roomId + ", 나간 사용자: " + memberId);
             System.out.println("남은 인원수: " + room.getPlayers().size());
             System.out.println("남은 플레이어: " + room.getPlayers());
 
+            // 💡 방에 아무도 없으면 삭제
+            if (room.getPlayers().isEmpty()) {
+                return deleteRoom(room);
+            }
         }
-        System.out.println("삭제 완료");
-        return deleteRoom(room);
+
+        return false;
     }
 
     /**

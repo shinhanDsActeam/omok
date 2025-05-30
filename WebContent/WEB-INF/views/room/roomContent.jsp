@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
-
+<p>로그인한 사용자 ID: ${sessionScope.userId}</p>
 <h1>5~ 빈틈없이</h1>
 
 <div class="title-wrapper">
@@ -32,7 +32,7 @@
             <c:forEach var="room" items="${roomList}">
                 <tr>
                     <td>
-                        <c:if test="${room.status != '게임중'}">
+                       <c:if test="${room.status != '게임중' &&  room.creator == sessionScope.userId}">
                             <button class="delete-btn" data-room-id="${room.id}" title="방 삭제">
                             </button>
                         </c:if>

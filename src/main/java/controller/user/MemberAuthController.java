@@ -60,6 +60,7 @@ public class MemberAuthController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
+        request.setCharacterEncoding("UTF-8");
 
         if ("/join".equals(path)) {
             String username = request.getParameter("username");
