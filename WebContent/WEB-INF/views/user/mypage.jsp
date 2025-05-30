@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/slidebar.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css" />
     <script src="${pageContext.request.contextPath}/js/slidebar.js"></script>
+    <script src="${pageContext.request.contextPath}/js/mypage.js"></script>
     <c:if test="${not empty param.extraCss}">
         <link rel="stylesheet" href="${pageContext.request.contextPath}${param.extraCss}" />
     </c:if>
@@ -26,10 +27,23 @@
 <body>
 <div class="wrapper">
     <div class="container">
-        <div class="overlay-text">
-            ${loginUser.nickname} <br>
-            ${info.totalCount}전 / ${info.winCount}승 / ${info.drawCount}무 / ${info.loseCount}패
+        <%
+            double winRate = (double) request.getAttribute("winRate");
+        %>
+        <div class="flip-outer">
+            <div class="flip-inner">
+                <div class="overlay-text front">
+                    <div class="vertical-text">${loginUser.nickname}</div>
+                    <div class="vertical-text">
+                        ${info.totalCount}전 <br> ${info.winCount}승 <br> ${info.loseCount}패
+                    </div>
+                </div>
+                <div class="back">
+                </div>
+            </div>
         </div>
+
+
     </div>
 
     <jsp:include page="../slidebar.jsp" />
@@ -38,5 +52,11 @@
 <c:if test="${not empty param.extraModal}">
     <jsp:include page="${param.extraModal}" />
 </c:if>
+
+
+<!-- JS 변수 전달 -->
+<script>
+    const winRate = '<%= winRate %>';
+</script>
 </body>
 </html>

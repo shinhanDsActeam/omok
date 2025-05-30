@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const overlayText = document.querySelector('.overlay-text');
-    const text = overlayText.textContent;
-    overlayText.textContent = ''; // 기존 내용 지움
+    const back = document.querySelector('.back');
+    const flipInner = document.querySelector('.flip-inner');
+    function setUrl() {
+        if (winRate >= 80) {
+            back.style.backgroundImage = "url('/omok/image/horse4.png')";
+        } else if (winRate >= 50) {
+            back.style.backgroundImage = "url('/omok/image/horse3.png')";
+        } else if (winRate >= 20) {
+            back.style.backgroundImage = "url('/omok/image/horse2.png')";
+        } else {
+            back.style.backgroundImage = "url('/omok/image/horse1.png')";
+        }
+    }
 
-    text.split('').forEach(char => {
-        const span = document.createElement('span');
-        span.textContent = char;
-        overlayText.appendChild(span);
-    });
-
-    const letters = document.querySelectorAll('.overlay-text span');
-    letters.forEach((span, index) => {
-        span.style.animationDelay = `${index * 0.1 + 0.8}s`;
-    });
-
+    flipInner.addEventListener('mouseenter', setUrl);
 });
