@@ -9,4 +9,9 @@
         <servlet-name>board</servlet-name>
         <url-pattern>/board</url-pattern>
     </servlet-mapping>
+
+    <!-- WebContent/WEB-INF/web.xml -->
+    <welcome-file-list>
+        <welcome-file>mainlobby</welcome-file>
+    </welcome-file-list>
 </web-app>

@@ -1,0 +1,80 @@
+/* 전역 설정 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('../image/mainpaper.png') center/cover no-repeat;
+    opacity: 0.3; /* 투명도  */
+    z-index: -1; /* 비디오보다 더 뒤에 깔리게 */
+    pointer-events: none; /* 클릭 방지 */
+}
+
+/* 비디오 */
+.bg-video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 80vw;
+    height: 80vh;
+    object-fit: cover;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+
+    border: none !important;
+    outline: none !important;
+    pointer-events: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* 버튼 포함 영역 */
+.main-section {
+    position: relative;
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;  /* box-sizing 덕분에 패딩 포함 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 100px; /* 위로 올림 */
+    overflow: hidden;       /* 혹시 모를 넘침 방지 */
+}
+
+/* 버튼 */
+.main-button {
+    z-index: 2;
+    position: relative;
+
+    padding: 25px 60px;      /* 버튼 크기 더 키움 */
+    font-size: 2em;          /* 글씨 더 큼 */
+
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    border: none;
+    border-radius: 10px;     /* 비율에 맞춰 더 둥글게 */
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 28px rgba(220, 179, 92, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.main-button:hover, .main-button.active {
+    color: #ffcc00;
+    text-shadow:
+        0 0 4px #ffcc00,
+        0 0 8px #ffd700,
+        0 0 12px #ffaa00;
+    transform: scale(1.08);
+}

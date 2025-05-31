@@ -1,0 +1,16 @@
+##############################
+## IntelliJ
+##############################
+out/
+.idea/
+.idea_modules/
+*.iml
+*.ipr
+*.iws
+omok.eml
+.classpath
+.project
+.DS_Store
+
+# resource
+src/main/resources/db-config.properties

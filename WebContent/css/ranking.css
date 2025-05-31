@@ -1,0 +1,60 @@
+@font-face {
+    font-family: 'Shilla_Culture';
+    src: url('../fonts/Shilla_Culture(M).otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.card-box h1 {
+    color: #8B4513;
+    margin-bottom: 20px;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+
+}
+
+.empty-message {
+    color: #8B4513;
+    font-size: 1.1em;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border: 1px dashed #c0a070;
+    border-radius: 8px;
+    margin-top: 20px;
+    line-height: 1.6;
+}
+
+.record-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+
+.record-table td {
+    /*padding: 15px;*/
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+}
+
+.record-table tr:nth-child(1), tr:nth-child(2), tr:nth-child(3) {
+    /*background-color: #f9f9f9;*/
+    font-weight: bolder;
+    font-size: 24px;
+}
+
+.button {
+    background-color: #8B4513;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #A0522D;
+}

@@ -1,0 +1,320 @@
+@font-face {
+    font-family: 'Shilla_Culture';
+    src: url('../fonts/Shilla_Culture(M).otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1 {
+    color: #8B4513;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px #d0b090;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+}
+
+h2 {
+    color: #8B4513;
+    margin-top: 20px;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+}
+
+.title-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 0 50px; /* 여유 공간 (선택사항) */
+}
+
+.section-title {
+    text-align: center;
+    margin: 0;
+    font-size: 1.8em;
+    color: #8B4513;
+}
+
+.right-button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.button {
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.button:hover, .button.active{
+    color: #ffcc00;
+    text-shadow:
+            0 0 4px #ffcc00,
+            0 0 8px #ffd700,
+            0 0 12px #ffaa00;
+    transform: scale(1.08);
+}
+
+.room-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+    /*background-color: #fff;*/
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.room-list th {
+    border-bottom: 3px solid rgba(53, 35, 17, 0.55) !important;
+    border-top: 3px solid rgba(53, 35, 17, 0.55) !important;
+    padding: 10px;
+    font-size: 1.4rem !important;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+}
+
+.room-list td {
+    text-align: center;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    height: 70px; /* 고정 높이 설정 */
+    vertical-align: middle; /* 내용을 세로 가운데 정렬 */
+}
+
+.room-list tr:nth-child(even) {
+    background-color: rgba(103, 103, 103, 0.1);
+}
+
+/* 삭제 버튼 컬럼도 고정 너비로 설정 */
+.room-list td:first-child {
+    width: 80px; /* 삭제 버튼 컬럼 고정 너비 */
+}
+
+.room-list tr:hover {
+    background-color: rgba(245, 245, 245, 0.3);
+    cursor: pointer;
+}
+
+.room-list tr:nth-child(even) {
+    /*background-color: ;*/
+}
+
+/* 삭제 버튼 스타일 */
+.delete-btn {
+    background: linear-gradient(135deg, #ff4757, #ff3742, #ff2d37);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 4px 12px rgba(255, 71, 87, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.delete-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #ff3742, #ff2d37, #ff1e2d);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+        0 6px 20px rgba(255, 71, 87, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.delete-btn:active {
+    transform: translateY(0) scale(0.95);
+    transition-duration: 0.1s;
+}
+
+.join-btn{
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    display: block;
+    margin: 0 auto;
+    margin-top: 15px;
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 32px;
+}
+
+.join-btn:hover, .join-btn.active{
+    color: #ffcc00;
+    text-shadow:
+            0 0 4px #ffcc00,
+            0 0 8px #ffd700,
+            0 0 12px #ffaa00;
+    transform: scale(1.08);
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    width: 50%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.form-group {
+    margin: 15px 40px;
+    /*margin-bottom: 15px;*/
+    text-align: left;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+}
+
+/* 삭제 모달 */
+#deleteRoomModal {
+    display: none; /* 처음엔 숨김 */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#deleteRoomModal > .modal-content{
+    background-image: url("../image/deleteRoomModal.png");
+}
+
+#createRoomModal > .modal-content{
+    background-image: url("../image/createRoomModal.png");
+    border-radius: 14px;
+
+}
+
+.modal-content {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /*padding: 20px 30px;*/
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.modal-text {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.modal-buttons button {
+    padding: 8px 16px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+#confirmBtn {
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+    background: #d33;
+    color: white;
+}
+
+#confirmBtn:hover {
+    background: #b22;
+}
+
+#cancelBtn {
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+    background: #ccc;
+    color: #333;
+}
+
+#cancelBtn:hover {
+    background: #aaa;
+}

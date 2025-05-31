@@ -1,0 +1,143 @@
+@font-face {
+    font-family: 'Shilla_Culture';
+    src: url('../fonts/Shilla_Culture(M).otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+}
+
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+}
+
+
+h1{
+    color: #8B4513;
+    font-size: 65px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+
+}
+
+body {
+  position: relative;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.4; /*  배경 투명도 설정 */
+  z-index: -1;
+}
+
+.container {
+    background-image: url('../image/doong.png'); /* 이미지 경로 설정 */
+    background-size: contain; /* 이미지를 비율 유지하며 맞춤 */
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 3vw 2vw; /* 화면 크기에 따라 패딩도 유동적으로 */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+input {
+    font-size: 1.2rem;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 18rem;
+    height: 1.8rem;
+    border-radius: 1rem;
+    padding: 0.7rem 1.2rem;
+    margin: 15px 0 15px 140px;
+    border: 1px solid #8b4512;
+    text-align: left;
+}
+input::placeholder {
+    font-size: 1.2rem;
+    color: gray;
+}
+
+input[type="submit"] {
+    height: 2.8rem;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.7rem;
+    color: #8b4512;
+    margin: 20px auto; /* 가운데 정렬 위해 좌우 마진 자동 */
+    transition: all 0.3s ease;
+    transition: background-color 0.3s;
+    padding: 0 1.6rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    display: block;
+}
+
+input[type="button"] {
+    height: 2.8rem;
+    background: linear-gradient(to bottom, #DCB35C, #b89346);
+    color: #333;
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(220, 179, 92, 0.8);
+    padding: 0 1.3rem;
+    margin: 0 1.6rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1.2rem;
+}
+
+
+input[type="button"]:hover,
+input[type="button"]:active,
+input[type="submit"]:hover, action {
+    color: #ffcc00;
+        text-shadow:
+            0 0 4px #ffcc00,
+            0 0 8px #ffd700,
+            0 0 12px #ffaa00;
+        transform: scale(1.08);
+}
+
+input.checked[type="button"],
+input.checked[type="submit"],
+input[type="submit"].disabled {
+    background: #ccc;
+    background: linear-gradient(to bottom, #777c81, #c4c4c4);
+    color: #474747;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(156, 156, 156, 0.8);
+    cursor: default;
+    pointer-events: none; /* 클릭 불가능하게 */
+    transform: none;
+}

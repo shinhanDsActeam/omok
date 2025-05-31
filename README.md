@@ -46,3 +46,6 @@ graph TD
     Mypage --> |" 전적 확인 "| Home
 
 ```
+### ERD
+![{C6EA7CA8-ABCB-4B9C-AC6B-C64982CD95C9}](https://github.com/user-attachments/assets/4f559f45-6cf6-4d12-a150-6202dfeb331d)
+
