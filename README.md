@@ -79,7 +79,7 @@ graph TD
 | 기능        | 담당자                                                                                              |
 | --------- | ------------------------------------------------------------------------------------------------ |
 | **회원 관리** | 강지윤 ([kwiyoon](https://github.com/kwiyoon)), 최윤희 ([kwiyoon](https://github.com/kwiyoon))         |
-| **인게임**   | 박재천 ([cheon1217](https://github.com/cheon1217)), 장해준 ([cheon1217](https://github.com/cheon1217)) |
+| **인게임**   | 박재천 ([cheon1217](https://github.com/cheon1217)), 장해준 ([HaejunJang](https://github.com/HaejunJang)) |
 | **방 관리**  | 김서하 ([standha](https://github.com/standha)), 문현준 ([Mouon](https://github.com/Mouon))             |
 
 ---
