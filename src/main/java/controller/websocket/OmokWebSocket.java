@@ -229,16 +229,27 @@ public class OmokWebSocket {
 
     private void broadcast(String roomId, String message) {
         List<Session> sessions = roomSessions.get(roomId);
-        if (sessions != null) {
-            for (Session s : sessions) {
-                if (s.isOpen()) {
+        if (sessions == null) return;
+
+        Iterator<Session> iterator = sessions.iterator();
+        while (iterator.hasNext()) {
+            Session s = iterator.next();
+            if (s.isOpen()) {
+                synchronized (s) {
                     try {
                         s.getBasicRemote().sendText(message);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        System.err.println("📛 메시지 전송 실패: " + e.getMessage());
                     }
                 }
+            } else {
+                iterator.remove(); // 닫힌 세션 제거
             }
         }
+
+        if (sessions.isEmpty()) {
+            roomSessions.remove(roomId);
+        }
     }
+
 }
