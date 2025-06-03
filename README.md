@@ -52,10 +52,10 @@ graph TD
     Home --> RoomCode[방 코드 입력]
     Home --> Mypage[마이페이지]
     
-    RoomCreate --> Waiting[대기방 입장 (1/2명)]
-    RoomCode --> Waiting
+    RoomCreate --> WaitingRoom["대기방 입장 (1/2명)"]
+    RoomCode --> WaitingRoom
     
-    Waiting --> |"상대방 입장"| GameStart[게임 시작]
+    WaitingRoom --> |"상대방 입장"| GameStart[게임 시작]
     
     GameStart --> |"승/패 결정"| GameEnd[게임 종료]
     
