@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
-<h1>랭킹</h1>
+<h1>종합 서열</h1>
 <c:choose>
     <c:when test="${empty rankingList}">
         <div class="empty-message">
@@ -14,7 +14,7 @@
             <thead>
             <tr>
                 <th>순위</th>
-                <th>닉네임</th>
+                <th>별호</th>
                 <th>전적</th>
                 <th>승률</th>
                 <th>총점</th>

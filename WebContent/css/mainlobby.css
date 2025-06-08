@@ -1,4 +1,11 @@
 /* 전역 설정 */
+@font-face {
+    font-family: 'Shilla_Culture';
+    src: url('../fonts/Shilla_Culture(M).otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -13,6 +20,7 @@ body::before {
     width: 100vw;
     height: 100vh;
     background: url('../image/mainpaper.png') center/cover no-repeat;
+    /*background-color: white;*/
     opacity: 0.3; /* 투명도  */
     z-index: -1; /* 비디오보다 더 뒤에 깔리게 */
     pointer-events: none; /* 클릭 방지 */
@@ -21,10 +29,10 @@ body::before {
 /* 비디오 */
 .bg-video {
     position: fixed;
-    top: 50%;
+    top: 40%;
     left: 50%;
-    width: 80vw;
-    height: 80vh;
+    width: 60vw;
+    height: 60vh;
     object-fit: cover;
     z-index: 0;
     transform: translate(-50%, -50%);
@@ -35,6 +43,13 @@ body::before {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    /*position: fixed;*/
+    /*!*top: 0; left: 0;*!*/
+    /*!*width: 100%;*!*/
+    /*height: 80%;*/
+    /*object-fit: cover;*/
+    /*margin: 0 auto;*/
+    /*z-index: -1;*/
 }
 
 /* 버튼 포함 영역 */
@@ -63,11 +78,13 @@ body::before {
     color: #333;
     border: none;
     border-radius: 10px;     /* 비율에 맞춰 더 둥글게 */
-    font-family: 'Nanum Myeongjo', serif;
+    /*font-family: 'Nanum Myeongjo', serif;*/
     font-weight: bold;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 28px rgba(220, 179, 92, 0.8);
     cursor: pointer;
     transition: all 0.3s ease;
+    font-family: 'Shilla_Culture', 'Nanum Myeongjo', serif;
+
 }
 
 .main-button:hover, .main-button.active {
